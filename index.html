@@ -371,7 +371,7 @@
                         strings: ['少年不识愁滋味，爱上层楼。爱上层楼，为赋新词强说愁。而今识尽愁滋味，欲说还休。欲说还休，却道天凉好个秋！',''],
                         startDelay: 300,
                         typeSpeed: 100,
-                        loop: false,
+                        loop: true,
                         backSpeed: 50,
                         showCursor: false
                     });
@@ -384,9 +384,7 @@
 
 
 <script>
-    // 每天切换 banner 图.  Switch banner image every day.
-    var bannerUrl = "/medias/banner/" + new Date().getDay() + '.jpg';
-    $('.bg-cover').css('background-image', 'url(' + bannerUrl + ')');
+    $('.bg-cover').css('background-image', 'url(/medias/banner/0.jpg)');
 </script>
 
 
