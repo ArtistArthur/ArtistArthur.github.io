@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-create-hexo" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/06/24/create-hexo/" class="article-date">
+  <time datetime="2020-06-23T19:11:12.000Z" itemprop="datePublished">2020-06-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/24/create-hexo/">create hexo</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="���㿪ʼ��-JSON-��̳̣�һ�������"><a href="#���㿪ʼ��-JSON-��̳̣�һ�������" class="headerlink" title="���㿪ʼ�� JSON ��̳̣�һ�������"></a>���㿪ʼ�� JSON ��̳̣�һ�������</h1><ul>
+<li>Milo Yip</li>
+<li>2016/9/15</li>
+</ul>
+<p>������<a href="https://zhuanlan.zhihu.com/json-tutorial" target="_blank" rel="noopener">�����㿪ʼ�� JSON ��̡̳�</a>�ĵ�һ����Ԫ���̳���ϰԴ����λ�� <a href="https://github.com/miloyip/json-tutorial" target="_blank" rel="noopener">json-tutorial</a>��</p>
+<p>����Ԫ���ݣ�</p>
+<ul>
+<li><a href="#���㿪ʼ��-json-��̳�һ���">���㿪ʼ�� JSON ��̳̣�һ�������</a><ul>
+<li><a href="#1-json-��ʲô">1. JSON ��ʲô</a></li>
+<li><a href="#2-����뻷��">2. ����뻷��</a></li>
+<li><a href="#3-ͷ�ļ���-api-���">3. ͷ�ļ��� API ���</a></li>
+<li><a href="#4-json-�﷨�Ӽ�">4. JSON �﷨�Ӽ�</a></li>
+<li><a href="#5-��Ԫ����">5. ��Ԫ����</a></li>
+<li><a href="#6-��ı�д����">6. ��ı�д����</a></li>
+<li><a href="#7-ʵ�ֽ�����">7. ʵ�ֽ�����</a></li>
+<li><a href="#8-���ڶ���">8. ���ڶ���</a></li>
+<li><a href="#9-�ܽ�����ϰ">9. �ܽ�����ϰ</a></li>
+<li><a href="#10-�����ʴ�">10. �����ʴ�</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="1-JSON-��ʲo"><a href="#1-JSON-��ʲo" class="headerlink" title="1. JSON ��ʲô"></a>1. JSON ��ʲô</h2><p>JSON��JavaScript Object Notation����һ���������ݽ������ı���ʽ����ʱ�ı�׼Ϊ<a href="https://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf" target="_blank" rel="noopener">ECMA-404</a>��</p>
+<p>��Ȼ JSON Դ���� JavaScript ���ԣ�����ֻ��һ�����ݸ�ʽ���������κα�����ԡ���ʱ�����ƹ��ܵĸ�ʽ�� XML��YAML�������� JSON ���﷨��Ϊ�򵥡�</p>
+<p>���磬һ����̬��ҳ��ӷ������������ʱ�������������ݿ�������ݣ�Ȼ�������ת���� JSON �ı���ʽ��</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">"title"</span>: <span class="string">"Design Patterns"</span>,</span><br><span class="line">    <span class="string">"subtitle"</span>: <span class="string">"Elements of Reusable Object-Oriented Software"</span>,</span><br><span class="line">    <span class="string">"author"</span>: [</span><br><span class="line">        <span class="string">"Erich Gamma"</span>,</span><br><span class="line">        <span class="string">"Richard Helm"</span>,</span><br><span class="line">        <span class="string">"Ralph Johnson"</span>,</span><br><span class="line">        <span class="string">"John Vlissides"</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="string">"year"</span>: <span class="number">2009</span>,</span><br><span class="line">    <span class="string">"weight"</span>: <span class="number">1.8</span>,</span><br><span class="line">    <span class="string">"hardcover"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">"publisher"</span>: &#123;</span><br><span class="line">        <span class="string">"Company"</span>: <span class="string">"Pearson Education"</span>,</span><br><span class="line">        <span class="string">"Country"</span>: <span class="string">"India"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"website"</span>: <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>��ҳ�Ľű�����Ϳ��԰Ѵ� JSON �ı�����Ϊ�ڲ������ݽṹȥʹ�á�</p>
+<p>�Ӵ����ӿɿ�����JSON ����״�ṹ���� JSON ֻ���� 6 ���������ͣ�</p>
+<ul>
+<li>null: ��ʾΪ null</li>
+<li>boolean: ��ʾΪ true �� false</li>
+<li>number: һ��ĸ�������ʾ��ʽ������һ��Ԫ��ϸ˵��</li>
+<li>string: ��ʾΪ “…”</li>
+<li>array: ��ʾΪ [ … ]</li>
+<li>object: ��ʾΪ { … }</li>
+</ul>
+<p>����Ҫʵ�ֵ� JSON �⣬��Ҫ����� 3 ������</p>
+<ol>
+<li>�� JSON �ı�����Ϊһ����״���ݽṹ��parse����</li>
+<li>�ṩ�ӿڷ��ʸ����ݽṹ��access����</li>
+<li>�����ݽṹת���� JSON �ı���stringify����</li>
+</ol>
+<p><img src="images/requirement.png" alt="requirement"></p>
+<p>���ǻ���ʵ����Щ�����ڱ���Ԫ�У�����ֻʵ����򵥵� null �� boolean ������</p>
+<h2 id="2-����뻷��"><a href="#2-����뻷��" class="headerlink" title="2. ����뻷��"></a>2. ����뻷��</h2><p>����Ҫ���Ŀ��ǿ�ƽ̨����������ģ�ͬѧ��ʹ������ƽ̨������ϰ��</p>
+<p>��ϰԴ����λ�� <a href="https://github.com/miloyip/json-tutorial" target="_blank" rel="noopener">json-tutorial</a>������ tutorial01 Ϊ����Ԫ����ϰ���롣����ͬѧ�Ǽ�Ϊ GitHub �û�������Ŀ fork һ���Լ��İ汾��Ȼ������������޸ġ����˽�汾�����ͬѧ��Ҳ���԰��ҷ���Clone or download����ť��������һ�� zip �ļ���</p>
+<p>���ǵ� JSON ����Ϊ leptjson�������ļ�ֻ�� 3 ����</p>
+<ol>
+<li><code>leptjson.h</code>��leptjson ��ͷ�ļ���header file�������ж�������ͺ� API ����������</li>
+<li><code>leptjson.c</code>��leptjson ��ʵ���ļ���implementation file���������ڲ������������ͺ���ʵ�֡����ļ������ɿ⡣</li>
+<li><code>test.c</code>������ʹ�ò�������������test driven development, TDD�������ļ��������Գ�����Ҫ���� leptjson �⡣</li>
+</ol>
+<p>Ϊ�˷����ƽ̨���������ǻ�ʹ��һ����ʱ�����е�������ù��� <a href="https://cmake.org/" target="_blank" rel="noopener">CMake</a>��</p>
+<p>�� Windows �£����ذ�װ CMake �󣬿���ʹ���� cmake-gui ����</p>
+<p><img src="images/cmake-gui.png" alt="cmake-gui"></p>
+<p>���� “Where is the source code” ѡ�� json-tutorial/tutorial01������ “Where to build the binary” ������һ��Ŀ¼���� /build��</p>
+<p>�� Configure��ѡ���������Ȼ�� Generate ������� Visual Studio �� .sln �� .vcproj ���ļ���ע����� build Ŀ¼�������ɵ��ļ���������ʱɾ����Ҳ�����ϴ����ֿ⡣</p>
+<p>�� OS X �£����鰲װ <a href="https://brew.sh/" target="_blank" rel="noopener">Homebrew</a>��Ȼ���������м��룺</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ brew install cmake</span><br><span class="line">$ cd github&#x2F;json-tutorial&#x2F;tutorial01</span><br><span class="line">$ mkdir build</span><br><span class="line">$ cd build</span><br><span class="line">$ cmake -DCMAKE_BUILD_TYPE&#x3D;Debug ..</span><br><span class="line">$ make</span><br></pre></td></tr></table></figure>
+
+<p>������ʹ�� GNU make ��������Ŀ���� Debug �ĳ� Release �ͻ����� Release ���õ� makefile��</p>
+<p>����ϲ���Ļ���CMake Ҳ�������� Xcode ��Ŀ��</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cmake -G Xcode ..</span><br><span class="line">$ open leptjson_test.xcodeproj</span><br></pre></td></tr></table></figure>
+
+<p>���� Ubuntu �£���ʹ�� <code>apt-get</code> ����װ��</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get install cmake</span><br></pre></td></tr></table></figure>
+
+<p>����ʹ��ʲôƽ̨�����뻷�����������к����֣�</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ .&#x2F;leptjson_test</span><br><span class="line">&#x2F;Users&#x2F;miloyip&#x2F;github&#x2F;json-tutorial&#x2F;tutorial01&#x2F;test.c:56: expect: 3 actual: 0</span><br><span class="line">11&#x2F;12 (91.67%) passed</span><br></pre></td></tr></table></figure>
+
+<p>����������ϵĽ����˵���ѳɹ�����뻷�������ǿ���ȥ�����Ǽ��������ļ��������ˡ�</p>
+<h2 id="3-ͷ�l���-API-���"><a href="#3-ͷ�l���-API-���" class="headerlink" title="3. ͷ�ļ��� API ���"></a>3. ͷ�ļ��� API ���</h2><p>C ������ͷ�ļ��ĸ����Ҫʹ�� <code>#include</code>ȥ����ͷ�ļ��е����������ͺ���������������ͷ�ļ�Ҳ���� <code>#include</code> ����ͷ�ļ���Ϊ�����ظ�������ͨ�������ú���� include ������include guard����</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> LEPTJSON_H__</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LEPTJSON_H__</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* ... */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* LEPTJSON_H__ */</span></span></span><br></pre></td></tr></table></figure>
+
+<p>������ֱ�����Ψһ�ģ�ͨ��ϰ���� <code>_H__</code> ��Ϊ��׺������ leptjson ֻ��һ��ͷ�ļ������Լ�����Ϊ <code>LEPTJSON_H__</code>�������Ŀ�ж���ļ���Ŀ¼�ṹ�������� <code>��Ŀ����_Ŀ¼_�ļ�����_H__</code> ����������ʽ��</p>
+<p>��ǰ������JSON ���� 6 ���������ͣ������ true �� false �����������;��� 7 �֣�����Ϊ������һ��ö�����ͣ�enumeration type����</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span> &#123; LEPT_NULL, LEPT_FALSE, LEPT_TRUE, LEPT_NUMBER, LEPT_STRING, LEPT_ARRAY, LEPT_OBJECT &#125; lept_type;</span><br></pre></td></tr></table></figure>
+
+<p>��Ϊ C ����û�� C++ �������ռ䣨namespace�����ܣ�һ���ʹ����Ŀ�ļ�д��Ϊ��ʶ����ǰ׺��ͨ��ö��ֵ��ȫ��д���� <code>LEPT_NULL</code>���������ͼ���������Сд���� <code>lept_type</code>����</p>
+<p>���������������� JSON �����ݽṹ��JSON ��һ�����νṹ������������Ҫʵ��һ���������ݽṹ��ÿ���ڵ�ʹ�� <code>lept_value</code> �ṹ���ʾ�����ǻ����Ϊһ�� JSON ֵ��JSON value����<br>�ڴ˵�Ԫ�У�����ֻ��Ҫʵ�� null, true �� false �Ľ�������˸ýṹ��ֻ��Ҫ�洢һ�� lept_type��֮��ĵ�Ԫ���𲽼����������ݡ�</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    lept_type type;</span><br><span class="line">&#125;lept_value;</span><br></pre></td></tr></table></figure>
+
+<p>C ���ԵĽṹ������ <code>struct X {}</code> ��ʽ�����ģ��������ʱҲҪд�� <code>struct X x;</code>��Ϊ����ʹ�ã�����Ĵ���ʹ���� <code>typedef</code>��</p>
+<p>Ȼ����������ֻ��Ҫ���� API ������һ���ǽ��� JSON��</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">lept_parse</span><span class="params">(lept_value* v, <span class="keyword">const</span> <span class="keyword">char</span>* json)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>����� JSON �ı���һ�� C �ַ������ս�β�ַ�����null-terminated string�����������ǲ�Ӧ�øĶ���������ַ���������ʹ�� <code>const char*</code> ���͡�</p>
+<p>��һע����ǣ�����ĸ��ڵ�ָ�� v ����ʹ�÷��������ģ�����һ���÷��ǣ�</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lept_value v;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> json[] = ...;</span><br><span class="line"><span class="keyword">int</span> ret = lept_parse(&amp;v, json);</span><br></pre></td></tr></table></figure>
+
+<p>����ֵ��������Щö��ֵ���޴���᷵�� <code>LEPT_PARSE_OK</code>������ֵ���½ڽ��͡�</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> &#123;</span><br><span class="line">    LEPT_PARSE_OK = <span class="number">0</span>,</span><br><span class="line">    LEPT_PARSE_EXPECT_VALUE,</span><br><span class="line">    LEPT_PARSE_INVALID_VALUE,</span><br><span class="line">    LEPT_PARSE_ROOT_NOT_SINGULAR</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>��ʱ����ֻ��Ҫһ�����ʽ���ĺ��������ǻ�ȡ�����ͣ�</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">lept_type <span class="title">lept_get_type</span><span class="params">(<span class="keyword">const</span> lept_value* v)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-JSON-�﷨�Ӽ�"><a href="#4-JSON-�﷨�Ӽ�" class="headerlink" title="4. JSON �﷨�Ӽ�"></a>4. JSON �﷨�Ӽ�</h2><p>�����Ǵ˵�Ԫ�� JSON �﷨�Ӽ���ʹ�� <a href="https://tools.ietf.org/html/rfc7159" target="_blank" rel="noopener">RFC7159</a> �е� <a href="https://tools.ietf.org/html/rfc5234" target="_blank" rel="noopener">ABNF</a> ��ʾ��</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">JSON-text &#x3D; ws value ws</span><br><span class="line">ws &#x3D; *(%x20 &#x2F; %x09 &#x2F; %x0A &#x2F; %x0D)</span><br><span class="line">value &#x3D; null &#x2F; false &#x2F; true </span><br><span class="line">null  &#x3D; &quot;null&quot;</span><br><span class="line">false &#x3D; &quot;false&quot;</span><br><span class="line">true  &#x3D; &quot;true&quot;</span><br></pre></td></tr></table></figure>
+
+<p>���� <code>%xhh</code> ��ʾ�� 16 ���Ʊ�ʾ���ַ���<code>/</code> �Ƕ�ѡһ��<code>*</code> ���������<code>()</code> ���ڷ��顣</p>
+<p>��ô��һ�е���˼�ǣ�JSON �ı��� 3 ������ɣ������ǿհף�whitespace����������һ��ֵ������ǿհס�</p>
+<p>�ڶ��и������ǣ���ν�հף�����������ո����space U+0020�����Ʊ����tab U+0009�������з���LF U+000A�����س�����CR U+000D������ɡ�</p>
+<p>��������˵��������ʱ��ֵֻ������ null��false �� true�����Ƿֱ��ж�Ӧ������ֵ��literal����</p>
+<p>���ǵĽ�����Ӧ���ж������Ƿ�һ���Ϸ��� JSON���������� JSON ���Ϸ�����﷨������Ҫ������Ӧ�Ĵ����룬����ʹ����׷�����⡣</p>
+<p>����� JSON �﷨�Ӽ��£����Ƕ��� 3 �ִ����룺</p>
+<ul>
+<li>��һ�� JSON ֻ���пհף����� <code>LEPT_PARSE_EXPECT_VALUE</code>��</li>
+<li>��һ��ֵ֮���ڿհ�֮���������ַ������� <code>LEPT_PARSE_ROOT_NOT_SINGULAR</code>��</li>
+<li>��ֵ��������������ֵ������ <code>LEPT_PARSE_INVALID_VALUE</code>��</li>
+</ul>
+<h2 id="5-��Ԫ����"><a href="#5-��Ԫ����" class="headerlink" title="5. ��Ԫ����"></a>5. ��Ԫ����</h2><p>���ͬѧ������ϰ��ʱ�������� <code>printf</code>��<code>cout</code> ��ӡ������������۶ԱȽ���Ƿ����Ԥ�ڡ����������ĿԽ��Խ���ӣ����������Խ��Խ��Ч��һ�����ǻ�����Զ��Ĳ��Է�ʽ�����絥Ԫ���ԣ�unit testing������Ԫ����Ҳ��ȷ���������޸Ĵ����ԭ���Ĺ���ά����ȷ�����Ϊ�ع���ԣ�regression testing����</p>
+<p>���õĵ�Ԫ���Կ���� xUnit ϵ�У��� C++ �� <a href="https://github.com/google/googletest" target="_blank" rel="noopener">Google Test</a>��C# �� <a href="https://www.nunit.org/" target="_blank" rel="noopener">NUnit</a>������Ϊ�˼���������дһ�����򵥵ĵ�Ԫ���Է�ʽ��</p>
+<p>һ����˵����������������ڽ��еġ����磬����һ�����ܣ���д���ڸù��ܵĵ�Ԫ���ԡ���Ҳ����һ��������������ۣ���Ϊ��������������test-driven development, TDD����������Ҫѭ�������ǣ�</p>
+<ol>
+<li>����һ�����ԡ�</li>
+<li>�������в��ԣ��µĲ���Ӧ�û�ʧ�ܡ�</li>
+<li>��дʵ�ִ��롣</li>
+<li>�������в��ԣ����в���ʧ�ܻص�3��</li>
+<li>�ع����롣</li>
+<li>�ص� 1��</li>
+</ol>
+<p>TDD ����д���ԣ���ʵ�ֹ��ܡ��ô���ʵ��ֻ��պ�������ԣ�������д��һЩ����Ҫ�Ĵ��룬����û�б����ԵĴ��롣</p>
+<p>�����������ǲ��� TDD��������ʵ�ֺ���ԣ���Ӧ���������㹻�����ʵĵ�Ԫ���ԡ�</p>
+<p>�ص� leptjson ��Ŀ��<code>test.c</code> ������һ������ĵ�Ԫ���Կ�ܣ�</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"leptjson.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> main_ret = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> test_count = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> test_pass = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXPECT_EQ_BASE(equality, expect, actual, format) \</span></span><br><span class="line">    <span class="keyword">do</span> &#123;\</span><br><span class="line">        test_count++;\</span><br><span class="line">        <span class="keyword">if</span> (equality)\</span><br><span class="line">            test_pass++;\</span><br><span class="line">        <span class="keyword">else</span> &#123;\</span><br><span class="line">            <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"%s:%d: expect: "</span> format <span class="string">" actual: "</span> format <span class="string">"\n"</span>, __FILE__, __LINE__, expect, actual);\</span><br><span class="line">            main_ret = <span class="number">1</span>;\</span><br><span class="line">        &#125;\</span><br><span class="line">    &#125; <span class="keyword">while</span>(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXPECT_EQ_INT(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, <span class="meta-string">"%d"</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">test_parse_null</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    lept_value v;</span><br><span class="line">    v.type = LEPT_TRUE;</span><br><span class="line">    EXPECT_EQ_INT(LEPT_PARSE_OK, lept_parse(&amp;v, <span class="string">"null"</span>));</span><br><span class="line">    EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&amp;v));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* ... */</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">test_parse</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    test_parse_null();</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    test_parse();</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%d/%d (%3.2f%%) passed\n"</span>, test_pass, test_count, test_pass * <span class="number">100.0</span> / test_count);</span><br><span class="line">    <span class="keyword">return</span> main_ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>��ʱֻ�ṩ��һ�� <code>EXPECT_EQ_INT(expect, actual)</code> �ĺ꣬ÿ��ʹ�������ʱ����� expect != actual��Ԥ��ֵ������ʵ��ֵ����������������Ϣ��<br>���� TDD �Ĳ��裬������дһ�����ԣ�������� <code>test_parse_null()</code>���� <code>lept_parse()</code> ֻ���� <code>LEPT_PARSE_OK</code>��</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;Users&#x2F;miloyip&#x2F;github&#x2F;json-tutorial&#x2F;tutorial01&#x2F;test.c:27: expect: 0 actual: 1</span><br><span class="line">1&#x2F;2 (50.00%) passed</span><br></pre></td></tr></table></figure>
+
+<p>��һ������ <code>LEPT_PARSE_OK</code>��������ͨ���ġ��ڶ���������Ϊ <code>lept_parse()</code> û�а� <code>v.type</code> �ĳ� <code>LEPT_NULL</code>�����ʧ�ܡ�������ʵ�� <code>lept_parse()</code> �����ͨ�����ԡ�</p>
+<p>Ȼ������ȫ���� TDD �Ĳ������������ǻ�����������̡������Ҹ��˻��������ּ��˵Ĺ�����ʽȡƽ�⡣ͨ��������� API ����д���ֲ��Դ��룬��д������Щ���Ե�ʵ�֡�</p>
+<h2 id="6-��i�д����"><a href="#6-��i�д����" class="headerlink" title="6. ��ı�д����"></a>6. ��ı�д����</h2><p>��Щͬѧ���ܲ��˽� <code>EXPECT_EQ_BASE</code> ��ı�д���ɣ���˵��һ�¡���б�ߴ������δ�������ᴮ����һ�С�����������ж��һ����䣨statement��������Ҫ�� <code>do { /*...*/ } while(0)</code> �����ɵ�����䣬����������µ����⣺</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> M() a(); b()</span></span><br><span class="line"><span class="keyword">if</span> (cond)</span><br><span class="line">    M();</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    c();</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Ԥ����� */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (cond)</span><br><span class="line">    a(); b(); <span class="comment">/* b(); �� if ֮��     */</span></span><br><span class="line"><span class="keyword">else</span>          <span class="comment">/* &lt;- else ȱ����Ӧ if */</span></span><br><span class="line">    c();</span><br></pre></td></tr></table></figure>
+
+<p>ֻ�� <code>{ }</code> Ҳ���У�</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> M() &#123; a(); b(); &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Ԥ����� */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (cond)</span><br><span class="line">    &#123; a(); b(); &#125;; <span class="comment">/* ���ķֺŴ��� if ������ */</span></span><br><span class="line"><span class="keyword">else</span>               <span class="comment">/* else ȱ����Ӧ if */</span></span><br><span class="line">    c();</span><br></pre></td></tr></table></figure>
+
+<p>�� do while �����ˣ�</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> M() do &#123; a(); b(); &#125; while(0)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Ԥ����� */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (cond)</span><br><span class="line">    <span class="keyword">do</span> &#123; a(); b(); &#125; <span class="keyword">while</span>(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    c();</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-ʵ�ֽ�����"><a href="#7-ʵ�ֽ�����" class="headerlink" title="7. ʵ�ֽ�����"></a>7. ʵ�ֽ�����</h2><p>���� API ����ơ���Ԫ���ԣ�����Ҫʵ�ֽ������ˡ�</p>
+<p>����Ϊ�˼��ٽ�������֮�䴫�ݶ�����������ǰ���Щ���ݶ��Ž�һ�� <code>lept_context</code> �ṹ�壺</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span>* json;</span><br><span class="line">&#125;lept_context;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* ... */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* ��ʾ������Ӧ���� JSON-text = ws value ws */</span></span><br><span class="line"><span class="comment">/* ����ʵ��û�������� ws �� LEPT_PARSE_ROOT_NOT_SINGULAR */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">lept_parse</span><span class="params">(lept_value* v, <span class="keyword">const</span> <span class="keyword">char</span>* json)</span> </span>&#123;</span><br><span class="line">    lept_context c;</span><br><span class="line">    assert(v != <span class="literal">NULL</span>);</span><br><span class="line">    c.json = json;</span><br><span class="line">    v-&gt;type = LEPT_NULL;</span><br><span class="line">    lept_parse_whitespace(&amp;c);</span><br><span class="line">    <span class="keyword">return</span> lept_parse_value(&amp;c, v);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>��ʱ����ֻ���� json �ַ�����ǰλ�ã�֮��ĵ�Ԫ������Ҫ����������ݡ�</p>
+<p>�� <code>lept_parse()</code> ʧ�ܣ���� <code>v</code> ��Ϊ <code>null</code> ���ͣ����������Ȱ�����Ϊ <code>null</code>���� <code>lept_parse_value()</code> д����������ĸ�ֵ��</p>
+<p>leptjson ��һ����д�ĵݹ��½���������recursive descent parser�������� JSON �﷨�ر�򵥣����ǲ���Ҫд�ִ�����tokenizer����ֻ������һ���ַ��������֪�������������͵�ֵ��Ȼ�������صķ������������������� JSON �﷨�������հ׺�ֻ���⵱ǰ�ַ���</p>
+<ul>
+<li>n ? null</li>
+<li>t ? true</li>
+<li>f ? false</li>
+<li>“ ? string</li>
+<li>0-9/- ? number</li>
+<li>[ ? array</li>
+<li>{ ? object</li>
+</ul>
+<p>���ԣ����ǿ��԰��� JSON �﷨һ�ڵ� EBNF �򵥷���ɽ���������</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXPECT(c, ch) do &#123; assert(*c-&gt;json == (ch)); c-&gt;json++; &#125; while(0)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* ws = *(%x20 / %x09 / %x0A / %x0D) */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">lept_parse_whitespace</span><span class="params">(lept_context* c)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *p = c-&gt;json;</span><br><span class="line">    <span class="keyword">while</span> (*p == <span class="string">' '</span> || *p == <span class="string">'\t'</span> || *p == <span class="string">'\n'</span> || *p == <span class="string">'\r'</span>)</span><br><span class="line">        p++;</span><br><span class="line">    c-&gt;json = p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* null  = "null" */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">lept_parse_null</span><span class="params">(lept_context* c, lept_value* v)</span> </span>&#123;</span><br><span class="line">    EXPECT(c, <span class="string">'n'</span>);</span><br><span class="line">    <span class="keyword">if</span> (c-&gt;json[<span class="number">0</span>] != <span class="string">'u'</span> || c-&gt;json[<span class="number">1</span>] != <span class="string">'l'</span> || c-&gt;json[<span class="number">2</span>] != <span class="string">'l'</span>)</span><br><span class="line">        <span class="keyword">return</span> LEPT_PARSE_INVALID_VALUE;</span><br><span class="line">    c-&gt;json += <span class="number">3</span>;</span><br><span class="line">    v-&gt;type = LEPT_NULL;</span><br><span class="line">    <span class="keyword">return</span> LEPT_PARSE_OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* value = null / false / true */</span></span><br><span class="line"><span class="comment">/* ��ʾ���������û���� false / true����������ϰ֮һ */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">lept_parse_value</span><span class="params">(lept_context* c, lept_value* v)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (*c-&gt;json) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'n'</span>:  <span class="keyword">return</span> lept_parse_null(c, v);</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'\0'</span>: <span class="keyword">return</span> LEPT_PARSE_EXPECT_VALUE;</span><br><span class="line">        <span class="keyword">default</span>:   <span class="keyword">return</span> LEPT_PARSE_INVALID_VALUE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>���� <code>lept_parse_whitespace()</code> �ǲ�����ִ���ģ���������Ϊ <code>void</code>�������Ľ��������᷵�ش����룬���������㡣</p>
+<h2 id="8-���ڶ���"><a href="#8-���ڶ���" class="headerlink" title="8. ���ڶ���"></a>8. ���ڶ���</h2><p>���ԣ�assertion���� C �����г��õķ���ʽ��̷�ʽ�����ٱ�̴�����õ����ں�����ʼ�ĵط���������в�������ʱ��Ҳ�����ڵ��ú����󣬼���������Ƿ���ȷ��</p>
+<p>C ���Եı�׼�⺬�� <a href="https://en.cppreference.com/w/c/error/assert" target="_blank" rel="noopener"><code>assert()</code></a> ����꣨�� <code>#include &lt;assert.h&gt;</code>�����ṩ���Թ��ܡ��������� release ���ñ���ʱ�������� <code>NDEBUG</code> �꣩��<code>assert()</code> ��������⣻������ debug ����ʱ��û���� <code>NDEBUG</code> �꣩�����������ʱ��� <code>assert(cond)</code> �е������Ƿ�Ϊ�棨�� 0��������ʧ�ܻ�ֱ������������</p>
+<p>��������� <code>lept_parse_null()</code> ��ʼʱ����ǰ�ַ�Ӧ���� <code>&#39;n&#39;</code>����������ʹ��һ���� <code>EXPECT(c, ch)</code> ���ж��ԣ���������һ�ַ���</p>
+<p>��ʹ�ö��Ե�ͬѧ�����ܻ����ذѺ�<a href="https://en.wikipedia.org/wiki/Side_effect_(computer_science)" target="_blank" rel="noopener">������</a>�Ĵ������ <code>assert()</code> �У�</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">assert(x++ == <span class="number">0</span>); <span class="comment">/* ���Ǵ����! */</span></span><br></pre></td></tr></table></figure>
+
+<p>�����ᵼ�� debug �� release �����Ϊ��һ����</p>
+<p>��һ�������ǣ���ѧ�߿��ܻ����ڷֱ��ʱʹ�ö��ԣ���ʱ��������ʱ�����緵�ش���ֵ���� C++ ���׳��쳣�����򵥵Ĵ��ǣ�����Ǹ����������ڳ���Ա�����������ɵģ����紫�벻�Ϸ��Ĳ���������ôӦ�ö��ԣ�����Ǹ������ǳ���Ա�޷����⣬����������ʱ�Ļ�������ɵģ���Ҫ��������ʱ�������翪���ļ�ʧ�ܣ���</p>
+<h2 id="9-�ܽ�����ϰ"><a href="#9-�ܽ�����ϰ" class="headerlink" title="9. �ܽ�����ϰ"></a>9. �ܽ�����ϰ</h2><p>���Ľ������������һ����̻�������Ԫ���Ե���Ҫ�ԣ�������һ�� JSON ���������Ӽ�ʵ�֡��������������δ���֣�����������һ�¡������Ǳ���Ԫ����ϰ�������׵ģ�����Ҳ�����Ժ󷢳����ƪ��</p>
+<ol>
+<li>�������� <code>LEPT_PARSE_ROOT_NOT_SINGULAR</code> �ĵ�Ԫ���ԣ��� json ��һ��ֵ֮�󣬿հ�֮���������ַ�����Ҫ���� <code>LEPT_PARSE_ROOT_NOT_SINGULAR</code>��</li>
+<li>�ο� <code>test_parse_null()</code>������ <code>test_parse_true()</code>��<code>test_parse_false()</code> ��Ԫ���ԡ�</li>
+<li>�ο� <code>lept_parse_null()</code> ��ʵ�ֺ͵��÷������� true �� false ֵ��</li>
+</ol>
+<h2 id="10-�����ʴ�"><a href="#10-�����ʴ�" class="headerlink" title="10. �����ʴ�"></a>10. �����ʴ�</h2><ol>
+<li><p>Ϊʲô����������Ϊ leptjson��</p>
+<p>�����ڱ�׼ģ���е����ӣ�lepton������Ϊ�������� JSON �⡣���⣬������Ϊ��Ŀ����ʱ���� google һ���Ƿ񹻶��أ��кܶ�ͬ���Ļ���Ѱʱ�������С�</p>
+</li>
+<li><p>Ϊʲôʹ�ú�����ú���������������</p>
+<p>��Ϊ������Կ��ʹ���� <code>__LINE__</code> ����������ṩ�ĺ꣬�������ʱ���е��кš�����ú���������������ÿ�ε��кű㶼����ͬ�����⣬���������� C99 ���������ܣ����̳�ʹ�� C89��</p>
+</li>
+</ol>
+<p>���������ʴ𽫻������������</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/06/24/create-hexo/" data-id="ckbsb6ifq0000jwvp41kob4m6" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/06/24/hello-world/" class="article-date">
+  <time datetime="2020-06-23T18:58:44.346Z" itemprop="datePublished">2020-06-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/24/hello-world/">Hello World</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/06/24/hello-world/" data-id="ckbsamp9r0000osvpcm4y7db0" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/06/24/create-hexo/">create hexo</a>
+          </li>
+        
+          <li>
+            <a href="/2020/06/24/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
