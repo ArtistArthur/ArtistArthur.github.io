@@ -266,7 +266,7 @@ mark {
 }
 
 .bg-color {
-    background-image: linear-gradient(to right, #4cbf30 0%, #0f9d58 100%);
+    background-image: linear-gradient(to right, #161a15 0%, #121312 100%);
 }
 
 .text-color {
@@ -1326,7 +1326,7 @@ thead {
     box-shadow: 0 3px 5px rgba(0, 0, 0, .12);
     z-index: 0;
 }
-/*最上面的bark颜色*/
+/*最上面的bar颜色*/
 .chip-container .chip:hover {
     color: #fff;
     background: linear-gradient(to right, #0a0a0a 0%, #171a18 100%) !important;
