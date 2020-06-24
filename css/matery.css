@@ -1326,7 +1326,7 @@ thead {
     box-shadow: 0 3px 5px rgba(0, 0, 0, .12);
     z-index: 0;
 }
-
+/*最上面的bark颜色*/
 .chip-container .chip:hover {
     color: #fff;
     background: linear-gradient(to right, #0a0a0a 0%, #171a18 100%) !important;
