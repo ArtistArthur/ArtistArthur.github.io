@@ -498,24 +498,8 @@
 <h2 id="1-JSON-是什么"><a href="#1-JSON-是什么" class="headerlink" title="1. JSON 是什么"></a>1. JSON 是什么</h2><p>JSON（JavaScript Object Notation）是一个用于数据交换的文本格式，现时的标准为<a href="https://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf" target="_blank" rel="noopener">ECMA-404</a>。</p>
 <p>虽然 JSON 源至于 JavaScript 语言，但它只是一种数据格式，可用于任何编程语言。现时具类似功能的格式有 XML、YAML，当中以 JSON 的语法最为简单。</p>
 <p>例如，一个动态网页想从服务器获得数据时，服务器从数据库查找数据，然后把数据转换成 JSON 文本格式：</p>
-<pre><code class="js">{
-    &quot;title&quot;: &quot;Design Patterns&quot;,
-    &quot;subtitle&quot;: &quot;Elements of Reusable Object-Oriented Software&quot;,
-    &quot;author&quot;: [
-        &quot;Erich Gamma&quot;,
-        &quot;Richard Helm&quot;,
-        &quot;Ralph Johnson&quot;,
-        &quot;John Vlissides&quot;
-    ],
-    &quot;year&quot;: 2009,
-    &quot;weight&quot;: 1.8,
-    &quot;hardcover&quot;: true,
-    &quot;publisher&quot;: {
-        &quot;Company&quot;: &quot;Pearson Education&quot;,
-        &quot;Country&quot;: &quot;India&quot;
-    },
-    &quot;website&quot;: null
-}</code></pre>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">    <span class="string">"title"</span>: <span class="string">"Design Patterns"</span>,</span><br><span class="line">    <span class="string">"subtitle"</span>: <span class="string">"Elements of Reusable Object-Oriented Software"</span>,</span><br><span class="line">    <span class="string">"author"</span>: [</span><br><span class="line">        <span class="string">"Erich Gamma"</span>,</span><br><span class="line">        <span class="string">"Richard Helm"</span>,</span><br><span class="line">        <span class="string">"Ralph Johnson"</span>,</span><br><span class="line">        <span class="string">"John Vlissides"</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="string">"year"</span>: <span class="number">2009</span>,</span><br><span class="line">    <span class="string">"weight"</span>: <span class="number">1.8</span>,</span><br><span class="line">    <span class="string">"hardcover"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">"publisher"</span>: {</span><br><span class="line">        <span class="string">"Company"</span>: <span class="string">"Pearson Education"</span>,</span><br><span class="line">        <span class="string">"Country"</span>: <span class="string">"India"</span></span><br><span class="line">    },</span><br><span class="line">    <span class="string">"website"</span>: <span class="literal">null</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
 <p>网页的脚本代码就可以把此 JSON 文本解析为内部的数据结构去使用。</p>
 <p>从此例子可看出，JSON 是树状结构，而 JSON 只包含 6 种数据类型：</p>
 <ul>
@@ -548,58 +532,48 @@
 <p>先在 “Where is the source code” 选择 json-tutorial/tutorial01，再在 “Where to build the binary” 键入上一个目录加上 /build。</p>
 <p>按 Configure，选择编译器，然后按 Generate 便会生成 Visual Studio 的 .sln 和 .vcproj 等文件。注意这个 build 目录都是生成的文件，可以随时删除，也不用上传至仓库。</p>
 <p>在 OS X 下，建议安装 <a href="https://brew.sh/" target="_blank" rel="noopener">Homebrew</a>，然后在命令行键入：</p>
-<pre><code>$ brew install cmake
-$ cd github/json-tutorial/tutorial01
-$ mkdir build
-$ cd build
-$ cmake -DCMAKE_BUILD_TYPE=Debug ..
-$ make</code></pre><p>这样会使用 GNU make 来生成项目，把 Debug 改成 Release 就会生成 Release 配置的 makefile。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> brew install cmake</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> github/json-tutorial/tutorial01</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mkdir build</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> build</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cmake -DCMAKE_BUILD_TYPE=Debug ..</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> make</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>这样会使用 GNU make 来生成项目，把 Debug 改成 Release 就会生成 Release 配置的 makefile。</p>
 <p>若你喜欢的话，CMake 也可以生成 Xcode 项目：</p>
-<pre><code>$ cmake -G Xcode ..
-$ open leptjson_test.xcodeproj</code></pre><p>而在 Ubuntu 下，可使用 <code>apt-get</code> 来安装：</p>
-<pre><code>$ apt-get install cmake</code></pre><p>无论使用什么平台及编译环境，编译运行后会出现：</p>
-<pre><code>$ ./leptjson_test
-/Users/miloyip/github/json-tutorial/tutorial01/test.c:56: expect: 3 actual: 0
-11/12 (91.67%) passed</code></pre><p>若看到类似以上的结果，说明已成功搭建编译环境，我们可以去看看那几个代码文件的内容了。</p>
+<figure class="highlight elixir"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>cmake -G Xcode ..</span><br><span class="line"><span class="variable">$ </span>open leptjson_test.xcodeproj</span><br></pre></td></tr></tbody></table></figure>
+
+<p>而在 Ubuntu 下，可使用 <code>apt-get</code> 来安装：</p>
+<figure class="highlight routeros"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ apt-<span class="builtin-name">get</span> install cmake</span><br></pre></td></tr></tbody></table></figure>
+
+<p>无论使用什么平台及编译环境，编译运行后会出现：</p>
+<figure class="highlight angelscript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ ./leptjson_test</span><br><span class="line">/Users/miloyip/github/json-tutorial/tutorial01/test.c:<span class="number">56</span>: expect: <span class="number">3</span> actual: <span class="number">0</span></span><br><span class="line"><span class="number">11</span>/<span class="number">12</span> (<span class="number">91.67</span>%) passed</span><br></pre></td></tr></tbody></table></figure>
+
+<p>若看到类似以上的结果，说明已成功搭建编译环境，我们可以去看看那几个代码文件的内容了。</p>
 <h2 id="3-头文件与-API-设计"><a href="#3-头文件与-API-设计" class="headerlink" title="3. 头文件与 API 设计"></a>3. 头文件与 API 设计</h2><p>C 语言有头文件的概念，需要使用 <code>#include</code>去引入头文件中的类型声明和函数声明。但由于头文件也可以 <code>#include</code> 其他头文件，为避免重复声明，通常会利用宏加入 include 防范（include guard）：</p>
-<pre><code class="c">#ifndef LEPTJSON_H__
-#define LEPTJSON_H__
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> LEPTJSON_H__</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LEPTJSON_H__</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* ... */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* LEPTJSON_H__ */</span></span></span><br></pre></td></tr></tbody></table></figure>
 
-/* ... */
-
-#endif /* LEPTJSON_H__ */</code></pre>
 <p>宏的名字必须是唯一的，通常习惯以 <code>_H__</code> 作为后缀。由于 leptjson 只有一个头文件，可以简单命名为 <code>LEPTJSON_H__</code>。如果项目有多个文件或目录结构，可以用 <code>项目名称_目录_文件名称_H__</code> 这种命名方式。</p>
 <p>如前所述，JSON 中有 6 种数据类型，如果把 true 和 false 当作两个类型就是 7 种，我们为此声明一个枚举类型（enumeration type）：</p>
-<pre><code class="c">typedef enum { LEPT_NULL, LEPT_FALSE, LEPT_TRUE, LEPT_NUMBER, LEPT_STRING, LEPT_ARRAY, LEPT_OBJECT } lept_type;</code></pre>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span> { LEPT_NULL, LEPT_FALSE, LEPT_TRUE, LEPT_NUMBER, LEPT_STRING, LEPT_ARRAY, LEPT_OBJECT } lept_type;</span><br></pre></td></tr></tbody></table></figure>
+
 <p>因为 C 语言没有 C++ 的命名空间（namespace）功能，一般会使用项目的简写作为标识符的前缀。通常枚举值用全大写（如 <code>LEPT_NULL</code>），而类型及函数则用小写（如 <code>lept_type</code>）。</p>
 <p>接下来，我们声明 JSON 的数据结构。JSON 是一个树形结构，我们最终需要实现一个树的数据结构，每个节点使用 <code>lept_value</code> 结构体表示，我们会称它为一个 JSON 值（JSON value）。<br>在此单元中，我们只需要实现 null, true 和 false 的解析，因此该结构体只需要存储一个 lept_type。之后的单元会逐步加入其他数据。</p>
-<pre><code class="c">typedef struct {
-    lept_type type;
-}lept_value;</code></pre>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> {</span></span><br><span class="line">    lept_type type;</span><br><span class="line">}lept_value;</span><br></pre></td></tr></tbody></table></figure>
+
 <p>C 语言的结构体是以 <code>struct X {}</code> 形式声明的，定义变量时也要写成 <code>struct X x;</code>。为方便使用，上面的代码使用了 <code>typedef</code>。</p>
 <p>然后，我们现在只需要两个 API 函数，一个是解析 JSON：</p>
-<pre><code class="c">int lept_parse(lept_value* v, const char* json);</code></pre>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">lept_parse</span><span class="params">(lept_value* v, <span class="keyword">const</span> <span class="keyword">char</span>* json)</span></span>;</span><br></pre></td></tr></tbody></table></figure>
+
 <p>传入的 JSON 文本是一个 C 字符串（空结尾字符串／null-terminated string），由于我们不应该改动这个输入字符串，所以使用 <code>const char*</code> 类型。</p>
 <p>另一注意点是，传入的根节点指针 v 是由使用方负责分配的，所以一般用法是：</p>
-<pre><code class="c">lept_value v;
-const char json[] = ...;
-int ret = lept_parse(&amp;v, json);</code></pre>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lept_value v;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> json[] = ...;</span><br><span class="line"><span class="keyword">int</span> ret = lept_parse(&amp;v, json);</span><br></pre></td></tr></tbody></table></figure>
+
 <p>返回值是以下这些枚举值，无错误会返回 <code>LEPT_PARSE_OK</code>，其他值在下节解释。</p>
-<pre><code class="c">enum {
-    LEPT_PARSE_OK = 0,
-    LEPT_PARSE_EXPECT_VALUE,
-    LEPT_PARSE_INVALID_VALUE,
-    LEPT_PARSE_ROOT_NOT_SINGULAR
-};</code></pre>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> {</span><br><span class="line">    LEPT_PARSE_OK = <span class="number">0</span>,</span><br><span class="line">    LEPT_PARSE_EXPECT_VALUE,</span><br><span class="line">    LEPT_PARSE_INVALID_VALUE,</span><br><span class="line">    LEPT_PARSE_ROOT_NOT_SINGULAR</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+
 <p>现时我们只需要一个访问结果的函数，就是获取其类型：</p>
-<pre><code class="c">lept_type lept_get_type(const lept_value* v);</code></pre>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">lept_type <span class="title">lept_get_type</span><span class="params">(<span class="keyword">const</span> lept_value* v)</span></span>;</span><br></pre></td></tr></tbody></table></figure>
+
 <h2 id="4-JSON-语法子集"><a href="#4-JSON-语法子集" class="headerlink" title="4. JSON 语法子集"></a>4. JSON 语法子集</h2><p>下面是此单元的 JSON 语法子集，使用 <a href="https://tools.ietf.org/html/rfc7159" target="_blank" rel="noopener">RFC7159</a> 中的 <a href="https://tools.ietf.org/html/rfc5234" target="_blank" rel="noopener">ABNF</a> 表示：</p>
-<pre><code>JSON-text = ws value ws
-ws = *(%x20 / %x09 / %x0A / %x0D)
-value = null / false / true 
-null  = &quot;null&quot;
-false = &quot;false&quot;
-true  = &quot;true&quot;</code></pre><p>当中 <code>%xhh</code> 表示以 16 进制表示的字符，<code>/</code> 是多选一，<code>*</code> 是零或多个，<code>()</code> 用于分组。</p>
+<figure class="highlight ini"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">JSON-text</span> = ws value ws</span><br><span class="line"><span class="attr">ws</span> = *(%x20 / %x09 / %x0A / %x0D)</span><br><span class="line"><span class="attr">value</span> = null / <span class="literal">false</span> / <span class="literal">true</span> </span><br><span class="line"><span class="attr">null</span>  = <span class="string">"null"</span></span><br><span class="line"><span class="attr">false</span> = <span class="string">"false"</span></span><br><span class="line"><span class="attr">true</span>  = <span class="string">"true"</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>当中 <code>%xhh</code> 表示以 16 进制表示的字符，<code>/</code> 是多选一，<code>*</code> 是零或多个，<code>()</code> 用于分组。</p>
 <p>那么第一行的意思是，JSON 文本由 3 部分组成，首先是空白（whitespace），接着是一个值，最后是空白。</p>
 <p>第二行告诉我们，所谓空白，是由零或多个空格符（space U+0020）、制表符（tab U+0009）、换行符（LF U+000A）、回车符（CR U+000D）所组成。</p>
 <p>第三行是说，我们现时的值只可以是 null、false 或 true，它们分别有对应的字面值（literal）。</p>
@@ -624,100 +598,26 @@ true  = &quot;true&quot;</code></pre><p>当中 <code>%xhh</code> 表示以 16 �
 <p>TDD 是先写测试，再实现功能。好处是实现只会刚好满足测试，而不会写了一些不需要的代码，或是没有被测试的代码。</p>
 <p>但无论我们是采用 TDD，或是先实现后测试，都应尽量加入足够覆盖率的单元测试。</p>
 <p>回到 leptjson 项目，<code>test.c</code> 包含了一个极简的单元测试框架：</p>
-<pre><code class="c">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;string.h&gt;
-#include &quot;leptjson.h&quot;
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"leptjson.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> main_ret = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> test_count = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> test_pass = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXPECT_EQ_BASE(equality, expect, actual, format) \</span></span><br><span class="line">    <span class="keyword">do</span> {\</span><br><span class="line">        test_count++;\</span><br><span class="line">        <span class="keyword">if</span> (equality)\</span><br><span class="line">            test_pass++;\</span><br><span class="line">        <span class="keyword">else</span> {\</span><br><span class="line">            <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"%s:%d: expect: "</span> format <span class="string">" actual: "</span> format <span class="string">"\n"</span>, __FILE__, __LINE__, expect, actual);\</span><br><span class="line">            main_ret = <span class="number">1</span>;\</span><br><span class="line">        }\</span><br><span class="line">    } <span class="keyword">while</span>(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXPECT_EQ_INT(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, <span class="meta-string">"%d"</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">test_parse_null</span><span class="params">()</span> </span>{</span><br><span class="line">    lept_value v;</span><br><span class="line">    v.type = LEPT_TRUE;</span><br><span class="line">    EXPECT_EQ_INT(LEPT_PARSE_OK, lept_parse(&amp;v, <span class="string">"null"</span>));</span><br><span class="line">    EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&amp;v));</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">/* ... */</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">test_parse</span><span class="params">()</span> </span>{</span><br><span class="line">    test_parse_null();</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>{</span><br><span class="line">    test_parse();</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%d/%d (%3.2f%%) passed\n"</span>, test_pass, test_count, test_pass * <span class="number">100.0</span> / test_count);</span><br><span class="line">    <span class="keyword">return</span> main_ret;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
-static int main_ret = 0;
-static int test_count = 0;
-static int test_pass = 0;
-
-#define EXPECT_EQ_BASE(equality, expect, actual, format) \
-    do {\
-        test_count++;\
-        if (equality)\
-            test_pass++;\
-        else {\
-            fprintf(stderr, &quot;%s:%d: expect: &quot; format &quot; actual: &quot; format &quot;\n&quot;, __FILE__, __LINE__, expect, actual);\
-            main_ret = 1;\
-        }\
-    } while(0)
-
-#define EXPECT_EQ_INT(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, &quot;%d&quot;)
-
-static void test_parse_null() {
-    lept_value v;
-    v.type = LEPT_TRUE;
-    EXPECT_EQ_INT(LEPT_PARSE_OK, lept_parse(&amp;v, &quot;null&quot;));
-    EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&amp;v));
-}
-
-/* ... */
-
-static void test_parse() {
-    test_parse_null();
-    /* ... */
-}
-
-int main() {
-    test_parse();
-    printf(&quot;%d/%d (%3.2f%%) passed\n&quot;, test_pass, test_count, test_pass * 100.0 / test_count);
-    return main_ret;
-}</code></pre>
 <p>现时只提供了一个 <code>EXPECT_EQ_INT(expect, actual)</code> 的宏，每次使用这个宏时，如果 expect != actual（预期值不等于实际值），便会输出错误信息。<br>若按照 TDD 的步骤，我们先写一个测试，如上面的 <code>test_parse_null()</code>，而 <code>lept_parse()</code> 只返回 <code>LEPT_PARSE_OK</code>：</p>
-<pre><code>/Users/miloyip/github/json-tutorial/tutorial01/test.c:27: expect: 0 actual: 1
-1/2 (50.00%) passed</code></pre><p>第一个返回 <code>LEPT_PARSE_OK</code>，所以是通过的。第二个测试因为 <code>lept_parse()</code> 没有把 <code>v.type</code> 改成 <code>LEPT_NULL</code>，造成失败。我们再实现 <code>lept_parse()</code> 令到它能通过测试。</p>
+<figure class="highlight angelscript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/Users/miloyip/github/json-tutorial/tutorial01/test.c:<span class="number">27</span>: expect: <span class="number">0</span> actual: <span class="number">1</span></span><br><span class="line"><span class="number">1</span>/<span class="number">2</span> (<span class="number">50.00</span>%) passed</span><br></pre></td></tr></tbody></table></figure>
+
+<p>第一个返回 <code>LEPT_PARSE_OK</code>，所以是通过的。第二个测试因为 <code>lept_parse()</code> 没有把 <code>v.type</code> 改成 <code>LEPT_NULL</code>，造成失败。我们再实现 <code>lept_parse()</code> 令到它能通过测试。</p>
 <p>然而，完全按照 TDD 的步骤来开发，是会减慢开发进程。所以我个人会在这两种极端的工作方式取平衡。通常会在设计 API 后，先写部分测试代码，再写满足那些测试的实现。</p>
 <h2 id="6-宏的编写技巧"><a href="#6-宏的编写技巧" class="headerlink" title="6. 宏的编写技巧"></a>6. 宏的编写技巧</h2><p>有些同学可能不了解 <code>EXPECT_EQ_BASE</code> 宏的编写技巧，简单说明一下。反斜线代表该行未结束，会串接下一行。而如果宏里有多过一个语句（statement），就需要用 <code>do { /*...*/ } while(0)</code> 包裹成单个语句，否则会有如下的问题：</p>
-<pre><code class="c">#define M() a(); b()
-if (cond)
-    M();
-else
-    c();
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> M() a(); b()</span></span><br><span class="line"><span class="keyword">if</span> (cond)</span><br><span class="line">    M();</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    c();</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 预处理后 */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (cond)</span><br><span class="line">    a(); b(); <span class="comment">/* b(); 在 if 之外     */</span></span><br><span class="line"><span class="keyword">else</span>          <span class="comment">/* &lt;- else 缺乏对应 if */</span></span><br><span class="line">    c();</span><br></pre></td></tr></tbody></table></figure>
 
-/* 预处理后 */
-
-if (cond)
-    a(); b(); /* b(); 在 if 之外     */
-else          /* &lt;- else 缺乏对应 if */
-    c();</code></pre>
 <p>只用 <code>{ }</code> 也不行：</p>
-<pre><code class="c">#define M() { a(); b(); }
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> M() { a(); b(); }</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 预处理后 */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (cond)</span><br><span class="line">    { a(); b(); }; <span class="comment">/* 最后的分号代表 if 语句结束 */</span></span><br><span class="line"><span class="keyword">else</span>               <span class="comment">/* else 缺乏对应 if */</span></span><br><span class="line">    c();</span><br></pre></td></tr></tbody></table></figure>
 
-/* 预处理后 */
-
-if (cond)
-    { a(); b(); }; /* 最后的分号代表 if 语句结束 */
-else               /* else 缺乏对应 if */
-    c();</code></pre>
 <p>用 do while 就行了：</p>
-<pre><code class="c">#define M() do { a(); b(); } while(0)
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> M() do { a(); b(); } while(0)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 预处理后 */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (cond)</span><br><span class="line">    <span class="keyword">do</span> { a(); b(); } <span class="keyword">while</span>(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    c();</span><br></pre></td></tr></tbody></table></figure>
 
-/* 预处理后 */
-
-if (cond)
-    do { a(); b(); } while(0);
-else
-    c();</code></pre>
 <h2 id="7-实现解析器"><a href="#7-实现解析器" class="headerlink" title="7. 实现解析器"></a>7. 实现解析器</h2><p>有了 API 的设计、单元测试，终于要实现解析器了。</p>
 <p>首先为了减少解析函数之间传递多个参数，我们把这些数据都放进一个 <code>lept_context</code> 结构体：</p>
-<pre><code class="c">typedef struct {
-    const char* json;
-}lept_context;
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> {</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span>* json;</span><br><span class="line">}lept_context;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* ... */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 提示：这里应该是 JSON-text = ws value ws */</span></span><br><span class="line"><span class="comment">/* 以下实现没处理最后的 ws 和 LEPT_PARSE_ROOT_NOT_SINGULAR */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">lept_parse</span><span class="params">(lept_value* v, <span class="keyword">const</span> <span class="keyword">char</span>* json)</span> </span>{</span><br><span class="line">    lept_context c;</span><br><span class="line">    assert(v != <span class="literal">NULL</span>);</span><br><span class="line">    c.json = json;</span><br><span class="line">    v-&gt;type = LEPT_NULL;</span><br><span class="line">    lept_parse_whitespace(&amp;c);</span><br><span class="line">    <span class="keyword">return</span> lept_parse_value(&amp;c, v);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
-/* ... */
-
-/* 提示：这里应该是 JSON-text = ws value ws */
-/* 以下实现没处理最后的 ws 和 LEPT_PARSE_ROOT_NOT_SINGULAR */
-int lept_parse(lept_value* v, const char* json) {
-    lept_context c;
-    assert(v != NULL);
-    c.json = json;
-    v-&gt;type = LEPT_NULL;
-    lept_parse_whitespace(&amp;c);
-    return lept_parse_value(&amp;c, v);
-}</code></pre>
 <p>暂时我们只储存 json 字符串当前位置，之后的单元我们需要加入更多内容。</p>
 <p>若 <code>lept_parse()</code> 失败，会把 <code>v</code> 设为 <code>null</code> 类型，所以这里先把它设为 <code>null</code>，让 <code>lept_parse_value()</code> 写入解析出来的根值。</p>
 <p>leptjson 是一个手写的递归下降解析器（recursive descent parser）。由于 JSON 语法特别简单，我们不需要写分词器（tokenizer），只需检测下一个字符，便可以知道它是哪种类型的值，然后调用相关的分析函数。对于完整的 JSON 语法，跳过空白后，只需检测当前字符：</p>
@@ -731,41 +631,15 @@ int lept_parse(lept_value* v, const char* json) {
 <li>{ ➔ object</li>
 </ul>
 <p>所以，我们可以按照 JSON 语法一节的 EBNF 简单翻译成解析函数：</p>
-<pre><code class="c">#define EXPECT(c, ch) do { assert(*c-&gt;json == (ch)); c-&gt;json++; } while(0)
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXPECT(c, ch) do { assert(*c-&gt;json == (ch)); c-&gt;json++; } while(0)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* ws = *(%x20 / %x09 / %x0A / %x0D) */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">lept_parse_whitespace</span><span class="params">(lept_context* c)</span> </span>{</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *p = c-&gt;json;</span><br><span class="line">    <span class="keyword">while</span> (*p == <span class="string">' '</span> || *p == <span class="string">'\t'</span> || *p == <span class="string">'\n'</span> || *p == <span class="string">'\r'</span>)</span><br><span class="line">        p++;</span><br><span class="line">    c-&gt;json = p;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">/* null  = "null" */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">lept_parse_null</span><span class="params">(lept_context* c, lept_value* v)</span> </span>{</span><br><span class="line">    EXPECT(c, <span class="string">'n'</span>);</span><br><span class="line">    <span class="keyword">if</span> (c-&gt;json[<span class="number">0</span>] != <span class="string">'u'</span> || c-&gt;json[<span class="number">1</span>] != <span class="string">'l'</span> || c-&gt;json[<span class="number">2</span>] != <span class="string">'l'</span>)</span><br><span class="line">        <span class="keyword">return</span> LEPT_PARSE_INVALID_VALUE;</span><br><span class="line">    c-&gt;json += <span class="number">3</span>;</span><br><span class="line">    v-&gt;type = LEPT_NULL;</span><br><span class="line">    <span class="keyword">return</span> LEPT_PARSE_OK;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">/* value = null / false / true */</span></span><br><span class="line"><span class="comment">/* 提示：下面代码没处理 false / true，将会是练习之一 */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">lept_parse_value</span><span class="params">(lept_context* c, lept_value* v)</span> </span>{</span><br><span class="line">    <span class="keyword">switch</span> (*c-&gt;json) {</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'n'</span>:  <span class="keyword">return</span> lept_parse_null(c, v);</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'\0'</span>: <span class="keyword">return</span> LEPT_PARSE_EXPECT_VALUE;</span><br><span class="line">        <span class="keyword">default</span>:   <span class="keyword">return</span> LEPT_PARSE_INVALID_VALUE;</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
-/* ws = *(%x20 / %x09 / %x0A / %x0D) */
-static void lept_parse_whitespace(lept_context* c) {
-    const char *p = c-&gt;json;
-    while (*p == &#39; &#39; || *p == &#39;\t&#39; || *p == &#39;\n&#39; || *p == &#39;\r&#39;)
-        p++;
-    c-&gt;json = p;
-}
-
-/* null  = &quot;null&quot; */
-static int lept_parse_null(lept_context* c, lept_value* v) {
-    EXPECT(c, &#39;n&#39;);
-    if (c-&gt;json[0] != &#39;u&#39; || c-&gt;json[1] != &#39;l&#39; || c-&gt;json[2] != &#39;l&#39;)
-        return LEPT_PARSE_INVALID_VALUE;
-    c-&gt;json += 3;
-    v-&gt;type = LEPT_NULL;
-    return LEPT_PARSE_OK;
-}
-
-/* value = null / false / true */
-/* 提示：下面代码没处理 false / true，将会是练习之一 */
-static int lept_parse_value(lept_context* c, lept_value* v) {
-    switch (*c-&gt;json) {
-        case &#39;n&#39;:  return lept_parse_null(c, v);
-        case &#39;\0&#39;: return LEPT_PARSE_EXPECT_VALUE;
-        default:   return LEPT_PARSE_INVALID_VALUE;
-    }
-}</code></pre>
 <p>由于 <code>lept_parse_whitespace()</code> 是不会出现错误的，返回类型为 <code>void</code>。其它的解析函数会返回错误码，传递至顶层。</p>
 <h2 id="8-关于断言"><a href="#8-关于断言" class="headerlink" title="8. 关于断言"></a>8. 关于断言</h2><p>断言（assertion）是 C 语言中常用的防御式编程方式，减少编程错误。最常用的是在函数开始的地方，检测所有参数。有时候也可以在调用函数后，检查上下文是否正确。</p>
 <p>C 语言的标准库含有 <a href="https://en.cppreference.com/w/c/error/assert" target="_blank" rel="noopener"><code>assert()</code></a> 这个宏（需 <code>#include &lt;assert.h&gt;</code>），提供断言功能。当程序以 release 配置编译时（定义了 <code>NDEBUG</code> 宏），<code>assert()</code> 不会做检测；而当在 debug 配置时（没定义 <code>NDEBUG</code> 宏），则会在运行时检测 <code>assert(cond)</code> 中的条件是否为真（非 0），断言失败会直接令程序崩溃。</p>
-<p>例如上面的 <code>lept_parse_null()</code> 开始时，当前字符应该是 <code>&#39;n&#39;</code>，所以我们使用一个宏 <code>EXPECT(c, ch)</code> 进行断言，并跳到下一字符。</p>
+<p>例如上面的 <code>lept_parse_null()</code> 开始时，当前字符应该是 <code>'n'</code>，所以我们使用一个宏 <code>EXPECT(c, ch)</code> 进行断言，并跳到下一字符。</p>
 <p>初使用断言的同学，可能会错误地把含<a href="https://en.wikipedia.org/wiki/Side_effect_(computer_science)" target="_blank" rel="noopener">副作用</a>的代码放在 <code>assert()</code> 中：</p>
-<pre><code class="c">assert(x++ == 0); /* 这是错误的! */</code></pre>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">assert(x++ == <span class="number">0</span>); <span class="comment">/* 这是错误的! */</span></span><br></pre></td></tr></tbody></table></figure>
+
 <p>这样会导致 debug 和 release 版的行为不一样。</p>
 <p>另一个问题是，初学者可能会难于分辨何时使用断言，何时处理运行时错误（如返回错误值或在 C++ 中抛出异常）。简单的答案是，如果那个错误是由于程序员错误编码所造成的（例如传入不合法的参数），那么应用断言；如果那个错误是程序员无法避免，而是由运行时的环境所造成的，就要处理运行时错误（例如开启文件失败）。</p>
 <h2 id="9-总结与练习"><a href="#9-总结与练习" class="headerlink" title="9. 总结与练习"></a>9. 总结与练习</h2><p>本文介绍了如何配置一个编程环境，单元测试的重要性，以至于一个 JSON 解析器的子集实现。如果你读到这里，还未动手，建议你快点试一下。以下是本单元的练习，很容易的，但我也会在稍后发出解答篇。</p>
@@ -783,7 +657,25 @@ static int lept_parse_value(lept_context* c, lept_value* v) {
 </li>
 </ol>
 <p>其他常见问答将会从评论中整理。</p>
-
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
             </div>
             <hr/>
 
@@ -1028,6 +920,9 @@ static int lept_parse_value(lept_context* c, lept_value* v) {
                     <div class="summary block-with-text">
                         
                             
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return
                         
                     </div>
                     <div class="publish-info">
@@ -1236,7 +1131,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">4.1k</span>&nbsp;字
+                class="white-color">4.2k</span>&nbsp;字
             
             
             
