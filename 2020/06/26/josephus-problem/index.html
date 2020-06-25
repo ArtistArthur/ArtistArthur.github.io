@@ -452,7 +452,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    516
+                    552
                 </div>
                 
 
@@ -483,8 +483,10 @@
 <li>$J(n,k)$表示人数为n，报数节点为k，最后剩下的人的编号。</li>
 <li>对于$J(n,k)$,可以转换成 $J(n-1,k)$</li>
 <li>当人数为$n$时，进行第一次报数，第$k$个人退出，此时剩余$n-1$个人。</li>
-<li>若重新排号，第$k+1$个人为1号，那么此时问题为 $J(n-1,k)$,而此时求出的结果的编号是人数为$n-1$并且重新排号的情况，$J(n,k)$与$J(n-1,k)$编号的关系为 $J(n,k)=(J(n-1,k)+k)\%n$ (自行体会)。  </li>
+<li>若重新排号，第$k+1$个人为1号，那么此时问题为 $J(n-1,k)$,而此时求出的结果的编号是人数为$n-1$并且重新排号的情况，$J(n,k)$与$J(n-1,k)$编号的关系为 $J(n,k)=(J(n-1,k)+k)\%n$ (自行体会)。</li>
 </ul>
+<p>//注意事项：重新编号应该从0开始，最后要和题目的编号方式比较再输出。</p>
+<p><a href="http://bailian.openjudge.cn/practice/2746/" target="_blank" rel="noopener">百练题目地址</a></p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
