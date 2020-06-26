@@ -124,7 +124,7 @@ live2d:
 prism_plugin:
   mode: 'preprocess'    # realtime/preprocess
   theme: 'tomorrow'
-  line_number: true    # default false
+  line_number: true   # default false
   custom_css:
 search:
   path: search.xml
