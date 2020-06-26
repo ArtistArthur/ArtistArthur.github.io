@@ -112,7 +112,7 @@ blockquote {
 }
 
 pre {
-    padding: 1.5rem 1.5rem 1.5rem 3.3rem !important;
+    padding: 2.5rem 1.5rem 1.5rem 1.5rem !important;
     margin: 1rem 0 !important;
     background: #272822;
     overflow: auto;
@@ -138,7 +138,7 @@ code {
     padding: 1px 5px;
     top: 13px !important;
     font-family: Inconsolata, Monaco, Consolas, 'Courier New', Courier, monospace;
-    /*font-size: 0.91rem;*/
+    font-size: 0.91rem;
     color: #e96900;
     background-color: #f8f8f8;
     border-radius: 2px;
@@ -266,7 +266,7 @@ mark {
 }
 
 .bg-color {
-    background-image: linear-gradient(to right, #161a15 0%, #121312 100%);
+    background-image: linear-gradient(to right, #4cbf30 0%, #0f9d58 100%);
 }
 
 .text-color {
@@ -576,11 +576,11 @@ header .go-back i {
     height: 40vh !important;
 }
 
-/*.bg-cover:after {
+.bg-cover:after {
     -webkit-animation: rainbow 60s infinite;
     animation: rainbow 60s infinite;
 }
-*/
+
 .bg-cover:before,
 .bg-cover:after {
     position: absolute;
@@ -1326,10 +1326,10 @@ thead {
     box-shadow: 0 3px 5px rgba(0, 0, 0, .12);
     z-index: 0;
 }
-/*最上面的bar颜色*/
+
 .chip-container .chip:hover {
     color: #fff;
-    background: linear-gradient(to right, #0a0a0a 0%, #171a18 100%) !important;
+    background: linear-gradient(to right, #4cbf30 0%, #0f9d58 100%) !important;
 }
 
 .chip .tag-length {
