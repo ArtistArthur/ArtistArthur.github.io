@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="typora-vue-theme主题介绍, math">
+    <meta name="keywords" content="create-hexo, math">
     <meta name="description" content="北京航空航天大学 | 数学">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>typora-vue-theme主题介绍 | Arthur</title>
+    <title>create-hexo | Arthur</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -314,7 +314,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">typora-vue-theme主题介绍</h1>
+                    <h1 class="description center-align post-title">create-hexo</h1>
                 </div>
             </div>
         </div>
@@ -336,27 +336,18 @@
                     
                     <div class="article-tag">
                         
-                            <a href="tags/Typora/">
-                                <span class="chip bg-color">Typora</span>
+                            <a href="tags/json/">
+                                <span class="chip bg-color">json</span>
                             </a>
                         
-                            <a href="tags/Markdown/">
-                                <span class="chip bg-color">Markdown</span>
+                            <a href="tags/C/">
+                                <span class="chip bg-color">C</span>
                             </a>
                         
                     </div>
                     
                 </div>
                 <div class="col s5 right-align">
-                    
-                    <div class="post-cate">
-                        <i class="fas fa-bookmark fa-fw icon-category"></i>
-                        
-                            <a href="categories/Markdown/" class="post-category">
-                                Markdown
-                            </a>
-                        
-                    </div>
                     
                 </div>
             </div>
@@ -519,9 +510,9 @@ $ open leptjson_test.xcodeproj</code></pre><p>而在 Ubuntu 下，可使用 <cod
 <pre><code>JSON-text = ws value ws
 ws = *(%x20 / %x09 / %x0A / %x0D)
 value = null / false / true 
-null  = "null"
-false = "false"
-true  = "true"</code></pre><p>当中 <code>%xhh</code> 表示以 16 进制表示的字符，<code>/</code> 是多选一，<code>*</code> 是零或多个，<code>()</code> 用于分组。</p>
+null  = &quot;null&quot;
+false = &quot;false&quot;
+true  = &quot;true&quot;</code></pre><p>当中 <code>%xhh</code> 表示以 16 进制表示的字符，<code>/</code> 是多选一，<code>*</code> 是零或多个，<code>()</code> 用于分组。</p>
 <p>那么第一行的意思是，JSON 文本由 3 部分组成，首先是空白（whitespace），接着是一个值，最后是空白。</p>
 <p>第二行告诉我们，所谓空白，是由零或多个空格符（space U+0020）、制表符（tab U+0009）、换行符（LF U+000A）、回车符（CR U+000D）所组成。</p>
 <p>第三行是说，我们现时的值只可以是 null、false 或 true，它们分别有对应的字面值（literal）。</p>
@@ -685,7 +676,7 @@ true  = "true"</code></pre><p>当中 <code>%xhh</code> 表示以 16 进制表示
 <p>由于 <code>lept_parse_whitespace()</code> 是不会出现错误的，返回类型为 <code>void</code>。其它的解析函数会返回错误码，传递至顶层。</p>
 <h2 id="8-关于断言"><a href="#8-关于断言" class="headerlink" title="8. 关于断言"></a>8. 关于断言</h2><p>断言（assertion）是 C 语言中常用的防御式编程方式，减少编程错误。最常用的是在函数开始的地方，检测所有参数。有时候也可以在调用函数后，检查上下文是否正确。</p>
 <p>C 语言的标准库含有 <a href="https://en.cppreference.com/w/c/error/assert" target="_blank" rel="noopener"><code>assert()</code></a> 这个宏（需 <code>#include &lt;assert.h&gt;</code>），提供断言功能。当程序以 release 配置编译时（定义了 <code>NDEBUG</code> 宏），<code>assert()</code> 不会做检测；而当在 debug 配置时（没定义 <code>NDEBUG</code> 宏），则会在运行时检测 <code>assert(cond)</code> 中的条件是否为真（非 0），断言失败会直接令程序崩溃。</p>
-<p>例如上面的 <code>lept_parse_null()</code> 开始时，当前字符应该是 <code>'n'</code>，所以我们使用一个宏 <code>EXPECT(c, ch)</code> 进行断言，并跳到下一字符。</p>
+<p>例如上面的 <code>lept_parse_null()</code> 开始时，当前字符应该是 <code>&#39;n&#39;</code>，所以我们使用一个宏 <code>EXPECT(c, ch)</code> 进行断言，并跳到下一字符。</p>
 <p>初使用断言的同学，可能会错误地把含<a href="https://en.wikipedia.org/wiki/Side_effect_(computer_science)" target="_blank" rel="noopener">副作用</a>的代码放在 <code>assert()</code> 中：</p>
 <pre class="line-numbers language-c"><code class="language-c"><span class="token function">assert</span><span class="token punctuation">(</span>x<span class="token operator">++</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/* 这是错误的! */</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>这样会导致 debug 和 release 版的行为不一样。</p>
@@ -705,25 +696,7 @@ true  = "true"</code></pre><p>当中 <code>%xhh</code> 表示以 16 进制表示
 </li>
 </ol>
 <p>其他常见问答将会从评论中整理。</p>
-<script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
+
             </div>
             <hr/>
 
@@ -786,12 +759,12 @@ true  = "true"</code></pre><p>当中 <code>%xhh</code> 表示以 16 进制表示
                     
                         <div class="article-tag">
                             
-                                <a href="tags/Typora/">
-                                    <span class="chip bg-color">Typora</span>
+                                <a href="tags/json/">
+                                    <span class="chip bg-color">json</span>
                                 </a>
                             
-                                <a href="tags/Markdown/">
-                                    <span class="chip bg-color">Markdown</span>
+                                <a href="tags/C/">
+                                    <span class="chip bg-color">C</span>
                                 </a>
                             
                         </div>
@@ -999,35 +972,54 @@ true  = "true"</code></pre><p>当中 <code>%xhh</code> 表示以 16 进制表示
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+                本篇&nbsp;<i class="far fa-dot-circle"></i>
             </div>
             <div class="card">
-                <a href="2020/06/24/hello-world/">
+                <a href="2020/06/25/create-hexo/">
                     <div class="card-image">
                         
+                        <img src="/source/images/4.jpg" class="responsive-img" alt="create-hexo">
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
-                        
-                        <span class="card-title">Hello World</span>
+                        <span class="card-title">create-hexo</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hex
+                            从零开始的 JSON 库教程（一）：启程
+Milo Yip
+2016/9/15
+
+本文是《从零开始的 JSON 库教程》的第一个单元。教程练习源代码位于 json-tutorial。
+本单元内容：
+
+从零开始的 JSON 库教程（一）：启程
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-24
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-25
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
-                            Arthur Luo
+                            Arthur
                             
                         </span>
                     </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="tags/json/">
+                        <span class="chip bg-color">json</span>
+                    </a>
+                    
+                    <a href="tags/C/">
+                        <span class="chip bg-color">C</span>
+                    </a>
+                    
                 </div>
                 
             </div>
@@ -1084,7 +1076,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">4.8k</span>&nbsp;字
+                class="white-color">5.1k</span>&nbsp;字
             
             
             
