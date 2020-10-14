@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Josephus problem(约瑟夫问题), math">
+    <meta name="keywords" content="罗星月9.21, math">
     <meta name="description" content="北京航空航天大学 | 数学">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Josephus problem(约瑟夫问题) | Arthur</title>
+    <title>罗星月9.21 | Arthur</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -309,12 +309,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/20.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Josephus problem(约瑟夫问题)</h1>
+                    <h1 class="description center-align post-title">罗星月9.21</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-06-26
+                    2020-09-21
                 </div>
                 
 
@@ -452,14 +452,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    713
+                    366
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    1 分
                 </div>
                 
 
@@ -474,87 +474,13 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="Josephus-problem（约瑟夫问题）"><a href="#Josephus-problem（约瑟夫问题）" class="headerlink" title="Josephus problem（约瑟夫问题）"></a>Josephus problem（约瑟夫问题）</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>链接：<a href="http://bailian.openjudge.cn/practice/2746/" target="_blank" rel="noopener">http://bailian.openjudge.cn/practice/2746/</a>    </p>
-<blockquote>
-<p>约瑟夫问题：有ｎ只猴子，按顺时针方向围成一圈选大王（编号从１到ｎ），从第１号开始报数，一直数到ｍ，数到ｍ的猴子退出圈外，剩下的猴子再接着从1开始报数。就这样，直到圈内只剩下一只猴子时，这个猴子就是猴王，编程求输入ｎ，ｍ后，输出最后猴王的编号。</p>
-</blockquote>
-<p>来源：</p>
-<ul>
-<li>约瑟夫是犹太军队的一个将军，在反抗罗马的起义中，他所率领的军队被击溃，只剩下残余的部队40余人，他们都是宁死不屈的人，所以不愿投降做叛徒。一群人表决说要死，所以用一种策略来先后杀死所有人。</li>
-<li>于是约瑟夫建议：每次由其他两人一起杀死一个人，而被杀的人的先后顺序是由抽签决定的，约瑟夫有预谋地抽到了最后一签，在杀了除了他和剩余那个人之外的最后一人，他劝服了另外一个没死的人投降了罗马。</li>
-</ul>
-<p>那么如何选择一个位置以使得你变成那剩余的最后一人？</p>
-<p>这个问题可以转换成递推问题：$J(n,k)=(J(n-1,k)+k)\%n$</p>
-<ul>
-<li>$J(n,k)$表示人数为n，报数节点为k，最后剩下的人的编号。</li>
-<li>对于$J(n,k)$,可以转换成 $J(n-1,k)$</li>
-<li>当人数为$n$时，进行第一次报数，第$k$个人退出，此时剩余$n-1$个人。</li>
-<li>若重新排号，第$k+1$个人为1号，那么此时问题为 $J(n-1,k)$,而此时求出的结果的编号是人数为$n-1$并且重新排号的情况，$J(n,k)$与$J(n-1,k)$编号的关系为 $J(n,k)=(J(n-1,k)+k)\%n$ (自行体会)。</li>
-</ul>
-<p>注意事项：重新编号应该从0开始，最后要和题目的编号方式比较再输出。</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h></span></span>
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-    <span class="token keyword">int</span> n<span class="token punctuation">,</span> m<span class="token punctuation">;</span>
-
-    <span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%d %d"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>n<span class="token punctuation">,</span> <span class="token operator">&amp;</span>m<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-    <span class="token keyword">while</span><span class="token punctuation">(</span>n<span class="token operator">!=</span><span class="token number">0</span><span class="token operator">&amp;&amp;</span>m<span class="token operator">!=</span><span class="token number">0</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-        <span class="token keyword">int</span> temp <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-
-        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> n<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">//从1推到n</span>
-        <span class="token punctuation">{</span>
-            temp <span class="token operator">=</span> <span class="token punctuation">(</span>temp <span class="token operator">+</span> m<span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span> temp<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        <span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%d %d"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>n<span class="token punctuation">,</span> <span class="token operator">&amp;</span>m<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>约瑟夫变体：求最后x个的编号</p>
-<p>链接：<a href="https://vjudge.net/problem/UVA-1452" target="_blank" rel="noopener">https://vjudge.net/problem/UVA-1452</a></p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">include</span><span class="token string">&lt;stdio.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span><span class="token string">&lt;stdlib.h></span></span>
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-    <span class="token keyword">int</span> n<span class="token punctuation">,</span> m<span class="token punctuation">;</span>
-    <span class="token keyword">int</span> T<span class="token punctuation">;</span>
-    <span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%d"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>T<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> T<span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-        <span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%d %d"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>n<span class="token punctuation">,</span> <span class="token operator">&amp;</span>m<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">int</span> temp <span class="token punctuation">;</span>
-        temp <span class="token operator">=</span><span class="token punctuation">(</span><span class="token punctuation">(</span>m <span class="token operator">%</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token operator">%</span><span class="token number">3</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//剩3个时的编号</span>
-
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> n <span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//从3推到n</span>
-        <span class="token punctuation">{</span>
-            temp <span class="token operator">=</span> <span class="token punctuation">(</span>temp <span class="token operator">+</span> m<span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d "</span><span class="token punctuation">,</span> temp <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        temp <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>m <span class="token operator">%</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">%</span><span class="token number">2</span><span class="token punctuation">;</span>
-
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> n<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//从2推到n</span>
-        <span class="token punctuation">{</span>
-            temp <span class="token operator">=</span> <span class="token punctuation">(</span>temp <span class="token operator">+</span> m<span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d "</span><span class="token punctuation">,</span> temp <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        temp <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> n<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//从1推到n</span>
-        <span class="token punctuation">{</span>
-            temp <span class="token operator">=</span> <span class="token punctuation">(</span>temp <span class="token operator">+</span> m<span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span> temp <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>  
-        <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+                <h2 id="每日任务"><a href="#每日任务" class="headerlink" title="每日任务"></a>每日任务</h2><p> 一道leetcode  未完成</p>
+<h2 id="我用到的Linux常用命令及解释"><a href="#我用到的Linux常用命令及解释" class="headerlink" title="我用到的Linux常用命令及解释"></a>我用到的Linux常用命令及解释</h2><p>uname : 英文全拼 unix name  用于显示系统信息 可显示电脑以及操作系统的相关信息<br>-a 或 –a 显示全部的信息<br>-m 或 –machine 显示电脑类型<br>-n 或 –nodename 显示在网络上的主机名称<br>-r 或 –release 显示操作系统的发行编号<br>-s 或 –sysname 显示操作系统名称<br>-v 显示操作系统的版本</p>
+<p>cp ：英文全拼 copy file 用于复制文件或目录<br>cp [options] source dest</p>
+<p>#是管理员 $是用户<br>了解了<br>yum : yellow dogUpdater， Modified<br>sudo : switch user do</p>
+<h2 id="杂乱的知识"><a href="#杂乱的知识" class="headerlink" title="杂乱的知识"></a>杂乱的知识</h2><p>大端：数据低字节在内存高位 可以优先看到符号位快速判断正负和大小<br>小端：数据高字节在内存低位 可以优先进行计算最后考虑符号位<br>现在intel的80x86用小端<br>ARM芯片默认用小端，可切换到大端<br>MIPS芯片采用大端，可切换<br>网络序为大端</p>
+<h2 id="待练习"><a href="#待练习" class="headerlink" title="待练习"></a>待练习</h2><p>vim的使用：以后用vim语法写题</p>
+<h2 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h2><p>TCP向应用层提供一种面向连接的、可靠的字节流服务。<br>面向连接意味着两个使用TCP的应用（通常是一个客户和一个服务器）在彼此交换数据之前必须先建立一个TCP连接。<br>在一个TCP连接中，仅有两方进行彼此通信，广播和多播不能用于TCP。</p>
 
             </div>
             <hr/>
@@ -580,7 +506,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="ArtistArthur.github.io2020/06/26/josephus-problem/">ArtistArthur.github.io2020/06/26/josephus-problem/</a>
+                    <a href="ArtistArthur.github.io2020/09/21/luo-xing-yue-9.21/">ArtistArthur.github.io2020/09/21/luo-xing-yue-9.21/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -787,33 +713,27 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="2020/06/29/permutation-quan-pai-lie/">
+                <a href="2020/10/14/dan-diao-zhan-monotone-stack/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="permutation(全排列)">
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="单调栈(monotone stack)">
                         
-                        <span class="card-title">permutation(全排列)</span>
+                        <span class="card-title">单调栈(monotone stack)</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            permutation(全排列)全排列的各种输出方法注意事项
-阶乘增长速度比指数还快，很容易爆。
-
-2^16=6,5536 
-
-2^32=42,9496,7296 
-
-2^64=1844,6744,0737,0955,1616
-
-8!=40
+                            单调栈（monostone）
+单调栈顾名思义就是一个单调的栈，可以是单调递增也可以是单调递减的
+单调栈可以解决的问题是：对于于一个数列，可以找到每一个数的下一个比自己大的或者小的数  
+比如：$2 3 5 7 8 6 5 1$。对于$2$来
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-06-29
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-10-14
                         </span>
                         <span class="publish-author">
                             
@@ -830,29 +750,30 @@
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="far fa-dot-circle"></i>
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="2020/06/26/josephus-problem/">
+                <a href="2020/07/09/git-command/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="Josephus problem(约瑟夫问题)">
+                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="git command">
                         
-                        <span class="card-title">Josephus problem(约瑟夫问题)</span>
+                        <span class="card-title">git command</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            Josephus problem（约瑟夫问题）问题描述链接：http://bailian.openjudge.cn/practice/2746/    
-
-约瑟夫问题：有ｎ只猴子，按顺时针方向围成一圈选大王（编号从１到ｎ），从第１号开始报数
+                            git常用命令以及与github的结合使用git中的四个区域
+workspace：写和修改代码的地方
+index/stage：暂存区，git add [file name]把修改从workspace提交到暂存区
+local reposito
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-26
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-09
                             </span>
                         <span class="publish-author">
                             
@@ -862,7 +783,6 @@
                         </span>
                     </div>
                 </div>
-
                 
             </div>
         </div>
