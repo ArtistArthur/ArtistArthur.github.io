@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>mit6.828-lab1</title>
+      <link href="/2020/10/21/mit6-828-lab1/"/>
+      <url>/2020/10/21/mit6-828-lab1/</url>
+      
+        <content type="html"><![CDATA[<h2 id="1-introduction"><a href="#1-introduction" class="headerlink" title="1. introduction"></a>1. introduction</h2><p>lab1的内容或者目的：</p><ul><li>熟悉x86的汇编语言，搭建环境：下载make qemu等，熟悉PC的开机流程</li><li>examine the boot loader for 6.828 kernel</li><li>initial template for 6.828 kernel ,named JOS<h3 id="a-搭建环境：git-clone-qemu"><a href="#a-搭建环境：git-clone-qemu" class="headerlink" title="a. 搭建环境：git clone qemu"></a>a. 搭建环境：git clone qemu</h3></li><li>完全参照 <a href="https://www.cnblogs.com/gatsby123/p/9746193.html" target="_blank" rel="noopener">https://www.cnblogs.com/gatsby123/p/9746193.html</a><br>之前用的其他的博客但是没搞好，这个博客解决了  </li><li>还遇到一个头文件缺失的问题: <a href="https://github.com/Ebiroll/qemu_esp32/issues/12" target="_blank" rel="noopener">https://github.com/Ebiroll/qemu_esp32/issues/12</a> 通过添加头文件通过了<br>学到的东西：  </li><li>知道了qemu是个跑在linux上的模拟器，可以模拟出各种硬件状态。在这个实验中，qemu的作用是模拟出i386的环境，因为这个实验写出的操作系统是跑在i386上的。<h3 id="b-提交作业"><a href="#b-提交作业" class="headerlink" title="b. 提交作业"></a>b. 提交作业</h3>这个是针对mit自己的学生的，不知道我可不可以也跑测试评分，之后看到再说<h2 id="2-Part1：Bootstrap"><a href="#2-Part1：Bootstrap" class="headerlink" title="2.Part1：Bootstrap"></a>2.Part1：Bootstrap</h2>这个部分不写代码，主要是了解和学习汇编相关知识和开机引导流程<h3 id="a-汇编"><a href="#a-汇编" class="headerlink" title="a.汇编"></a>a.汇编</h3></li><li>汇编有两种语法，一个是Intel的一个是AT&T;x86一般用Intel语法，NASM（Netwide Assembly)是使用Intel语法的汇编器，GNU使用AT&amp;T语法</li><li>汇编的各种细节（之后写）<h3 id="b-PC的物理地址空间"><a href="#b-PC的物理地址空间" class="headerlink" title="b. PC的物理地址空间"></a>b. PC的物理地址空间</h3>```</li></ul><p>+——————+  &lt;- 0xFFFFFFFF (4GB)<br>|      32-bit      |<br>|  memory mapped   |<br>|     devices      |<br>|                  |<br>/\/\/\/\/\/\/\/\/\/\  </p><p>/\/\/\/\/\/\/\/\/\/\<br>|                  |<br>|      Unused      |<br>|                  |<br>+——————+  &lt;- depends on amount of RAM<br>|                  |<br>|                  |<br>| Extended Memory  |<br>|                  |<br>|                  |<br>+——————+  &lt;- 0x00100000 (1MB)<br>|     BIOS ROM     |<br>+——————+  &lt;- 0x000F0000 (960KB)<br>|  16-bit devices, |<br>|  expansion ROMs  |<br>+——————+  &lt;- 0x000C0000 (768KB)<br>|   VGA Display    |<br>+——————+  &lt;- 0x000A0000 (640KB)<br>|                  |<br>|    Low Memory    |<br>|                  |<br>+——————+  &lt;- 0x00000000  </p><pre><code>* 16位的Intel 8088/86 有20位地址总线，可以寻址1MB的内存，但是由于数据总线只有16位，所以单个程序段最大只有64KB,为了可以寻址1MB，Intel引入了分段：  * 逻辑段的开始地址必须是16的倍数，因为段寄存器长为16位；  * 逻辑段的最大长度为64K，因为指针寄存器长为16位。   * 那么1M字节地址空间最多可划分成64K个逻辑段，最少也要划分成16个逻辑段。逻辑段与逻辑段可以相连，也可以不相连，还可以部分重叠。  * 在实模式下，cpu寻址的方式是：CS:IP  物理地址是： 16*CS+IP  * 这个博客说得很好  https://www.cnblogs.com/blacksword/archive/2012/12/27/2836216.html  </code></pre>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>单调栈(monotone stack)</title>
       <link href="/2020/10/14/dan-diao-zhan-monotone-stack/"/>
       <url>/2020/10/14/dan-diao-zhan-monotone-stack/</url>

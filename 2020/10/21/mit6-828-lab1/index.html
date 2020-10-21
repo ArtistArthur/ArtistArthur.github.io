@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Josephus problem(约瑟夫问题), math">
+    <meta name="keywords" content="mit6.828-lab1, math">
     <meta name="description" content="北京航空航天大学 | 数学">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Josephus problem(约瑟夫问题) | Arthur</title>
+    <title>mit6.828-lab1 | Arthur</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -309,12 +309,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/21.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Josephus problem(约瑟夫问题)</h1>
+                    <h1 class="description center-align post-title">mit6.828-lab1</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-06-26
+                    2020-10-21
                 </div>
                 
 
@@ -452,14 +452,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    713
+                    559
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    2 分
                 </div>
                 
 
@@ -474,88 +474,25 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="Josephus-problem（约瑟夫问题）"><a href="#Josephus-problem（约瑟夫问题）" class="headerlink" title="Josephus problem（约瑟夫问题）"></a>Josephus problem（约瑟夫问题）</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>链接：<a href="http://bailian.openjudge.cn/practice/2746/" target="_blank" rel="noopener">http://bailian.openjudge.cn/practice/2746/</a>    </p>
-<blockquote>
-<p>约瑟夫问题：有ｎ只猴子，按顺时针方向围成一圈选大王（编号从１到ｎ），从第１号开始报数，一直数到ｍ，数到ｍ的猴子退出圈外，剩下的猴子再接着从1开始报数。就这样，直到圈内只剩下一只猴子时，这个猴子就是猴王，编程求输入ｎ，ｍ后，输出最后猴王的编号。</p>
-</blockquote>
-<p>来源：</p>
+                <h2 id="1-introduction"><a href="#1-introduction" class="headerlink" title="1. introduction"></a>1. introduction</h2><p>lab1的内容或者目的：</p>
 <ul>
-<li>约瑟夫是犹太军队的一个将军，在反抗罗马的起义中，他所率领的军队被击溃，只剩下残余的部队40余人，他们都是宁死不屈的人，所以不愿投降做叛徒。一群人表决说要死，所以用一种策略来先后杀死所有人。</li>
-<li>于是约瑟夫建议：每次由其他两人一起杀死一个人，而被杀的人的先后顺序是由抽签决定的，约瑟夫有预谋地抽到了最后一签，在杀了除了他和剩余那个人之外的最后一人，他劝服了另外一个没死的人投降了罗马。</li>
+<li>熟悉x86的汇编语言，搭建环境：下载make qemu等，熟悉PC的开机流程</li>
+<li>examine the boot loader for 6.828 kernel</li>
+<li>initial template for 6.828 kernel ,named JOS<h3 id="a-搭建环境：git-clone-qemu"><a href="#a-搭建环境：git-clone-qemu" class="headerlink" title="a. 搭建环境：git clone qemu"></a>a. 搭建环境：git clone qemu</h3></li>
+<li>完全参照 <a href="https://www.cnblogs.com/gatsby123/p/9746193.html" target="_blank" rel="noopener">https://www.cnblogs.com/gatsby123/p/9746193.html</a><br>之前用的其他的博客但是没搞好，这个博客解决了  </li>
+<li>还遇到一个头文件缺失的问题: <a href="https://github.com/Ebiroll/qemu_esp32/issues/12" target="_blank" rel="noopener">https://github.com/Ebiroll/qemu_esp32/issues/12</a> 通过添加头文件通过了<br>学到的东西：  </li>
+<li>知道了qemu是个跑在linux上的模拟器，可以模拟出各种硬件状态。在这个实验中，qemu的作用是模拟出i386的环境，因为这个实验写出的操作系统是跑在i386上的。<h3 id="b-提交作业"><a href="#b-提交作业" class="headerlink" title="b. 提交作业"></a>b. 提交作业</h3>这个是针对mit自己的学生的，不知道我可不可以也跑测试评分，之后看到再说<h2 id="2-Part1：Bootstrap"><a href="#2-Part1：Bootstrap" class="headerlink" title="2.Part1：Bootstrap"></a>2.Part1：Bootstrap</h2>这个部分不写代码，主要是了解和学习汇编相关知识和开机引导流程<h3 id="a-汇编"><a href="#a-汇编" class="headerlink" title="a.汇编"></a>a.汇编</h3></li>
+<li>汇编有两种语法，一个是Intel的一个是AT&T;x86一般用Intel语法，NASM（Netwide Assembly)是使用Intel语法的汇编器，GNU使用AT&amp;T语法</li>
+<li>汇编的各种细节（之后写）<h3 id="b-PC的物理地址空间"><a href="#b-PC的物理地址空间" class="headerlink" title="b. PC的物理地址空间"></a>b. PC的物理地址空间</h3>```</li>
 </ul>
-<p>那么如何选择一个位置以使得你变成那剩余的最后一人？</p>
-<p>这个问题可以转换成递推问题：$J(n,k)=(J(n-1,k)+k)\%n$</p>
-<ul>
-<li>$J(n,k)$表示人数为n，报数节点为k，最后剩下的人的编号。</li>
-<li>对于$J(n,k)$,可以转换成 $J(n-1,k)$</li>
-<li>当人数为$n$时，进行第一次报数，第$k$个人退出，此时剩余$n-1$个人。</li>
-<li>若重新排号，第$k+1$个人为1号，那么此时问题为 $J(n-1,k)$,而此时求出的结果的编号是人数为$n-1$并且重新排号的情况，$J(n,k)$与$J(n-1,k)$编号的关系为 $J(n,k)=(J(n-1,k)+k)\%n$ (自行体会)。</li>
-</ul>
-<p>注意事项：重新编号应该从0开始，最后要和题目的编号方式比较再输出。</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h></span></span>
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-    <span class="token keyword">int</span> n<span class="token punctuation">,</span> m<span class="token punctuation">;</span>
-
-    <span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%d %d"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>n<span class="token punctuation">,</span> <span class="token operator">&amp;</span>m<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-    <span class="token keyword">while</span><span class="token punctuation">(</span>n<span class="token operator">!=</span><span class="token number">0</span><span class="token operator">&amp;&amp;</span>m<span class="token operator">!=</span><span class="token number">0</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-        <span class="token keyword">int</span> temp <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-
-        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> n<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">//从1推到n</span>
-        <span class="token punctuation">{</span>
-            temp <span class="token operator">=</span> <span class="token punctuation">(</span>temp <span class="token operator">+</span> m<span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span> temp<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        <span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%d %d"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>n<span class="token punctuation">,</span> <span class="token operator">&amp;</span>m<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>约瑟夫变体：求最后x个的编号</p>
-<p>链接：<a href="https://vjudge.net/problem/UVA-1452" target="_blank" rel="noopener">https://vjudge.net/problem/UVA-1452</a></p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">include</span><span class="token string">&lt;stdio.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span><span class="token string">&lt;stdlib.h></span></span>
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-    <span class="token keyword">int</span> n<span class="token punctuation">,</span> m<span class="token punctuation">;</span>
-    <span class="token keyword">int</span> T<span class="token punctuation">;</span>
-    <span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%d"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>T<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> T<span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-        <span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%d %d"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>n<span class="token punctuation">,</span> <span class="token operator">&amp;</span>m<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">int</span> temp <span class="token punctuation">;</span>
-        temp <span class="token operator">=</span><span class="token punctuation">(</span><span class="token punctuation">(</span>m <span class="token operator">%</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token operator">%</span><span class="token number">3</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//剩3个时的编号</span>
-
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> n <span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//从3推到n</span>
-        <span class="token punctuation">{</span>
-            temp <span class="token operator">=</span> <span class="token punctuation">(</span>temp <span class="token operator">+</span> m<span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d "</span><span class="token punctuation">,</span> temp <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        temp <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>m <span class="token operator">%</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">%</span><span class="token number">2</span><span class="token punctuation">;</span>
-
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> n<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//从2推到n</span>
-        <span class="token punctuation">{</span>
-            temp <span class="token operator">=</span> <span class="token punctuation">(</span>temp <span class="token operator">+</span> m<span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d "</span><span class="token punctuation">,</span> temp <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        temp <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> n<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//从1推到n</span>
-        <span class="token punctuation">{</span>
-            temp <span class="token operator">=</span> <span class="token punctuation">(</span>temp <span class="token operator">+</span> m<span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span> temp <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>  
-        <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+<p>+——————+  &lt;- 0xFFFFFFFF (4GB)<br>|      32-bit      |<br>|  memory mapped   |<br>|     devices      |<br>|                  |<br>/\/\/\/\/\/\/\/\/\/\  </p>
+<p>/\/\/\/\/\/\/\/\/\/\<br>|                  |<br>|      Unused      |<br>|                  |<br>+——————+  &lt;- depends on amount of RAM<br>|                  |<br>|                  |<br>| Extended Memory  |<br>|                  |<br>|                  |<br>+——————+  &lt;- 0x00100000 (1MB)<br>|     BIOS ROM     |<br>+——————+  &lt;- 0x000F0000 (960KB)<br>|  16-bit devices, |<br>|  expansion ROMs  |<br>+——————+  &lt;- 0x000C0000 (768KB)<br>|   VGA Display    |<br>+——————+  &lt;- 0x000A0000 (640KB)<br>|                  |<br>|    Low Memory    |<br>|                  |<br>+——————+  &lt;- 0x00000000  </p>
+<pre><code>* 16位的Intel 8088/86 有20位地址总线，可以寻址1MB的内存，但是由于数据总线只有16位，所以单个程序段最大只有64KB,为了可以寻址1MB，Intel引入了分段：
+  * 逻辑段的开始地址必须是16的倍数，因为段寄存器长为16位；
+  * 逻辑段的最大长度为64K，因为指针寄存器长为16位。 
+  * 那么1M字节地址空间最多可划分成64K个逻辑段，最少也要划分成16个逻辑段。逻辑段与逻辑段可以相连，也可以不相连，还可以部分重叠。
+  * 在实模式下，cpu寻址的方式是：CS:IP  物理地址是： 16*CS+IP
+  * 这个博客说得很好  https://www.cnblogs.com/blacksword/archive/2012/12/27/2836216.html  </code></pre>
             </div>
             <hr/>
 
@@ -580,7 +517,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="ArtistArthur.github.io2020/06/26/josephus-problem/">ArtistArthur.github.io2020/06/26/josephus-problem/</a>
+                    <a href="ArtistArthur.github.io2020/10/21/mit6-828-lab1/">ArtistArthur.github.io2020/10/21/mit6-828-lab1/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -783,76 +720,33 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="2020/06/29/permutation-quan-pai-lie/">
+                <a href="2020/10/21/mit6-828-lab1/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="permutation(全排列)">
+                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="mit6.828-lab1">
                         
-                        <span class="card-title">permutation(全排列)</span>
+                        <span class="card-title">mit6.828-lab1</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            permutation(全排列)全排列的各种输出方法注意事项
-阶乘增长速度比指数还快，很容易爆。
+                            1. introductionlab1的内容或者目的：
 
-2^16=6,5536 
-
-2^32=42,9496,7296 
-
-2^64=1844,6744,0737,0955,1616
-
-8!=40
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-06-29
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            Arthur Luo
-                            
-                        </span>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="far fa-dot-circle"></i>
-            </div>
-            <div class="card">
-                <a href="2020/06/26/josephus-problem/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="Josephus problem(约瑟夫问题)">
-                        
-                        <span class="card-title">Josephus problem(约瑟夫问题)</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            Josephus problem（约瑟夫问题）问题描述链接：http://bailian.openjudge.cn/practice/2746/    
-
-约瑟夫问题：有ｎ只猴子，按顺时针方向围成一圈选大王（编号从１到ｎ），从第１号开始报数
+熟悉x86的汇编语言，搭建环境：下载make qemu等，熟悉PC的开机流程
+examine the boot loader for 6.828 kernel
+initial tem
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-26
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-10-21
                             </span>
                         <span class="publish-author">
                             
@@ -863,6 +757,46 @@
                     </div>
                 </div>
 
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="2020/10/14/dan-diao-zhan-monotone-stack/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="单调栈(monotone stack)">
+                        
+                        <span class="card-title">单调栈(monotone stack)</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            单调栈（monostone）
+单调栈顾名思义就是一个单调的栈，可以是单调递增也可以是单调递减的
+单调栈可以解决的问题是：对于于一个数列，可以找到每一个数的下一个比自己大的或者小的数  
+比如：$2 3 5 7 8 6 5 1$。对于$2$来
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-10-14
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Arthur Luo
+                            
+                        </span>
+                    </div>
+                </div>
                 
             </div>
         </div>
