@@ -79,15 +79,15 @@
 
 
 
-<meta name="description" content="1. introductionlab1的内容或者目的：  熟悉x86的汇编语言，搭建环境：下载make qemu等，熟悉PC的开机流程 examine the boot loader for 6.828 kernel initial template for 6.828 kernel ,named JOS">
+<meta name="description" content="北京航空航天大学 | 数学">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mit6.828-lab1">
-<meta property="og:url" content="2020/10/21/mit6-828-lab1/index.html">
+<meta property="og:title" content="test">
+<meta property="og:url" content="2020/10/28/test/index.html">
 <meta property="og:site_name" content="Arthur">
-<meta property="og:description" content="1. introductionlab1的内容或者目的：  熟悉x86的汇编语言，搭建环境：下载make qemu等，熟悉PC的开机流程 examine the boot loader for 6.828 kernel initial template for 6.828 kernel ,named JOS">
+<meta property="og:description" content="北京航空航天大学 | 数学">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-10-21T15:00:33.000Z">
-<meta property="article:modified_time" content="2020-10-28T10:19:38.805Z">
+<meta property="article:published_time" content="2020-10-28T11:08:30.000Z">
+<meta property="article:modified_time" content="2020-10-28T11:08:30.896Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="math">
 <meta name="twitter:card" content="summary">
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="ArtistArthur.github.io/2020/10/21/mit6-828-lab1/"/>
+  <link rel="canonical" href="ArtistArthur.github.io/2020/10/28/test/"/>
 
 
 
 
 
-  <title>mit6.828-lab1 | Arthur</title>
+  <title>test | Arthur</title>
   
 
 
@@ -288,7 +288,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="ArtistArthur.github.io2020/10/21/mit6-828-lab1/">
+    <link itemprop="mainEntityOfPage" href="ArtistArthur.github.io2020/10/28/test/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Arthur Luo">
@@ -305,7 +305,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">mit6.828-lab1</h1>
+          <h1 class="post-title" itemprop="name headline">test</h1>
         
 
         <div class="post-meta">
@@ -317,8 +317,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-10-21T23:00:33+08:00">
-                2020-10-21
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-10-28T19:08:30+08:00">
+                2020-10-28
               </time>
             
 
@@ -335,7 +335,7 @@
 
           
           
-             <span id="2020/10/21/mit6-828-lab1/" class="leancloud_visitors" data-flag-title="mit6.828-lab1">
+             <span id="2020/10/28/test/" class="leancloud_visitors" data-flag-title="test">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -366,75 +366,7 @@
       
 
       
-        <h2 id="1-introduction"><a href="#1-introduction" class="headerlink" title="1. introduction"></a>1. introduction</h2><p>lab1的内容或者目的：</p>
-<ul>
-<li>熟悉x86的汇编语言，搭建环境：下载make qemu等，熟悉PC的开机流程</li>
-<li>examine the boot loader for 6.828 kernel</li>
-<li>initial template for 6.828 kernel ,named JOS<a id="more"></a>
-
-</li>
-</ul>
-<h3 id="a-搭建环境：git-clone-qemu"><a href="#a-搭建环境：git-clone-qemu" class="headerlink" title="a. 搭建环境：git clone qemu"></a>a. 搭建环境：git clone qemu</h3><ul>
-<li>完全参照 <a href="https://www.cnblogs.com/gatsby123/p/9746193.html" target="_blank" rel="noopener">https://www.cnblogs.com/gatsby123/p/9746193.html</a><br>之前用的其他的博客但是没搞好，这个博客解决了  </li>
-<li>还遇到一个头文件缺失的问题: <a href="https://github.com/Ebiroll/qemu_esp32/issues/12" target="_blank" rel="noopener">https://github.com/Ebiroll/qemu_esp32/issues/12</a> 通过添加头文件通过了<br>学到的东西：  </li>
-<li>知道了qemu是个跑在linux上的模拟器，可以模拟出各种硬件状态。在这个实验中，qemu的作用是模拟出i386的环境，因为这个实验写出的操作系统是跑在i386上的。<h3 id="b-提交作业"><a href="#b-提交作业" class="headerlink" title="b. 提交作业"></a>b. 提交作业</h3>这个是针对mit自己的学生的，不知道我可不可以也跑测试评分，之后看到再说</li>
-</ul>
-<h2 id="2-Part1：Bootstrap"><a href="#2-Part1：Bootstrap" class="headerlink" title="2.Part1：Bootstrap"></a>2.Part1：Bootstrap</h2><p>这个部分不写代码，主要是了解和学习汇编相关知识和开机引导流程</p>
-<h3 id="a-汇编"><a href="#a-汇编" class="headerlink" title="a.汇编"></a>a.汇编</h3><ul>
-<li>汇编有两种语法，一个是Intel的一个是AT&amp;T。x86一般用Intel语法，NASM（Netwide Assembly)是使用Intel语法的汇编器，GNU使用AT&amp;T语法</li>
-<li>汇编的各种细节（之后写）<h3 id="b-qemu的使用"><a href="#b-qemu的使用" class="headerlink" title="b.qemu的使用"></a>b.qemu的使用</h3></li>
-<li>待写<h3 id="c-PC的物理地址空间"><a href="#c-PC的物理地址空间" class="headerlink" title="c. PC的物理地址空间"></a>c. PC的物理地址空间</h3></li>
-</ul>
-<pre><code>
-+------------------+  &lt;- 0xFFFFFFFF (4GB)   
-|      32-bit      |   
-|  memory mapped   |   
-|     devices      |   
-|                  |   
-/\/\/\/\/\/\/\/\/\/\  
-
-/\/\/\/\/\/\/\/\/\/\   
-|                  |   
-|      Unused      |   
-|                  |   
-+------------------+  &lt;- depends on amount of RAM   
-|                  |   
-|                  |   
-| Extended Memory  |     
-|                  |   
-|                  |   
-+------------------+  &lt;- 0x00100000 (1MB)   
-|     BIOS ROM     |   
-+------------------+  &lt;- 0x000F0000 (960KB)  
-|  16-bit devices, |   
-|  expansion ROMs  |   
-+------------------+  &lt;- 0x000C0000 (768KB)   
-|   VGA Display    |    
-+------------------+  &lt;- 0x000A0000 (640KB)   
-|                  |   
-|    Low Memory    |   
-|                  |   
-+------------------+  &lt;- 0x00000000 
-</code></pre><ul>
-<li>16位的Intel 8088/86 有20位地址总线，可以寻址1MB的内存，但是由于数据总线只有16位，所以单个程序段最大只有64KB,为了可以寻址1MB，Intel引入了分段：<ul>
-<li>逻辑段的开始地址必须是16的倍数，因为段寄存器长为16位；</li>
-<li>逻辑段的最大长度为64K，因为指针寄存器长为16位。 </li>
-<li>那么1M字节地址空间最多可划分成64K个逻辑段，最少也要划分成16个逻辑段。逻辑段与逻辑段可以相连，也可以不相连，还可以部分重叠。</li>
-<li>在实模式下，cpu寻址的方式是：CS:IP  物理地址是： 16*CS+IP</li>
-<li>这个博客说得很好  <a href="https://www.cnblogs.com/blacksword/archive/2012/12/27/2836216.html" target="_blank" rel="noopener">https://www.cnblogs.com/blacksword/archive/2012/12/27/2836216.html</a>  </li>
-</ul>
-</li>
-<li>早期的cpu内存，只使用640KB以下的内存(被称为Low Memory)作为随机存取器（RAM），更早的使用的内存更少：16KB，32KB，64KB</li>
-<li>640KB至1MB中间的384KB内存被保留作为硬件的特殊用途，比如显卡缓冲区和非易失固件内存（？）</li>
-<li>被保留的最重要的区域是从0x000F0000（960KB）到0x000FFFFF（1MB）的64KB，这里会存放BIOS。BIOS会进行基本的初始化比如显卡检查和硬件检查以及内存检查</li>
-<li>BIOS初始化之后会从适当的位置（软盘硬盘等）加载操作系统</li>
-<li>从80286和80386开始Intel支持16MB和4GB内存，但是低1MB的基本功能布局没有变化（为了兼容）</li>
-<li>现代PC在640KB到1MB之间有个hole，把内存分为了低640KB的Low Memory和1MB以上的extended memory</li>
-<li>并且在32位机器上，4GB的内存顶部也保留了一部分区域给32位的PCI接口设备，因此在64位机器普及后，内存又出现了第二个hole</li>
-<li>这个课程的操作系统只使用低256MB内存<h3 id="d-The-ROM-BIOS"><a href="#d-The-ROM-BIOS" class="headerlink" title="d.The ROM BIOS"></a>d.The ROM BIOS</h3></li>
-<li>学习IA-32兼容的计算机是怎么开机的</li>
-</ul>
-
+        
       
     </div>
     
@@ -458,8 +390,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="2020/10/14/dan-diao-zhan-monotone-stack/" rel="next" title="单调栈(monotone stack)">
-                <i class="fa fa-chevron-left"></i> 单调栈(monotone stack)
+              <a href="2020/10/21/mit6-828-lab1/" rel="next" title="mit6.828-lab1">
+                <i class="fa fa-chevron-left"></i> mit6.828-lab1
               </a>
             
           </div>
@@ -467,10 +399,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="2020/10/28/test/" rel="prev" title="test">
-                test <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -522,17 +450,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -608,22 +527,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-introduction"><span class="nav-number">1.</span> <span class="nav-text">1. introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-搭建环境：git-clone-qemu"><span class="nav-number">1.1.</span> <span class="nav-text">a. 搭建环境：git clone qemu</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-提交作业"><span class="nav-number">1.2.</span> <span class="nav-text">b. 提交作业</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Part1：Bootstrap"><span class="nav-number">2.</span> <span class="nav-text">2.Part1：Bootstrap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-汇编"><span class="nav-number">2.1.</span> <span class="nav-text">a.汇编</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-qemu的使用"><span class="nav-number">2.2.</span> <span class="nav-text">b.qemu的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-PC的物理地址空间"><span class="nav-number">2.3.</span> <span class="nav-text">c. PC的物理地址空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#d-The-ROM-BIOS"><span class="nav-number">2.4.</span> <span class="nav-text">d.The ROM BIOS</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
