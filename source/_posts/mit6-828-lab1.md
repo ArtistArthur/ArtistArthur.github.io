@@ -15,6 +15,8 @@ lab1的内容或者目的：
 * 熟悉x86的汇编语言，搭建环境：下载make qemu等，熟悉PC的开机流程
 * examine the boot loader for 6.828 kernel
 * initial template for 6.828 kernel ,named JOS
+<!--more-->
+
 ### a. 搭建环境：git clone qemu
 * 完全参照 https://www.cnblogs.com/gatsby123/p/9746193.html
 之前用的其他的博客但是没搞好，这个博客解决了  

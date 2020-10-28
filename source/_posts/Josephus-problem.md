@@ -8,6 +8,7 @@ date: 2020-06-26 04:48:29
 password:
 summary:
 tags:
+img: https://cdn.jsdelivr.net/gh/artistarthur/ArtistArthur.github.io/images/0.jpg
 categories:
 ---
 # Josephus problem（约瑟夫问题）

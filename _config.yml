@@ -93,7 +93,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: hexo-theme-matery
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
@@ -129,6 +129,8 @@ prism_plugin:
 search:
   path: search.xml
   field: post
+  format: html
+  limit: 1000
 permalink_pinyin:
   enable: true
   separator: '-' # default: '-'
