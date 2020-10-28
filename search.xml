@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>Josephus problem(约瑟夫问题)</title>
-    <url>/2020/06/26/josephus-problem/</url>
+    <url>/ArtistArthur.github.io/2020/06/26/josephus-problem/</url>
     <content><![CDATA[<h1 id="Josephus-problem（约瑟夫问题）"><a href="#Josephus-problem（约瑟夫问题）" class="headerlink" title="Josephus problem（约瑟夫问题）"></a>Josephus problem（约瑟夫问题）</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>链接：<a href="http://bailian.openjudge.cn/practice/2746/" target="_blank" rel="noopener">http://bailian.openjudge.cn/practice/2746/</a>    </p>
 <blockquote>
 <p>约瑟夫问题：有ｎ只猴子，按顺时针方向围成一圈选大王（编号从１到ｎ），从第１号开始报数，一直数到ｍ，数到ｍ的猴子退出圈外，剩下的猴子再接着从1开始报数。就这样，直到圈内只剩下一只猴子时，这个猴子就是猴王，编程求输入ｎ，ｍ后，输出最后猴王的编号。</p>
@@ -88,7 +88,7 @@
   </entry>
   <entry>
     <title>TCP_IP</title>
-    <url>/2020/07/02/tcp-ip/</url>
+    <url>/ArtistArthur.github.io/2020/07/02/tcp-ip/</url>
     <content><![CDATA[<h2 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h2><p>ICMP是IP协议的附属协议，IP层用它来与其他主机或者路由器交换错误报文和其他重要信息。尽管ICMP主要被IP使用，但应用程序也有可能访问它，比如Ping和Traceroute。</p>
 <h2 id="IGMP"><a href="#IGMP" class="headerlink" title="IGMP"></a>IGMP</h2><p>IGMP是Internet组管理协议(internet group management protocol)。它用来把一个UDP数据报多播到多个主机。</p>
 <h2 id="ARP（地址解析协议-address-）-RARP（逆地址解析协议）"><a href="#ARP（地址解析协议-address-）-RARP（逆地址解析协议）" class="headerlink" title="ARP（地址解析协议 address ） RARP（逆地址解析协议）"></a>ARP（地址解析协议 address ） RARP（逆地址解析协议）</h2><p>ARP和RARP是某些网络接口（如以太网和令牌环网）使用的特殊协议，用来转换IP层和网络接口层使用的地址。</p>
@@ -112,7 +112,7 @@
   </entry>
   <entry>
     <title>git command</title>
-    <url>/2020/07/09/git-command/</url>
+    <url>/ArtistArthur.github.io/2020/07/09/git-command/</url>
     <content><![CDATA[<h1 id="git常用命令以及与github的结合使用"><a href="#git常用命令以及与github的结合使用" class="headerlink" title="git常用命令以及与github的结合使用"></a>git常用命令以及与github的结合使用</h1><h2 id="git中的四个区域"><a href="#git中的四个区域" class="headerlink" title="git中的四个区域"></a>git中的四个区域</h2><ul>
 <li>workspace：写和修改代码的地方</li>
 <li>index/stage：暂存区，git add [file name]把修改从workspace提交到暂存区</li>
@@ -123,7 +123,7 @@
   </entry>
   <entry>
     <title>mit6.828-lab1</title>
-    <url>/2020/10/21/mit6-828-lab1/</url>
+    <url>/ArtistArthur.github.io/2020/10/21/mit6-828-lab1/</url>
     <content><![CDATA[<h2 id="1-introduction"><a href="#1-introduction" class="headerlink" title="1. introduction"></a>1. introduction</h2><p>lab1的内容或者目的：</p>
 <ul>
 <li>熟悉x86的汇编语言，搭建环境：下载make qemu等，熟悉PC的开机流程</li>
@@ -196,7 +196,7 @@
   </entry>
   <entry>
     <title>permutation(全排列)</title>
-    <url>/2020/06/29/permutation-quan-pai-lie/</url>
+    <url>/ArtistArthur.github.io/2020/06/29/permutation-quan-pai-lie/</url>
     <content><![CDATA[<h1 id="permutation-全排列"><a href="#permutation-全排列" class="headerlink" title="permutation(全排列)"></a>permutation(全排列)</h1><h2 id="全排列的各种输出方法"><a href="#全排列的各种输出方法" class="headerlink" title="全排列的各种输出方法"></a>全排列的各种输出方法</h2><h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
 <li><p>阶乘增长速度比指数还快，很容易爆。</p>
 </li>
@@ -320,7 +320,7 @@
   </entry>
   <entry>
     <title>罗星月9.21</title>
-    <url>/2020/09/21/luo-xing-yue-9.21/</url>
+    <url>/ArtistArthur.github.io/2020/09/21/luo-xing-yue-9.21/</url>
     <content><![CDATA[<h2 id="每日任务"><a href="#每日任务" class="headerlink" title="每日任务"></a>每日任务</h2><p> 一道leetcode  未完成</p>
 <h2 id="我用到的Linux常用命令及解释"><a href="#我用到的Linux常用命令及解释" class="headerlink" title="我用到的Linux常用命令及解释"></a>我用到的Linux常用命令及解释</h2><p>uname : 英文全拼 unix name  用于显示系统信息 可显示电脑以及操作系统的相关信息<br>-a 或 –a 显示全部的信息<br>-m 或 –machine 显示电脑类型<br>-n 或 –nodename 显示在网络上的主机名称<br>-r 或 –release 显示操作系统的发行编号<br>-s 或 –sysname 显示操作系统名称<br>-v 显示操作系统的版本</p>
 <p>cp ：英文全拼 copy file 用于复制文件或目录<br>cp [options] source dest</p>
@@ -332,7 +332,7 @@
   </entry>
   <entry>
     <title>单调栈(monotone stack)</title>
-    <url>/2020/10/14/dan-diao-zhan-monotone-stack/</url>
+    <url>/ArtistArthur.github.io/2020/10/14/dan-diao-zhan-monotone-stack/</url>
     <content><![CDATA[<h1 id="单调栈（monostone）"><a href="#单调栈（monostone）" class="headerlink" title="单调栈（monostone）"></a>单调栈（monostone）</h1><ul>
 <li>单调栈顾名思义就是一个单调的栈，可以是单调递增也可以是单调递减的</li>
 <li>单调栈可以解决的问题是：对于于一个数列，可以找到每一个数的下一个比自己大的或者小的数  </li>
@@ -431,7 +431,7 @@
   </entry>
   <entry>
     <title>test</title>
-    <url>/2020/10/28/test/</url>
+    <url>/ArtistArthur.github.io/2020/10/28/test/</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>
