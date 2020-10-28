@@ -1,0 +1,15 @@
+npm uninstall hexo-renderer-marked --save
+npm install hexo-renderer-kramed --save
+
+npm uninstall hexo-renderer-kramed --save
+npm install hexo-renderer-marked --save
+
+npm install hexo-renderer-marked@2.0.0 --save
+
+npm i -S hexo-prism-plugin
+npm uninstall -S hexo-prism-plugin
+
+git clone https://github.com/blinkfox/hexo-theme-matery themes/matery     # 稳定版
+git clone -b develop https://github.com/blinkfox/hexo-theme-matery themes/matery   #最新版(不定期进行优化更新)
+
+
