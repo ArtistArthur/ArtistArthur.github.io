@@ -438,7 +438,8 @@
     <title>xv6-read-notes</title>
     <url>/ArtistArthur.github.io/2020/10/29/xv6-read-notes/</url>
     <content><![CDATA[<h1 id="xv6-a-simple-Unix-like-teaching-operating-system"><a href="#xv6-a-simple-Unix-like-teaching-operating-system" class="headerlink" title="xv6 a simple, Unix-like teaching operating system"></a>xv6 a simple, Unix-like teaching operating system</h1><p>简介：xv6是一个Unix version6的重新实现，v6的结构和风格、ANSI 的标准、基于x86的多进程。</p>
-<h2 id="chapter-0"><a href="#chapter-0" class="headerlink" title="chapter 0"></a>chapter 0</h2><h3 id="Operating-system-interfaces"><a href="#Operating-system-interfaces" class="headerlink" title="Operating system interfaces"></a>Operating system interfaces</h3><ul>
+<h2 id="chapter-0"><a href="#chapter-0" class="headerlink" title="chapter 0"></a>chapter 0</h2><a id="more"></a>
+<h3 id="Operating-system-interfaces"><a href="#Operating-system-interfaces" class="headerlink" title="Operating system interfaces"></a>Operating system interfaces</h3><ul>
 <li><p>操作系统的工作是在多个程序之间分享计算机的资源，并提供比仅仅只有硬件更有用的服务。  </p>
 </li>
 <li><p>操作系统管理并抽象低层次的硬件，因此，一个字符处理器就不需要关心自己需要使用的是什么类型的储存介质。</p>
