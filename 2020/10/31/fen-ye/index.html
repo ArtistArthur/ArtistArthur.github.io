@@ -90,7 +90,7 @@
 <meta property="og:image" content="https://github.com/images/loading.gif">
 <meta property="og:image" content="https://github.com/images/loading.gif">
 <meta property="article:published_time" content="2020-10-30T16:10:15.000Z">
-<meta property="article:modified_time" content="2020-10-30T17:01:14.540Z">
+<meta property="article:modified_time" content="2020-10-30T17:05:10.796Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="OS">
 <meta property="article:tag" content="分页">
@@ -386,11 +386,11 @@
         <h2 id="分页机制的具体细节"><a href="#分页机制的具体细节" class="headerlink" title="分页机制的具体细节"></a>分页机制的具体细节</h2><a id="more"></a>
 <ul>
 <li>页目录：存放页表地址的一个目录（或者说是一个表）</li>
-<li>页表:存放具体的页帧的地址的一个表<br><img src="/images/loading.gif" data-original="images/postImages/%E7%BA%BF%E6%80%A7%E5%9C%B0%E5%9D%80%E5%92%8C%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80%E4%B9%8B%E9%97%B4%E7%9A%84%E5%8F%98%E6%8D%A2.png" alt="线性地址和物理地址之间的变换"></li>
-<li>页目录和页表里面的内容都是一样的：共32位，高20位是页帧的物理地址，后12位是一些标志位（比如存在为P），实际上他们无区别，只是解释不同<br><img src="/images/loading.gif" data-original="images/postImages/%E9%A1%B5%E7%9B%AE%E5%BD%95%E9%A1%B5%E8%A1%A8%E9%A1%B9.png" alt="页目录页表项"></li>
+<li>页表:存放具体的页帧的地址的一个表<br><img src="/images/loading.gif" data-original="https://ftp.bmp.ovh/imgs/2020/10/226caa5bbf53d9bd.png" alt="线性地址和物理地址之间的变换"></li>
+<li>页目录和页表里面的内容都是一样的：共32位，高20位是页帧的物理地址，后12位是一些标志位（比如存在为P），实际上他们无区别，只是解释不同<br><img src="/images/loading.gif" data-original="https://ftp.bmp.ovh/imgs/2020/10/00b5e0e8aed71b34.png" alt="页目录页表项"></li>
 <li>实际上一个页目录本身也是一个页面（帧）大小是4K，一个页目录项占4B，因此一个页目录可以放1024个目录项</li>
 <li>同理，一个页表本身也是一个页面（帧），大小是4K，一个页表项占4B，因此一个页表可以存1024个页帧地址。</li>
-<li>CR3的结构：<br><img src="/images/loading.gif" data-original="images/postImages/CR3%E7%9A%84%E7%BB%93%E6%9E%84.png" alt="CR3的结构"><h2 id="线性地址到物理地址的转换过程"><a href="#线性地址到物理地址的转换过程" class="headerlink" title="线性地址到物理地址的转换过程"></a>线性地址到物理地址的转换过程</h2></li>
+<li>CR3的结构：<br><img src="/images/loading.gif" data-original="https://ftp.bmp.ovh/imgs/2020/10/9789493f86f1c729.png" alt="CR3的结构"><h2 id="线性地址到物理地址的转换过程"><a href="#线性地址到物理地址的转换过程" class="headerlink" title="线性地址到物理地址的转换过程"></a>线性地址到物理地址的转换过程</h2></li>
 <li>首先从CR3寄存器取得页目录基地址，从而找到页目录物理地址</li>
 <li>取线性地址的高10位为索引号，从页目录中找到对应的页目录项，从而找到页表的物理地址（为什么是十位：因为4K页面内可以存1024个页目录项）</li>
 <li>取线性地址的接下来10位，作为索引号，从页表中找到对应页表项，里面有页面的物理地址（10位理由同上）</li>
