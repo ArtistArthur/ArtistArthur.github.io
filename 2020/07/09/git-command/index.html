@@ -88,7 +88,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://github.com/images/loading.gif">
 <meta property="article:published_time" content="2020-07-09T03:16:33.000Z">
-<meta property="article:modified_time" content="2020-10-28T11:50:22.059Z">
+<meta property="article:modified_time" content="2020-10-31T03:53:39.990Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="math">
 <meta name="twitter:card" content="summary">
@@ -358,12 +358,24 @@
       
 
       
-        <h1 id="git常用命令以及与github的结合使用"><a href="#git常用命令以及与github的结合使用" class="headerlink" title="git常用命令以及与github的结合使用"></a>git常用命令以及与github的结合使用</h1><h2 id="git中的四个区域"><a href="#git中的四个区域" class="headerlink" title="git中的四个区域"></a>git中的四个区域</h2><a id="more"></a>
+        <h2 id="git常用命令以及与github的结合使用"><a href="#git常用命令以及与github的结合使用" class="headerlink" title="git常用命令以及与github的结合使用"></a>git常用命令以及与github的结合使用</h2><h3 id="git中的四个区域"><a href="#git中的四个区域" class="headerlink" title="git中的四个区域"></a>git中的四个区域</h3><a id="more"></a>
 <ul>
-<li>workspace：写和修改代码的地方</li>
-<li>index/stage：暂存区，git add [file name]把修改从workspace提交到暂存区</li>
-<li>local repository：本地仓库，git commit -m [message] 把修改从暂存区提交到本地仓库</li>
-<li>remote ：远程仓库，git push 把修改从本地仓库推送到远程仓库<br><img src="/images/loading.gif" data-original="images/bg2015120901.png" alt="git区域关系" title="git"></li>
+<li><p>workspace：写和修改代码的地方</p>
+</li>
+<li><p>index/stage：暂存区，git add [file name]把修改从workspace提交到暂存区</p>
+</li>
+<li><p>local repository：本地仓库，git commit -m [message] 把修改从暂存区提交到本地仓库</p>
+</li>
+<li><p>remote ：远程仓库，git push 把修改从本地仓库推送到远程仓库<br><img src="/images/loading.gif" data-original="https://i.bmp.ovh/imgs/2019/07/c49a713c776e6967.png" alt="git区域关系"></p>
+</li>
+<li><p>git pull 把远程仓库最新的更改拉取到本地</p>
+</li>
+<li><p>git add . 把所有本地改动提交到暂存区</p>
+</li>
+<li><p>git commit -m [message] 把修改从暂存区提交到本地仓库</p>
+</li>
+<li><p>git push 把修改从本地仓库推送到远程仓库</p>
+</li>
 </ul>
 
       
@@ -389,8 +401,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/ArtistArthur.github.io/2020/07/02/tcp-ip/" rel="next" title="TCP_IP">
-                <i class="fa fa-chevron-left"></i> TCP_IP
+              <a href="/ArtistArthur.github.io/2020/07/02/tcp-ip/" rel="next" title="TCP/IP详解">
+                <i class="fa fa-chevron-left"></i> TCP/IP详解
               </a>
             
           </div>
@@ -399,8 +411,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/ArtistArthur.github.io/2020/09/21/luo-xing-yue-9.21/" rel="prev" title="9.21">
-                9.21 <i class="fa fa-chevron-right"></i>
+              <a href="/ArtistArthur.github.io/2020/09/21/linux-ming-ling/" rel="prev" title="Linux命令">
+                Linux命令 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -549,7 +561,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#git常用命令以及与github的结合使用"><span class="nav-number">1.</span> <span class="nav-text">git常用命令以及与github的结合使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#git中的四个区域"><span class="nav-number">1.1.</span> <span class="nav-text">git中的四个区域</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#git常用命令以及与github的结合使用"><span class="nav-number">1.</span> <span class="nav-text">git常用命令以及与github的结合使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#git中的四个区域"><span class="nav-number">1.1.</span> <span class="nav-text">git中的四个区域</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -1207,10 +1219,10 @@
 
   
 
-<script src="/ArtistArthur.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/ArtistArthur.github.io/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script><script>
+<script>
             window.imageLazyLoadSetting = {
                 isSPA: false,
                 processImages: null,
             };
-        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=i;var e=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function i(){e&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,a=0;a<r.length;a++)0<=(t=(t=r[a]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(n.innerHeight+240||document.documentElement.clientHeight+240)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}i(),n.addEventListener("scroll",function(){var t,e;t=i,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script></body>
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=i;var e=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function i(){e&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,a=0;a<r.length;a++)0<=(t=(t=r[a]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(n.innerHeight+240||document.documentElement.clientHeight+240)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}i(),n.addEventListener("scroll",function(){var t,e;t=i,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script><script src="/ArtistArthur.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/ArtistArthur.github.io/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
 </html>
