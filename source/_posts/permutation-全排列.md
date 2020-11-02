@@ -7,14 +7,14 @@ mathjax: true
 date: 2020-06-29 16:36:47
 password:
 summary:
-tags:
-categories:
+tags: algorithms
+categories: algorithms
 ---
 
 # permutation(全排列)
 
 ## 全排列的各种输出方法
-
+<!--more-->
 ### 注意事项
 
 * 阶乘增长速度比指数还快，很容易爆。

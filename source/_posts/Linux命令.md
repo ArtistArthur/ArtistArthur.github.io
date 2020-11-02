@@ -1,5 +1,5 @@
 ---
-title: 罗星月9.21
+title: Linux命令
 top: false
 cover: false
 toc: true
@@ -11,11 +11,8 @@ tags:
 categories:
 ---
 
-## 每日任务
- 一道leetcode  未完成
-
-## 我用到的Linux常用命令及解释
-
+## 用到的Linux常用命令及解释
+<!--more-->
 uname : 英文全拼 unix name  用于显示系统信息 可显示电脑以及操作系统的相关信息
 -a 或 --a 显示全部的信息
 -m 或 --machine 显示电脑类型
@@ -24,13 +21,16 @@ uname : 英文全拼 unix name  用于显示系统信息 可显示电脑以及�
 -s 或 --sysname 显示操作系统名称
 -v 显示操作系统的版本
 
+apt : advanced package tool  
+apt-get  xxx  install  
+
 cp ：英文全拼 copy file 用于复制文件或目录
 cp [options] source dest
 
 #是管理员 $是用户
 了解了
 yum : yellow dogUpdater， Modified
-sudo : switch user do
+sudo : superuser do
 ## 杂乱的知识
 大端：数据低字节在内存高位 可以优先看到符号位快速判断正负和大小
 小端：数据高字节在内存低位 可以优先进行计算最后考虑符号位

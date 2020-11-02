@@ -1,5 +1,5 @@
 ---
-title: TCP_IP
+title: TCP/IP详解
 top: false
 cover: false
 toc: true
@@ -10,10 +10,9 @@ summary:
 tags:
 categories:
 ---
-
-
+# 计算机网络细节
+<!--more-->
 ## ICMP
-
 ICMP是IP协议的附属协议，IP层用它来与其他主机或者路由器交换错误报文和其他重要信息。尽管ICMP主要被IP使用，但应用程序也有可能访问它，比如Ping和Traceroute。
 
 ## IGMP

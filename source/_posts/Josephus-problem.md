@@ -7,15 +7,15 @@ mathjax: true
 date: 2020-06-26 04:48:29
 password:
 summary:
-tags:
-img: https://cdn.jsdelivr.net/gh/artistarthur/ArtistArthur.github.io/images/0.jpg
-categories:
+tags: algorithms
+categories: algorithms
+
 ---
 # Josephus problem（约瑟夫问题）
 ## 问题描述
 链接：http://bailian.openjudge.cn/practice/2746/    
 >约瑟夫问题：有ｎ只猴子，按顺时针方向围成一圈选大王（编号从１到ｎ），从第１号开始报数，一直数到ｍ，数到ｍ的猴子退出圈外，剩下的猴子再接着从1开始报数。就这样，直到圈内只剩下一只猴子时，这个猴子就是猴王，编程求输入ｎ，ｍ后，输出最后猴王的编号。
-
+<!--more-->
 来源：
 * 约瑟夫是犹太军队的一个将军，在反抗罗马的起义中，他所率领的军队被击溃，只剩下残余的部队40余人，他们都是宁死不屈的人，所以不愿投降做叛徒。一群人表决说要死，所以用一种策略来先后杀死所有人。
 * 于是约瑟夫建议：每次由其他两人一起杀死一个人，而被杀的人的先后顺序是由抽签决定的，约瑟夫有预谋地抽到了最后一签，在杀了除了他和剩余那个人之外的最后一人，他劝服了另外一个没死的人投降了罗马。
