@@ -87,7 +87,7 @@
 <meta property="og:description" content="Introductionlab1的内容或者目的：  熟悉x86的汇编语言，搭建环境：下载make qemu等，熟悉PC的开机流程 examine the boot loader for 6.828 kernel initial template for 6.828 kernel ,named JOS">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-10-21T15:00:33.000Z">
-<meta property="article:modified_time" content="2020-11-08T13:00:44.554Z">
+<meta property="article:modified_time" content="2020-11-08T13:34:09.696Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="math">
 <meta name="twitter:card" content="summary">
@@ -428,43 +428,140 @@
 <li>BIOS的功能是设置中断表、初始化设备，然后寻找一个可引导开机的设备（硬盘软盘等），然后读取开机引导设备的第一个扇区（里面的程序是bootloader）到内存0x7c00处（这个地址是随意的，但是是写死的，也就是说这个地址没什么特殊意义，只是刚好选了它，但它仍要满足一些条件，内存对齐、位置等），再跳转到bootloader的入口，控制权就转移到了bootloader  <h2 id="Part2-The-Boot-Loader"><a href="#Part2-The-Boot-Loader" class="headerlink" title="Part2: The Boot Loader"></a>Part2: The Boot Loader</h2></li>
 <li>一般情况下，或者说老一代的PC其开机设备的第一个扇区存了bootloader，负责开机引导等，现代的PCbootloader会有更复杂的功能和大小</li>
 <li>JOS的bootloader由一个汇编文件:boot/boot.S和C源文件：boot/main.c组成，里面的内容分析：</li>
-<li>boot/boot.S<pre><code>#include &lt;inc/mmu.h&gt;
+<li>boot/boot.S</li>
+</ul>
+<pre><code>
+#include &lt;inc/mmu.h&gt;
 # Start the CPU: switch to 32-bit protected mode, jump into C.
 # The BIOS loads this code from the first sector of the hard disk into
 # memory at physical address 0x7c00 and starts executing in real mode
 # with %cs=0 %ip=7c00.
-</code></pre></li>
+
+#.set symbol, expression 汇编意义：设置symbol为expression
+
+.set PROT_MODE_CSEG, 0x8         # kernel code segment selector   
+#段选择符的格式:13位索引+1位TI表指示标志（代表是不是全局描述符）+2位RPL
+#因此 0x8  0000000000001 0 00
+#此处预设代码段选择符,这个选择符代表，索引是1，TI为0表示全局描述符，RPL权限设为最高
+
+.set PROT_MODE_DSEG, 0x10        # kernel data segment selector
+#     0x10 0000000000010 0 00
+#此处预设数据段选择符,代表索引是2，全局描述符，权限0最高
+
+.set CR0_PE_ON,      0x1         # protected mode enable flag
+#保护模式的设置由CR0管理，这里的标识符代表开启保护模式时CR0对应的位的值:最低位置位
+
+.globl start  
+start:                 #函数的开始，相当于main
+  .code16                     # Assemble for 16-bit mode    
+  #让汇编器按照16位代码汇编
+
+  cli                         # Disable interrupts
+  cld                         # String operations increment
+#关闭中断，设置字符串操作是递增方向
+#cld的作用是将direct flag标志位清零
+#it means that instructions that autoincrement the source index and destination index (like MOVS) will increase both of them
+
+  # Set up the important data segment registers (DS, ES, SS).
+
+  xorw    %ax,%ax             # Segment number zero
+  movw    %ax,%ds             # -&gt; Data Segment
+  movw    %ax,%es             # -&gt; Extra Segment
+  movw    %ax,%ss             # -&gt; Stack Segment
+
+  # Enable A20:
+  #   For backwards compatibility with the earliest PCs, physical
+  #   address line 20 is tied low, so that addresses higher than
+  #   1MB wrap around to zero by default.  This code undoes this.
+
+  #激活A20地址位,由于需要兼容早期pc，物理地址的第20位绑定为0，所以高于1MB的地址又回到了0x00000
+  #激活A20后，就可以访问所有4G内存，就可以使用保护模式
+  #激活方式：由于历史原因A20地址位由键盘控制器芯片8042管理。所以要给8042发命令激活A20
+  #8042有两个IO端口：0x60和0x64,激活流程为： 先发送0xd1命令到0x64端口 --&gt; 再发送0xdf到0x60
+
+seta20.1:
+  inb     $0x64,%al               # Wait for not busy
+  #汇编语言有专门的读取端口信息的指令，in out后面的b代表一个字节
+
+  testb   $0x2,%al
+  #测试（两操作数作与运算,仅修改标志位，不回送结果）。
+
+  jnz     seta20.1
+#发送命令之前，要等待键盘输入缓冲区为空，这通过8042的状态寄存器的第2bit来观察，而状态寄存器的值可以读0x64端口得到。
+#上面的指令的意思就是，如果状态寄存器的第2位为1，就跳到seta20.1符号处执行，知道第2位为0，代表缓冲区为空
+
+  movb    $0xd1,%al               # 0xd1 -&gt; port 0x64
+  outb    %al,$0x64
+#发送0xd1到0x64端口
+
+seta20.2:
+  inb     $0x64,%al               # Wait for not busy
+  testb   $0x2,%al
+  jnz     seta20.2
+
+  movb    $0xdf,%al               # 0xdf -&gt; port 0x60
+  outb    %al,$0x60
+
+  # Switch from real to protected mode, using a bootstrap GDT
+  # and segment translation that makes virtual addresses 
+  # identical to their physical addresses, so that the 
+  # effective memory map does not change during the switch.
+  #转入保护模式，这里需要指定一个临时的GDT，来翻译逻辑地址。
+  #这里使用的GDT通过gdtdesc段定义，它翻译得到的物理地址和虚拟地址相同（段描述符里的段基址为0）
+  #所以转换过程中内存映射不会改变
+
+  lgdt    gdtdesc   
+  #lgdt指令把gdtdesc的地址加载进gdtr寄存器，代表全局段描述符表
+
+  movl    %cr0, %eax
+  orl     $CR0_PE_ON, %eax
+  movl    %eax, %cr0
+  #开启保护模式
+  # Jump to next instruction, but in 32-bit code segment.
+  # Switches processor into 32-bit mode.
+  #由于进入保护模式，所有地址都应该是：cs:eip
+
+  ljmp    $PROT_MODE_CSEG, $protcseg         #ljmp cs esp
+  #Long jump, use 0xfebc for the CS register and 0x12345678 for the EIP register:
+  #ljmp $0xfebc, $0x12345678
+
+  .code32                     # Assemble for 32-bit mode
+protcseg:
+  # Set up the protected-mode data segment registers
+  movw    $PROT_MODE_DSEG, %ax    # Our data segment selector
+  movw    %ax, %ds                # -&gt; DS: Data Segment
+  movw    %ax, %es                # -&gt; ES: Extra Segment
+  movw    %ax, %fs                # -&gt; FS
+  movw    %ax, %gs                # -&gt; GS
+  movw    %ax, %ss                # -&gt; SS: Stack Segment
+
+  # Set up the stack pointer and call into C.
+  movl    $start, %esp
+  call bootmain
+
+  # If bootmain returns (it shouldn&#39;t), loop.
+spin:
+  jmp spin
+
+# Bootstrap GDT
+.p2align 2                                # force 4 byte alignment
+gdt:
+  SEG_NULL                # null seg
+  SEG(STA_X|STA_R, 0x0, 0xffffffff)    # code seg
+  SEG(STA_W, 0x0, 0xffffffff)            # data seg
+
+gdtdesc:
+  .word   0x17                            # sizeof(gdt) - 1
+  .long   gdt                             # address gdt
+
+</code></pre><ul>
+<li>boot/boot.S的功能有一个：<ul>
+<li>从实模式进入32位保护模式，方法是把CR0最低位置位，即开启了保护模式，然后激活A20使得cpu可以寻址1MB以上的空间，之后设置一个段表，最后调用bootmain，进入main.c</li>
 </ul>
-<p>#.set symbol, expression 汇编意义：设置symbol为expression</p>
-<p>.set PROT_MODE_CSEG, 0x8         # kernel code segment selector<br>#段选择符的格式:13位索引+1位TI表指示标志（代表是不是全局描述符）+2位RPL<br>#因此 0x8  0000000000001 0 00<br>#此处预设代码段选择符,这个选择符代表，索引是1，TI为0表示全局描述符，RPL权限设为最高</p>
-<p>.set PROT_MODE_DSEG, 0x10        # kernel data segment selector</p>
-<h1 id="0x10-0000000000010-0-00"><a href="#0x10-0000000000010-0-00" class="headerlink" title="0x10 0000000000010 0 00"></a>0x10 0000000000010 0 00</h1><p>#此处预设数据段选择符,代表索引是2，全局描述符，权限0最高</p>
-<p>.set CR0_PE_ON,      0x1         # protected mode enable flag<br>#保护模式的设置由CR0管理，这里的标识符代表开启保护模式时CR0对应的位的值:最低位置位</p>
-<p>.globl start<br>start:                 #函数的开始，相当于main<br>  .code16                     # Assemble for 16-bit mode<br>  #让汇编器按照16位代码汇编</p>
-<p>  cli                         # Disable interrupts<br>  cld                         # String operations increment<br>#关闭中断，设置字符串操作是递增方向<br>#cld的作用是将direct flag标志位清零<br>#it means that instructions that autoincrement the source index and destination index (like MOVS) will increase both of them</p>
-<h1 id="Set-up-the-important-data-segment-registers-DS-ES-SS"><a href="#Set-up-the-important-data-segment-registers-DS-ES-SS" class="headerlink" title="Set up the important data segment registers (DS, ES, SS)."></a>Set up the important data segment registers (DS, ES, SS).</h1><p>  xorw    %ax,%ax             # Segment number zero<br>  movw    %ax,%ds             # -&gt; Data Segment<br>  movw    %ax,%es             # -&gt; Extra Segment<br>  movw    %ax,%ss             # -&gt; Stack Segment</p>
-<h1 id="Enable-A20"><a href="#Enable-A20" class="headerlink" title="Enable A20:"></a>Enable A20:</h1><h1 id="For-backwards-compatibility-with-the-earliest-PCs-physical"><a href="#For-backwards-compatibility-with-the-earliest-PCs-physical" class="headerlink" title="For backwards compatibility with the earliest PCs, physical"></a>For backwards compatibility with the earliest PCs, physical</h1><h1 id="address-line-20-is-tied-low-so-that-addresses-higher-than"><a href="#address-line-20-is-tied-low-so-that-addresses-higher-than" class="headerlink" title="address line 20 is tied low, so that addresses higher than"></a>address line 20 is tied low, so that addresses higher than</h1><h1 id="1MB-wrap-around-to-zero-by-default-This-code-undoes-this"><a href="#1MB-wrap-around-to-zero-by-default-This-code-undoes-this" class="headerlink" title="1MB wrap around to zero by default.  This code undoes this."></a>1MB wrap around to zero by default.  This code undoes this.</h1><p>  #激活A20地址位,由于需要兼容早期pc，物理地址的第20位绑定为0，所以高于1MB的地址又回到了0x00000<br>  #激活A20后，就可以访问所有4G内存，就可以使用保护模式<br>  #激活方式：由于历史原因A20地址位由键盘控制器芯片8042管理。所以要给8042发命令激活A20<br>  #8042有两个IO端口：0x60和0x64,激活流程为： 先发送0xd1命令到0x64端口 –&gt; 再发送0xdf到0x60</p>
-<p>seta20.1:<br>  inb     $0x64,%al               # Wait for not busy<br>  #汇编语言有专门的读取端口信息的指令，in out后面的b代表一个字节</p>
-<p>  testb   $0x2,%al<br>  #测试（两操作数作与运算,仅修改标志位，不回送结果）。</p>
-<p>  jnz     seta20.1<br>#发送命令之前，要等待键盘输入缓冲区为空，这通过8042的状态寄存器的第2bit来观察，而状态寄存器的值可以读0x64端口得到。<br>#上面的指令的意思就是，如果状态寄存器的第2位为1，就跳到seta20.1符号处执行，知道第2位为0，代表缓冲区为空</p>
-<p>  movb    $0xd1,%al               # 0xd1 -&gt; port 0x64<br>  outb    %al,$0x64<br>#发送0xd1到0x64端口</p>
-<p>seta20.2:<br>  inb     $0x64,%al               # Wait for not busy<br>  testb   $0x2,%al<br>  jnz     seta20.2</p>
-<p>  movb    $0xdf,%al               # 0xdf -&gt; port 0x60<br>  outb    %al,$0x60</p>
-<h1 id="Switch-from-real-to-protected-mode-using-a-bootstrap-GDT"><a href="#Switch-from-real-to-protected-mode-using-a-bootstrap-GDT" class="headerlink" title="Switch from real to protected mode, using a bootstrap GDT"></a>Switch from real to protected mode, using a bootstrap GDT</h1><h1 id="and-segment-translation-that-makes-virtual-addresses"><a href="#and-segment-translation-that-makes-virtual-addresses" class="headerlink" title="and segment translation that makes virtual addresses"></a>and segment translation that makes virtual addresses</h1><h1 id="identical-to-their-physical-addresses-so-that-the"><a href="#identical-to-their-physical-addresses-so-that-the" class="headerlink" title="identical to their physical addresses, so that the"></a>identical to their physical addresses, so that the</h1><h1 id="effective-memory-map-does-not-change-during-the-switch"><a href="#effective-memory-map-does-not-change-during-the-switch" class="headerlink" title="effective memory map does not change during the switch."></a>effective memory map does not change during the switch.</h1><p>  #转入保护模式，这里需要指定一个临时的GDT，来翻译逻辑地址。<br>  #这里使用的GDT通过gdtdesc段定义，它翻译得到的物理地址和虚拟地址相同（段描述符里的段基址为0）<br>  #所以转换过程中内存映射不会改变</p>
-<p>  lgdt    gdtdesc<br>  #lgdt指令把gdtdesc的地址加载进gdtr寄存器，代表全局段描述符表</p>
-<p>  movl    %cr0, %eax<br>  orl     $CR0_PE_ON, %eax<br>  movl    %eax, %cr0<br>  #开启保护模式</p>
-<h1 id="Jump-to-next-instruction-but-in-32-bit-code-segment"><a href="#Jump-to-next-instruction-but-in-32-bit-code-segment" class="headerlink" title="Jump to next instruction, but in 32-bit code segment."></a>Jump to next instruction, but in 32-bit code segment.</h1><h1 id="Switches-processor-into-32-bit-mode"><a href="#Switches-processor-into-32-bit-mode" class="headerlink" title="Switches processor into 32-bit mode."></a>Switches processor into 32-bit mode.</h1><p>  #由于进入保护模式，所有地址都应该是：cs:eip</p>
-<p>  ljmp    $PROT_MODE_CSEG, $protcseg         #ljmp cs esp<br>  #Long jump, use 0xfebc for the CS register and 0x12345678 for the EIP register:<br>  #ljmp $0xfebc, $0x12345678</p>
-<p>  .code32                     # Assemble for 32-bit mode<br>protcseg:</p>
-<h1 id="Set-up-the-protected-mode-data-segment-registers"><a href="#Set-up-the-protected-mode-data-segment-registers" class="headerlink" title="Set up the protected-mode data segment registers"></a>Set up the protected-mode data segment registers</h1><p>  movw    $PROT_MODE_DSEG, %ax    # Our data segment selector<br>  movw    %ax, %ds                # -&gt; DS: Data Segment<br>  movw    %ax, %es                # -&gt; ES: Extra Segment<br>  movw    %ax, %fs                # -&gt; FS<br>  movw    %ax, %gs                # -&gt; GS<br>  movw    %ax, %ss                # -&gt; SS: Stack Segment</p>
-<h1 id="Set-up-the-stack-pointer-and-call-into-C"><a href="#Set-up-the-stack-pointer-and-call-into-C" class="headerlink" title="Set up the stack pointer and call into C."></a>Set up the stack pointer and call into C.</h1><p>  movl    $start, %esp<br>  call bootmain</p>
-<h1 id="If-bootmain-returns-it-shouldn’t-loop"><a href="#If-bootmain-returns-it-shouldn’t-loop" class="headerlink" title="If bootmain returns (it shouldn’t), loop."></a>If bootmain returns (it shouldn’t), loop.</h1><p>spin:<br>  jmp spin</p>
-<h1 id="Bootstrap-GDT"><a href="#Bootstrap-GDT" class="headerlink" title="Bootstrap GDT"></a>Bootstrap GDT</h1><p>.p2align 2                                # force 4 byte alignment<br>gdt:<br>  SEG_NULL                # null seg<br>  SEG(STA_X|STA_R, 0x0, 0xffffffff)    # code seg<br>  SEG(STA_W, 0x0, 0xffffffff)            # data seg</p>
-<p>gdtdesc:<br>  .word   0x17                            # sizeof(gdt) - 1<br>  .long   gdt                             # address gdt</p>
-<pre><code>
-* boot/boot.S的功能有一个：
-  * 从实模式进入32位保护模式，方法是把CR0最低位置位，即开启了保护模式，然后激活A20使得cpu可以寻址1MB以上的空间，之后设置一个段表，最后调用bootmain，进入main.c
-* </code></pre>
+</li>
+<li></li>
+</ul>
+
       
     </div>
     
@@ -648,7 +745,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-搭建环境：git-clone-qemu"><span class="nav-number">1.1.</span> <span class="nav-text">a. 搭建环境：git clone qemu</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-提交作业"><span class="nav-number">1.2.</span> <span class="nav-text">b. 提交作业</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Part1：Bootstrap"><span class="nav-number">2.</span> <span class="nav-text">Part1：Bootstrap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-汇编"><span class="nav-number">2.1.</span> <span class="nav-text">a.汇编</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-qemu的使用"><span class="nav-number">2.2.</span> <span class="nav-text">b.qemu的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-PC的物理地址空间"><span class="nav-number">2.3.</span> <span class="nav-text">c. PC的物理地址空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#d-The-ROM-BIOS"><span class="nav-number">2.4.</span> <span class="nav-text">d.The ROM BIOS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Part2-The-Boot-Loader"><span class="nav-number">3.</span> <span class="nav-text">Part2: The Boot Loader</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x10-0000000000010-0-00"><span class="nav-number"></span> <span class="nav-text">0x10 0000000000010 0 00</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Set-up-the-important-data-segment-registers-DS-ES-SS"><span class="nav-number"></span> <span class="nav-text">Set up the important data segment registers (DS, ES, SS).</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Enable-A20"><span class="nav-number"></span> <span class="nav-text">Enable A20:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#For-backwards-compatibility-with-the-earliest-PCs-physical"><span class="nav-number"></span> <span class="nav-text">For backwards compatibility with the earliest PCs, physical</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#address-line-20-is-tied-low-so-that-addresses-higher-than"><span class="nav-number"></span> <span class="nav-text">address line 20 is tied low, so that addresses higher than</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1MB-wrap-around-to-zero-by-default-This-code-undoes-this"><span class="nav-number"></span> <span class="nav-text">1MB wrap around to zero by default.  This code undoes this.</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Switch-from-real-to-protected-mode-using-a-bootstrap-GDT"><span class="nav-number"></span> <span class="nav-text">Switch from real to protected mode, using a bootstrap GDT</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#and-segment-translation-that-makes-virtual-addresses"><span class="nav-number"></span> <span class="nav-text">and segment translation that makes virtual addresses</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#identical-to-their-physical-addresses-so-that-the"><span class="nav-number"></span> <span class="nav-text">identical to their physical addresses, so that the</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#effective-memory-map-does-not-change-during-the-switch"><span class="nav-number"></span> <span class="nav-text">effective memory map does not change during the switch.</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Jump-to-next-instruction-but-in-32-bit-code-segment"><span class="nav-number"></span> <span class="nav-text">Jump to next instruction, but in 32-bit code segment.</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Switches-processor-into-32-bit-mode"><span class="nav-number"></span> <span class="nav-text">Switches processor into 32-bit mode.</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Set-up-the-protected-mode-data-segment-registers"><span class="nav-number"></span> <span class="nav-text">Set up the protected-mode data segment registers</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Set-up-the-stack-pointer-and-call-into-C"><span class="nav-number"></span> <span class="nav-text">Set up the stack pointer and call into C.</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#If-bootmain-returns-it-shouldn’t-loop"><span class="nav-number"></span> <span class="nav-text">If bootmain returns (it shouldn’t), loop.</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Bootstrap-GDT"><span class="nav-number"></span> <span class="nav-text">Bootstrap GDT</span></a></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-搭建环境：git-clone-qemu"><span class="nav-number">1.1.</span> <span class="nav-text">a. 搭建环境：git clone qemu</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-提交作业"><span class="nav-number">1.2.</span> <span class="nav-text">b. 提交作业</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Part1：Bootstrap"><span class="nav-number">2.</span> <span class="nav-text">Part1：Bootstrap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-汇编"><span class="nav-number">2.1.</span> <span class="nav-text">a.汇编</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-qemu的使用"><span class="nav-number">2.2.</span> <span class="nav-text">b.qemu的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-PC的物理地址空间"><span class="nav-number">2.3.</span> <span class="nav-text">c. PC的物理地址空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#d-The-ROM-BIOS"><span class="nav-number">2.4.</span> <span class="nav-text">d.The ROM BIOS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Part2-The-Boot-Loader"><span class="nav-number">3.</span> <span class="nav-text">Part2: The Boot Loader</span></a></li></ol></div>
             
 
           </div>
