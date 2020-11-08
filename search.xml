@@ -132,13 +132,10 @@
 <h3 id="a-搭建环境：git-clone-qemu"><a href="#a-搭建环境：git-clone-qemu" class="headerlink" title="a. 搭建环境：git clone qemu"></a>a. 搭建环境：git clone qemu</h3><ul>
 <li>完全参照 <a href="https://www.cnblogs.com/gatsby123/p/9746193.html" target="_blank" rel="noopener">https://www.cnblogs.com/gatsby123/p/9746193.html</a><br>之前用的其他的博客但是没搞好，这个博客解决了  </li>
 <li>还遇到一个头文件缺失的问题: <a href="https://github.com/Ebiroll/qemu_esp32/issues/12">https://github.com/Ebiroll/qemu_esp32/issues/12</a> 通过添加头文件通过了<br>学到的东西：  </li>
-<li>知道了qemu是个跑在linux上的模拟器，可以模拟出各种硬件状态。在这个实验中，qemu的作用是模拟出i386的环境，因为这个实验写出的操作系统是跑在i386上的。<h3 id="b-提交作业"><a href="#b-提交作业" class="headerlink" title="b. 提交作业"></a>b. 提交作业</h3>这个是针对mit自己的学生的，不知道我可不可以也跑测试评分，之后看到再说</li>
-</ul>
-<h2 id="2-Part1：Bootstrap"><a href="#2-Part1：Bootstrap" class="headerlink" title="2.Part1：Bootstrap"></a>2.Part1：Bootstrap</h2><p>这个部分不写代码，主要是了解和学习汇编相关知识和开机引导流程</p>
-<h3 id="a-汇编"><a href="#a-汇编" class="headerlink" title="a.汇编"></a>a.汇编</h3><ul>
+<li>知道了qemu是个跑在linux上的模拟器，可以模拟出各种硬件状态。在这个实验中，qemu的作用是模拟出i386的环境，因为这个实验写出的操作系统是跑在i386上的。<h3 id="b-提交作业"><a href="#b-提交作业" class="headerlink" title="b. 提交作业"></a>b. 提交作业</h3>当完成代码后，可以在lab下 make grade,获得评分。  <h2 id="2-Part1：Bootstrap"><a href="#2-Part1：Bootstrap" class="headerlink" title="2.Part1：Bootstrap"></a>2.Part1：Bootstrap</h2>这个部分不写代码，主要是了解和学习汇编相关知识和开机引导流程<h3 id="a-汇编"><a href="#a-汇编" class="headerlink" title="a.汇编"></a>a.汇编</h3></li>
 <li>汇编有两种语法，一个是Intel的一个是AT&amp;T。x86一般用Intel语法，NASM（Netwide Assembly)是使用Intel语法的汇编器，GNU使用AT&amp;T语法</li>
-<li>汇编的各种细节（之后写）<h3 id="b-qemu的使用"><a href="#b-qemu的使用" class="headerlink" title="b.qemu的使用"></a>b.qemu的使用</h3></li>
-<li>待写<h3 id="c-PC的物理地址空间"><a href="#c-PC的物理地址空间" class="headerlink" title="c. PC的物理地址空间"></a>c. PC的物理地址空间</h3></li>
+<li>主要了解几种常见汇编指令   <h3 id="b-qemu的使用"><a href="#b-qemu的使用" class="headerlink" title="b.qemu的使用"></a>b.qemu的使用</h3></li>
+<li>配置好qemu后，直接在lab下 make qemu,可以编译运行kernel  <h3 id="c-PC的物理地址空间"><a href="#c-PC的物理地址空间" class="headerlink" title="c. PC的物理地址空间"></a>c. PC的物理地址空间</h3></li>
 </ul>
 <pre><code>
 +------------------+  &lt;- 0xFFFFFFFF (4GB)   
@@ -188,6 +185,12 @@
 <li>并且在32位机器上，4GB的内存顶部也保留了一部分区域给32位的PCI接口设备，因此在64位机器普及后，内存又出现了第二个hole</li>
 <li>这个课程的操作系统只使用低256MB内存<h3 id="d-The-ROM-BIOS"><a href="#d-The-ROM-BIOS" class="headerlink" title="d.The ROM BIOS"></a>d.The ROM BIOS</h3></li>
 <li>学习IA-32兼容的计算机是怎么开机的</li>
+<li>打开两个终端，先后分别输入 make qemu-gdb make gdb,在输入make gdb的终端里可以使用相关gdb命令进行调试<ul>
+<li>si代表执行下一个语句并停下来，显示出来的是即将执行的语句，但是还未执行</li>
+</ul>
+</li>
+<li>BIOS加载进内存后，将从CS=0xf00 IP=0xfff0出执行，这个语句是个jmp语句，跳到CS=0Xf000 IP=0xe05b，原因是0xffff0处于BIOS末端（因为之前的语句是把BIOS加载进来，然后就到了末尾），要执行BIOS，则要跳转到BIOS的入口出</li>
+<li>BIOS的功能是设置中断表、初始化设备，然后寻找一个可引导开机的设备（硬盘软盘等），然后读取开机引导设备的第一个扇区（里面的程序是bootloader）到0x7c00处，再跳转到bootloader的入口，控制权就转移到了bootloader  <h2 id="Part2-The-Boot-Loader"><a href="#Part2-The-Boot-Loader" class="headerlink" title="Part2: The Boot Loader"></a>Part2: The Boot Loader</h2></li>
 </ul>
 ]]></content>
   </entry>
