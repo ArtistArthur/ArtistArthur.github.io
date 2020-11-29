@@ -87,7 +87,7 @@
 <meta property="og:description" content="stab格式解析 阅读材料：http:&#x2F;&#x2F;wwwcdf.pd.infn.it&#x2F;localdoc&#x2F;stabs.pdf    1 overview stab是可执行文件中的一个部分的信息格式：This debugging information describes features of the source file like line numbers, the types and scopes o">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-11-28T17:24:08.000Z">
-<meta property="article:modified_time" content="2020-11-29T10:57:28.914Z">
+<meta property="article:modified_time" content="2020-11-29T11:32:10.458Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="math">
 <meta name="twitter:card" content="summary">
@@ -367,6 +367,8 @@
 <h3 id="1-overview"><a href="#1-overview" class="headerlink" title="1 overview"></a>1 overview</h3><ul>
 <li>stab是可执行文件中的一个部分的信息格式：This debugging information describes features of the source file like line numbers, the types and scopes of variables, and function names, parameters, and scopes.     </li>
 </ul>
+<a id="more"></a>
+
 <h4 id="1-2"><a href="#1-2" class="headerlink" title="1.2"></a>1.2</h4><ul>
 <li>有三种不同的stab格式，由stab的第一个字区分。指令的名字决定了接下来的四种可能的数据域，并赋予他们不同的意义。这三个名字分别是：.stabs(string) .stabn(number) .stabd(dot)。而IBM的XCOFF汇编器使用.stabx(以及一些其他的数据域比如.file .bi)，而不是 .stabs .stabn .stabd。  </li>
 </ul>

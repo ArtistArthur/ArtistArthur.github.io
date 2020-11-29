@@ -1192,6 +1192,8 @@ gdtdesc<span class="token punctuation">:</span>
 <h3 id="1-overview"><a href="#1-overview" class="headerlink" title="1 overview"></a>1 overview</h3><ul>
 <li>stab是可执行文件中的一个部分的信息格式：This debugging information describes features of the source file like line numbers, the types and scopes of variables, and function names, parameters, and scopes.     </li>
 </ul>
+<a id="more"></a>
+
 <h4 id="1-2"><a href="#1-2" class="headerlink" title="1.2"></a>1.2</h4><ul>
 <li>有三种不同的stab格式，由stab的第一个字区分。指令的名字决定了接下来的四种可能的数据域，并赋予他们不同的意义。这三个名字分别是：.stabs(string) .stabn(number) .stabd(dot)。而IBM的XCOFF汇编器使用.stabx(以及一些其他的数据域比如.file .bi)，而不是 .stabs .stabn .stabd。  </li>
 </ul>
