@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="DP,线性DP," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -79,18 +79,17 @@
 
 
 
-<meta name="description" content="简单的线性规划 https:&#x2F;&#x2F;leetcode-cn.com&#x2F;problems&#x2F;maximum-subarray&#x2F; $dp[i]$代表以当前数结尾的序列最大和 转移方程是$dp[i]&#x3D;max\{dp[i-1]+xi , xi\}$">
+<meta name="description" content="stab格式解析 阅读材料：http:&#x2F;&#x2F;wwwcdf.pd.infn.it&#x2F;localdoc&#x2F;stabs.pdfoverview stab是可执行文件中的一个部分的信息格式：This debugging information describes features of the source file like line numbers, the types and scopes of vari">
 <meta property="og:type" content="article">
-<meta property="og:title" content="最大子序和">
-<meta property="og:url" content="https://github.com/ArtistArthur/ArtistArthur.github.io/2020/11/01/zui-da-zi-xu-he/index.html">
+<meta property="og:title" content="stab解析">
+<meta property="og:url" content="https://github.com/ArtistArthur/ArtistArthur.github.io/2020/11/29/stab-jie-xi/index.html">
 <meta property="og:site_name" content="Arthur">
-<meta property="og:description" content="简单的线性规划 https:&#x2F;&#x2F;leetcode-cn.com&#x2F;problems&#x2F;maximum-subarray&#x2F; $dp[i]$代表以当前数结尾的序列最大和 转移方程是$dp[i]&#x3D;max\{dp[i-1]+xi , xi\}$">
+<meta property="og:description" content="stab格式解析 阅读材料：http:&#x2F;&#x2F;wwwcdf.pd.infn.it&#x2F;localdoc&#x2F;stabs.pdfoverview stab是可执行文件中的一个部分的信息格式：This debugging information describes features of the source file like line numbers, the types and scopes of vari">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-11-01T06:21:48.000Z">
-<meta property="article:modified_time" content="2020-11-02T05:48:13.618Z">
+<meta property="article:published_time" content="2020-11-28T17:24:08.000Z">
+<meta property="article:modified_time" content="2020-11-29T09:19:06.976Z">
 <meta property="article:author" content="Arthur Luo">
-<meta property="article:tag" content="DP">
-<meta property="article:tag" content="线性DP">
+<meta property="article:tag" content="math">
 <meta name="twitter:card" content="summary">
 
 
@@ -121,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="https://github.com/ArtistArthur/ArtistArthur.github.io/2020/11/01/zui-da-zi-xu-he/"/>
+  <link rel="canonical" href="https://github.com/ArtistArthur/ArtistArthur.github.io/2020/11/29/stab-jie-xi/"/>
 
 
 
 
 
-  <title>最大子序和 | Arthur</title>
+  <title>stab解析 | Arthur</title>
   
 
 
@@ -279,7 +278,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/ArtistArthur/ArtistArthur.github.io/ArtistArthur.github.io/2020/11/01/zui-da-zi-xu-he/">
+    <link itemprop="mainEntityOfPage" href="https://github.com/ArtistArthur/ArtistArthur.github.io/ArtistArthur.github.io/2020/11/29/stab-jie-xi/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Arthur Luo">
@@ -296,7 +295,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">最大子序和</h1>
+          <h1 class="post-title" itemprop="name headline">stab解析</h1>
         
 
         <div class="post-meta">
@@ -308,8 +307,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-01T14:21:48+08:00">
-                2020-11-01
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-29T01:24:08+08:00">
+                2020-11-29
               </time>
             
 
@@ -319,39 +318,6 @@
           </span>
 
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/ArtistArthur.github.io/categories/DP/" itemprop="url" rel="index">
-                    <span itemprop="name">DP</span>
-                  </a>
-                </span>
-
-                
-                
-                  , 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/ArtistArthur.github.io/categories/DP/%E7%BA%BF%E6%80%A7DP/" itemprop="url" rel="index">
-                    <span itemprop="name">线性DP</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -359,7 +325,7 @@
 
           
           
-             <span id="/ArtistArthur.github.io/2020/11/01/zui-da-zi-xu-he/" class="leancloud_visitors" data-flag-title="最大子序和">
+             <span id="/ArtistArthur.github.io/2020/11/29/stab-jie-xi/" class="leancloud_visitors" data-flag-title="stab解析">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -390,15 +356,28 @@
       
 
       
-        <h2 id="简单的线性规划"><a href="#简单的线性规划" class="headerlink" title="简单的线性规划"></a>简单的线性规划</h2><ul>
-<li><a href="https://leetcode-cn.com/problems/maximum-subarray/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/maximum-subarray/</a></li>
-<li>$dp[i]$代表以当前数结尾的序列最大和</li>
-<li>转移方程是$dp[i]=max\{dp[i-1]+xi , xi\}$<a id="more"></a></li>
-<li>动态规划代码$O(n)$<pre class="line-numbers language-cpp"><code class="language-cpp"><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-</li>
+        <h2 id="stab格式解析"><a href="#stab格式解析" class="headerlink" title="stab格式解析"></a>stab格式解析</h2><ul>
+<li>阅读材料：<a href="http://wwwcdf.pd.infn.it/localdoc/stabs.pdf" target="_blank" rel="noopener">http://wwwcdf.pd.infn.it/localdoc/stabs.pdf</a><h3 id="overview"><a href="#overview" class="headerlink" title="overview"></a>overview</h3></li>
+<li>stab是可执行文件中的一个部分的信息格式：This debugging information describes features of the source file like line numbers, the types and scopes of variables, and function names, parameters, and scopes.     </li>
 </ul>
-<p>class Solution<br>{<br>public:<br>    int maxSubArray(vector<int> &amp;nums)<br>    {<br>        int dp[nums.size()];<br>        int maxn = nums[0];<br>        for (int i = 0; i &lt; nums.size();i++)<br>        {<br>            if(i==0)<br>            {<br>                dp[i] = nums[i];<br>                continue;<br>            }<br>            dp[i] = dp[i - 1] + nums[i] &gt; nums[i] ? dp[i - 1] + nums[i] : nums[i];<br>            if(dp[i]&gt;maxn)<br>            {<br>                maxn = dp[i];<br>            }<br>        }<br>        return maxn;<br>    }<br>};</p>
-<p><del>~</del></p>
+<h4 id="1-2"><a href="#1-2" class="headerlink" title="1.2"></a>1.2</h4><ul>
+<li>有三种不同的stab格式，由stab的第一个字区分。指令的名字决定了接下来的四种可能的数据域，并赋予他们不同的意义。这三个名字分别是：.stabs(string) .stabn(number) .stabd(dot)。而IBM的XCOFF汇编器使用.stabx(以及一些其他的数据域比如.file .bi)，而不是 .stabs .stabn .stabd。  </li>
+</ul>
+<p>大致的三种格式为：<br>.stabs “string” ,type ,other ,desc ,value<br>.stabn type, other,desc ,value<br>.stabd type, other, desc<br>.stabx “string”, value, type, sdb-type<br>对于 .stabn 和 .stabd 来说，他们没有string域(n_strx域是0). 对于.stabd来说，value域是隐藏的，默认为当前文件位置。对于.stabx来说，sdb-type域一般不被使用并且经常被设置为0.其他域经常未被使用且被设置为0.</p>
+<ul>
+<li>type域的序号代表了这个符号表的一些基本信息。每一个有效的type序号定义了一个不同的符号表类型，并且，type定义了value string desc等域的确切意义。<h4 id="1-3-string域"><a href="#1-3-string域" class="headerlink" title="1.3 string域"></a>1.3 string域</h4></li>
+<li>对于大多数的符号表，string域包含一些调试信息。这个域的灵活性使得符号表可扩展。对于某些type，string域只包含一个名字。另一些type里的string域包含更多的复杂信息。</li>
+<li>大多数type的string域格式是：<ul>
+<li>“name:symbol-descriptor type-information”</li>
+</ul>
+</li>
+<li>name是符号表所代表的符号的名字。name可以省略，意味着这个stab代表一个匿名对象。比如’:t10=*2’定义了type 10 作为type 2 的指针，但是不给这个type名字。省略name域被AIX的dbx和GDB支持。</li>
+<li>:号后面的symbol-descriptor是一个字母符号，描述这一栏stab代表的symbol的具体类型。如果symbol-descriptor被省略，但是紧接着的是type信息，那这一栏stab代表一个局部变量。</li>
+<li>type-information格式为：type-number或者type-number=。单独的type-number是一个type引用，直接指向一个已被定义的type</li>
+<li>type-number= 格式是一个type定义，其中的number代表一个将被定义的新的类型。这些type定义可以通过number指向其他type，并且这些type number可以紧接着一个=而嵌套定义。</li>
+<li>对于一个type定义，如果紧接着=号的符号不是一个数字，那么它代表一个类型描述符，并且描述了将要被定义的类型的种类。类型描述符会决定紧接着的value。</li>
+<li></li>
+</ul>
 
       
     </div>
@@ -414,14 +393,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/ArtistArthur.github.io/tags/DP/" rel="tag"># DP</a>
-          
-            <a href="/ArtistArthur.github.io/tags/%E7%BA%BF%E6%80%A7DP/" rel="tag"># 线性DP</a>
-          
-        </div>
-      
 
       
       
@@ -431,8 +402,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/ArtistArthur.github.io/2020/10/31/fen-ye/" rel="next" title="分页">
-                <i class="fa fa-chevron-left"></i> 分页
+              <a href="/ArtistArthur.github.io/2020/11/11/ming-zi-lai-yuan/" rel="next" title="名字来源">
+                <i class="fa fa-chevron-left"></i> 名字来源
               </a>
             
           </div>
@@ -440,10 +411,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/ArtistArthur.github.io/2020/11/01/c-xu-biao/" rel="prev" title="C++虚表">
-                C++虚表 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -591,7 +558,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简单的线性规划"><span class="nav-number">1.</span> <span class="nav-text">简单的线性规划</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#stab格式解析"><span class="nav-number">1.</span> <span class="nav-text">stab格式解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#overview"><span class="nav-number">1.1.</span> <span class="nav-text">overview</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-string域"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.3 string域</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
