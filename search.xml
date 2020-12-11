@@ -4,11 +4,76 @@
   
     
     <entry>
-      <title>mit6.828lab2</title>
-      <link href="/ArtistArthur.github.io/2020/11/30/mit6-828lab2/"/>
-      <url>/ArtistArthur.github.io/2020/11/30/mit6-828lab2/</url>
+      <title>design-pattern</title>
+      <link href="/ArtistArthur.github.io/2020/12/11/design-pattern/"/>
+      <url>/ArtistArthur.github.io/2020/12/11/design-pattern/</url>
       
-        <content type="html"><![CDATA[<h3 id="mit6-828-lab2-memory-management"><a href="#mit6-828-lab2-memory-management" class="headerlink" title="mit6.828-lab2:memory management"></a>mit6.828-lab2:memory management</h3><h4 id="Introduce"><a href="#Introduce" class="headerlink" title="Introduce"></a>Introduce</h4><p>这次实验，我们要为我们的操作系统写一个内存管理器。<br>内存管理器有两个组成部分：</p><ol><li>第一个组成部分是内核的物理内存分配器，可以让内核分配内存以及释放内存。我们写的这个分配器，以4K为一个操作单元（称作一个页）。我们的任务是管理记录物理内存状态的一个数据结构（引用数、下一个页地址等）。我们还会写一系列与分配和释放物理内存相关的函数。</li><li>第二个组成部分是虚拟内存管理组件，它将内核和用户使用的虚拟内存映射到物理内存中。x86的内存管理单元硬件将完成虚拟地址向物理地址的映射，通过一些页表。我们将根据提供的一个特殊布局来修改JOS，从而建立一个内存管理单元的页表系统。<h4 id="Part1-Physical-Page-Management"><a href="#Part1-Physical-Page-Management" class="headerlink" title="Part1:Physical Page Management"></a>Part1:Physical Page Management</h4></li></ol>]]></content>
+        <content type="html"><![CDATA[<h3 id="Design-Patterns-Elements-of-Reusable-Object-Oriented-Software-read-notes"><a href="#Design-Patterns-Elements-of-Reusable-Object-Oriented-Software-read-notes" class="headerlink" title="Design Patterns: Elements of Reusable Object-Oriented Software read notes"></a>Design Patterns: Elements of Reusable Object-Oriented Software read notes</h3><h4 id="Creational-Pattern"><a href="#Creational-Pattern" class="headerlink" title="Creational Pattern"></a>Creational Pattern</h4>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>make manual read notes</title>
+      <link href="/ArtistArthur.github.io/2020/12/11/make/"/>
+      <url>/ArtistArthur.github.io/2020/12/11/make/</url>
+      
+        <content type="html"><![CDATA[<h2 id="make-manual-read-notes"><a href="#make-manual-read-notes" class="headerlink" title="make manual read notes"></a>make manual read notes</h2><p>manual download: <a href="https://www.gnu.org/software/make/manual/make.pdf" target="_blank" rel="noopener">https://www.gnu.org/software/make/manual/make.pdf</a>  </p><a id="more"></a>  ]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>C++语法复习</title>
+      <link href="/ArtistArthur.github.io/2020/12/11/cpp-yu-fa-fu-xi/"/>
+      <url>/ArtistArthur.github.io/2020/12/11/cpp-yu-fa-fu-xi/</url>
+      
+        <content type="html"><![CDATA[<h2 id="Primer-C-review"><a href="#Primer-C-review" class="headerlink" title="Primer C++ review"></a>Primer C++ review</h2><a id="more"></a><h3 id="OOP"><a href="#OOP" class="headerlink" title="OOP"></a>OOP</h3><h4 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h4><h5 id="虚函数"><a href="#虚函数" class="headerlink" title="虚函数"></a>虚函数</h5><ul><li>类的三个用户分别是：类的实现者，类的普通用户和类的继承者(派生类):<br>　　1 、类的实现者：类的设计者，拥有最大的权限，可以访问类中任何权限的成员，主要负责编写类的成员和友元的代码。可以访问类中的公有部分（public），保护部分（protect)和(private)私有部分。<br>　　2、类的普通用户：就是使用类的对象，这部分用户只能访问类的接口（也就是公用部分poublic)。<br>　　3、类的继承者：就是派生类。派生类能访问基类中的公有部分和受保护的部分，普通用户不能访问受保护的成员。  </li><li>基类应该将类型相关的函数与派生类不做改变直接继承的函数区分对待。对于某些函数，基类希望它的派生类各自定义自身的版本，此时基类就将这些函数声明为<strong>虚函数</strong>。</li><li>派生类必须在其内部对所有重新定义的虚函数进行声明。派生类可以在这样的函数之前加上<code>virtual</code>关键字,但也可以不写。<code>override</code></li><li>虚函数可以实现动态绑定，但是需要通过引用或者指针调用，否则通过传值调用，类型转换后就不能动态绑定。并且只有继承访问说明符是<code>public</code>时才可以把派生类的对象绑定到基类对象的引用或者指针上。</li><li>继承关系中根节点的类通常都会定义一个虚析构函数，即使该函数不执行任何实际操作。</li><li>派生类可以继承其基类的成员，但是遇到虚函数的时候，派生类应该对其重新定义，即需要提供自己的新定义覆盖(<code>override</code>)从基类继承来的旧定义。</li><li>但是也可以不提供自己的定义，从而可以使用基类的定义。</li><li>对于纯虚函数</li><li>任何构造函数之外的非静态函数，都可以是虚函数，关键字<code>virtual</code>只能出现在类的内部声明语句之前，不能用于类外部的函数定义，如果基类把一个函数声明成虚函数，则该函数在派生类中隐式地也是虚函数。</li><li>成员函数如果没有被声明成虚函数，则其解析过程发生在编译时而非运行时。<h5 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h5></li><li>不管是公有继承还是私有继承，派生类中都有基类中的全部成员。</li><li>公有继承的派生类可以在使用基类指针或者基类引用的地方使用。</li><li>基类不能隐式向派生类转换。但是可以通过派生类的构造函数隐式转换，此时和普通的转换一致。</li><li>并且需要注意的是，即使存在一个基类的指针指向派生类，也不能把这个指针赋值给派生类的一个指针。因为编译器不能在编译时确定基类指针的动态类型。</li><li>但是如果能够确定某个基类向派生类的转换是安全的，则可以使用<code>static_cast</code>来强制覆盖编译器的检查工作。</li><li>如果基类中有一个或者多个虚函数，可以使用<code>dynamic_cast</code>请求一个类型转换，该转换的安全检查在运行时执行。<h5 id="派生类的构造函数"><a href="#派生类的构造函数" class="headerlink" title="派生类的构造函数"></a>派生类的构造函数</h5></li><li>派生类的默认构造函数会调用基类的默认构造函数。</li><li>派生类可以自定义构造函数，在构造函数的冒号后面调用基类的相应构造函数，需要给基类的构造函数传相应参数，此时会首先初始化基类，再按照声明顺序构造派生类的成员，这与构造函数的初始化顺序无关。</li><li>虽然可以在派生类中初始化基类的公有成员和受保护成员，但是这是不好的行为，应该使用基类的接口：构造函数，初始化基类。<h5 id="防止继承的发生"><a href="#防止继承的发生" class="headerlink" title="防止继承的发生"></a>防止继承的发生</h5></li><li>在类名后面加一个<code>final</code>: <code>class A final{};</code> <code>class B final: public A{};</code><h5 id="静态类型和动态类型"><a href="#静态类型和动态类型" class="headerlink" title="静态类型和动态类型"></a>静态类型和动态类型</h5></li><li>静态类型就是对象的声明类型;动态类型就是对象所指向的内存所代表的实际类型。</li><li>只有指针和引用的动态类型和静态类型会不同，其他的对象的两个类型是一致的。<h5 id="访问控制"><a href="#访问控制" class="headerlink" title="访问控制"></a>访问控制</h5></li><li>派生类可以继承定义在基类中的成员，但是不一定可以访问它们。派生类可以访问基类的公有成员，不能访问私有成员，<code>protected</code>成员是为了让派生类可以访问，而其他用户不能访问。</li><li></li></ul>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>mit6.828-lab3</title>
+      <link href="/ArtistArthur.github.io/2020/12/02/mit6-828-lab3/"/>
+      <url>/ArtistArthur.github.io/2020/12/02/mit6-828-lab3/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>算法导论-并查集</title>
+      <link href="/ArtistArthur.github.io/2020/11/30/suan-fa-dao-lun-bing-cha-ji/"/>
+      <url>/ArtistArthur.github.io/2020/11/30/suan-fa-dao-lun-bing-cha-ji/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>mit6.828-lab2</title>
+      <link href="/ArtistArthur.github.io/2020/11/30/mit6-828-lab2/"/>
+      <url>/ArtistArthur.github.io/2020/11/30/mit6-828-lab2/</url>
+      
+        <content type="html"><![CDATA[<h3 id="mit6-828-lab2-memory-management"><a href="#mit6-828-lab2-memory-management" class="headerlink" title="mit6.828-lab2:memory management"></a>mit6.828-lab2:memory management</h3><h4 id="Introduce"><a href="#Introduce" class="headerlink" title="Introduce"></a>Introduce</h4><p>这次实验，我们要为我们的操作系统写一个内存管理器。<br>内存管理器有两个组成部分：</p><ol><li>第一个组成部分是内核的物理内存分配器，可以让内核分配内存以及释放内存。我们写的这个分配器，以4K为一个操作单元（称作一个页）。我们的任务是管理记录物理内存状态的一个数据结构（引用数、下一个页地址等）。我们还会写一系列与分配和释放物理内存相关的函数。</li><li>第二个组成部分是虚拟内存管理组件，它将内核和用户使用的虚拟内存映射到物理内存中。x86的内存管理单元硬件将完成虚拟地址向物理地址的映射，通过一些页表。我们将根据提供的一个特殊布局来修改JOS，从而建立一个内存管理单元的页表系统。  </li></ol><h4 id="Part1-Physical-Page-Management"><a href="#Part1-Physical-Page-Management" class="headerlink" title="Part1:Physical Page Management"></a>Part1:Physical Page Management</h4>]]></content>
       
       
       
@@ -30,37 +95,11 @@
     
     
     <entry>
-      <title>名字来源</title>
-      <link href="/ArtistArthur.github.io/2020/11/11/ming-zi-lai-yuan/"/>
-      <url>/ArtistArthur.github.io/2020/11/11/ming-zi-lai-yuan/</url>
-      
-        <content type="html"><![CDATA[<h2 id="简写来源"><a href="#简写来源" class="headerlink" title="简写来源"></a>简写来源</h2><ul><li>寄存器的ax,bx,cx,dx一般叫做通用寄存器，但也有说法是:Accumulator Base Counter Data  </li></ul>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>汇编学习</title>
       <link href="/ArtistArthur.github.io/2020/11/04/hui-bian-xue-xi/"/>
       <url>/ArtistArthur.github.io/2020/11/04/hui-bian-xue-xi/</url>
       
         <content type="html"><![CDATA[<h3 id="对JOS-bootloader的汇编分析"><a href="#对JOS-bootloader的汇编分析" class="headerlink" title="对JOS bootloader的汇编分析"></a>对JOS bootloader的汇编分析</h3><a id="more"></a><pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;inc/mmu.h></span></span><span class="token macro property"># Start the CPU: switch to 32-bit protected mode, jump into C.</span><span class="token macro property"># The BIOS loads this code from the first sector of the hard disk into</span><span class="token macro property"># memory at physical address 0x7c00 and starts executing in real mode</span><span class="token macro property"># with %cs=0 %ip=7c00.</span><span class="token punctuation">.</span>set PROT_MODE_CSEG<span class="token punctuation">,</span> <span class="token number">0x8</span>         # kernel code segment selector   #此处预设代码段选择符#段选择符的格式： <span class="token number">13</span>位索引<span class="token operator">+</span><span class="token number">1</span>位TI表指示标志（代表是不是全局描述符）<span class="token operator">+</span><span class="token number">2</span>位RPL#因此 <span class="token number">0x8</span>  <span class="token number">0000000000001</span> <span class="token number">0</span> <span class="token number">00</span><span class="token punctuation">.</span>set PROT_MODE_DSEG<span class="token punctuation">,</span> <span class="token number">0x10</span>        # kernel data segment selector#此处预设数据段选择符#     <span class="token number">0x10</span> <span class="token number">0000000000010</span> <span class="token number">0</span> <span class="token number">00</span><span class="token punctuation">.</span>set CR0_PE_ON<span class="token punctuation">,</span>      <span class="token number">0x1</span>         # protected mode enable flag#<span class="token punctuation">.</span>set symbol<span class="token punctuation">,</span> expression设置symbol为expression。<span class="token punctuation">.</span>globl start  start<span class="token punctuation">:</span>                 #函数的开始，相当于main  <span class="token punctuation">.</span>code16                     # Assemble <span class="token keyword">for</span> <span class="token number">16</span><span class="token operator">-</span>bit mode    让汇编器按照<span class="token number">16</span>位代码汇编  cli                         # Disable interrupts  cld                         # String operations increment#关闭中断，设置字符串操作是递增方向<span class="token macro property">#cld的作用是将direct flag标志位清零</span><span class="token macro property">#it means that instructions that autoincrement the source index and destination index (like MOVS) will increase both of them</span>  <span class="token macro property"># Set up the important data segment registers (DS, ES, SS).</span>  xorw    <span class="token operator">%</span>ax<span class="token punctuation">,</span><span class="token operator">%</span>ax             # Segment number zero  movw    <span class="token operator">%</span>ax<span class="token punctuation">,</span><span class="token operator">%</span>ds             # <span class="token operator">-></span> Data Segment  movw    <span class="token operator">%</span>ax<span class="token punctuation">,</span><span class="token operator">%</span>es             # <span class="token operator">-></span> Extra Segment  movw    <span class="token operator">%</span>ax<span class="token punctuation">,</span><span class="token operator">%</span>ss             # <span class="token operator">-></span> Stack Segment  <span class="token macro property"># Enable A20:</span>  <span class="token macro property">#   For backwards compatibility with the earliest PCs, physical</span>  <span class="token macro property">#   address line 20 is tied low, so that addresses higher than</span>  #   1MB wrap around to zero by <span class="token keyword">default</span><span class="token punctuation">.</span>  This code undoes this<span class="token punctuation">.</span>  #激活A20地址位<span class="token punctuation">,</span>由于需要兼容早期pc，物理地址的第<span class="token number">20</span>位绑定为<span class="token number">0</span>，所以高于1MB的地址又回到了<span class="token number">0x00000</span>  #激活A20后，就可以访问所有4G内存，就可以使用保护模式  #怎么激活呢，由于历史原因A20地址位由键盘控制器芯片<span class="token number">8042</span>管理。所以要给<span class="token number">8042</span>发命令激活A20  #<span class="token number">8042</span>有两个IO端口：<span class="token number">0x60</span>和<span class="token number">0x64</span>， 激活流程位： 发送<span class="token number">0xd1</span>命令到<span class="token number">0x64</span>端口 <span class="token operator">--</span><span class="token operator">></span> 发送<span class="token number">0xdf</span>到<span class="token number">0x60</span>seta20<span class="token number">.1</span><span class="token punctuation">:</span>  inb     $<span class="token number">0x64</span><span class="token punctuation">,</span><span class="token operator">%</span>al               # Wait <span class="token keyword">for</span> not busy  #汇编语言有专门的读取端口信息的指令，in out后面的b代表一个字节  testb   $<span class="token number">0x2</span><span class="token punctuation">,</span><span class="token operator">%</span>al  #测试（两操作数作与运算<span class="token punctuation">,</span>仅修改标志位，不回送结果）。  jnz     seta20<span class="token number">.1</span>#发送命令之前，要等待键盘输入缓冲区为空，这通过<span class="token number">8042</span>的状态寄存器的第2bit来观察，而状态寄存器的值可以读<span class="token number">0x64</span>端口得到。#上面的指令的意思就是，如果状态寄存器的第<span class="token number">2</span>位为<span class="token number">1</span>，就跳到seta20<span class="token number">.1</span>符号处执行，知道第<span class="token number">2</span>位为<span class="token number">0</span>，代表缓冲区为空  movb    $<span class="token number">0xd1</span><span class="token punctuation">,</span><span class="token operator">%</span>al               # <span class="token number">0xd1</span> <span class="token operator">-></span> port <span class="token number">0x64</span>  outb    <span class="token operator">%</span>al<span class="token punctuation">,</span>$<span class="token number">0x64</span>#发送<span class="token number">0xd1</span>到<span class="token number">0x64</span>端口seta20<span class="token number">.2</span><span class="token punctuation">:</span>  inb     $<span class="token number">0x64</span><span class="token punctuation">,</span><span class="token operator">%</span>al               # Wait <span class="token keyword">for</span> not busy  testb   $<span class="token number">0x2</span><span class="token punctuation">,</span><span class="token operator">%</span>al  jnz     seta20<span class="token number">.2</span>  movb    $<span class="token number">0xdf</span><span class="token punctuation">,</span><span class="token operator">%</span>al               # <span class="token number">0xdf</span> <span class="token operator">-></span> port <span class="token number">0x60</span>  outb    <span class="token operator">%</span>al<span class="token punctuation">,</span>$<span class="token number">0x60</span>  <span class="token macro property"># Switch from real to protected mode, using a bootstrap GDT</span>  <span class="token macro property"># and segment translation that makes virtual addresses </span>  <span class="token macro property"># identical to their physical addresses, so that the </span>  <span class="token macro property"># effective memory map does not change during the switch.</span>  #转入保护模式，这里需要指定一个临时的GDT，来翻译逻辑地址。  #这里使用的GDT通过gdtdesc段定义，它翻译得到的物理地址和虚拟地址相同（段描述符里的段基址为<span class="token number">0</span>）  #所以转换过程中内存映射不会改变  lgdt    gdtdesc     <span class="token macro property">#lgdt指令把gdtdesc的地址加载进gdtr寄存器，代表全局段描述符表</span>  movl    <span class="token operator">%</span>cr0<span class="token punctuation">,</span> <span class="token operator">%</span>eax  orl     $CR0_PE_ON<span class="token punctuation">,</span> <span class="token operator">%</span>eax  movl    <span class="token operator">%</span>eax<span class="token punctuation">,</span> <span class="token operator">%</span>cr0  #开启保护模式  <span class="token macro property"># Jump to next instruction, but in 32-bit code segment.</span>  <span class="token macro property"># Switches processor into 32-bit mode.</span>  #由于进入保护模式，所有地址都应该是：cs<span class="token punctuation">:</span>eip  ljmp    $PROT_MODE_CSEG<span class="token punctuation">,</span> $protcseg         #ljmp cs esp  <span class="token macro property">#Long jump, use 0xfebc for the CS register and 0x12345678 for the EIP register:</span>  <span class="token macro property">#ljmp $0xfebc, $0x12345678</span>  <span class="token punctuation">.</span>code32                     # Assemble <span class="token keyword">for</span> <span class="token number">32</span><span class="token operator">-</span>bit modeprotcseg<span class="token punctuation">:</span>  <span class="token macro property"># Set up the protected-mode data segment registers</span>  movw    $PROT_MODE_DSEG<span class="token punctuation">,</span> <span class="token operator">%</span>ax    # Our data segment selector  movw    <span class="token operator">%</span>ax<span class="token punctuation">,</span> <span class="token operator">%</span>ds                # <span class="token operator">-></span> DS<span class="token punctuation">:</span> Data Segment  movw    <span class="token operator">%</span>ax<span class="token punctuation">,</span> <span class="token operator">%</span>es                # <span class="token operator">-></span> ES<span class="token punctuation">:</span> Extra Segment  movw    <span class="token operator">%</span>ax<span class="token punctuation">,</span> <span class="token operator">%</span>fs                # <span class="token operator">-></span> FS  movw    <span class="token operator">%</span>ax<span class="token punctuation">,</span> <span class="token operator">%</span>gs                # <span class="token operator">-></span> GS  movw    <span class="token operator">%</span>ax<span class="token punctuation">,</span> <span class="token operator">%</span>ss                # <span class="token operator">-></span> SS<span class="token punctuation">:</span> Stack Segment  <span class="token macro property"># Set up the stack pointer and call into C.</span>  movl    $start<span class="token punctuation">,</span> <span class="token operator">%</span>esp  call bootmain  <span class="token macro property"># If bootmain returns (it shouldn't), loop.</span>spin<span class="token punctuation">:</span>  jmp spin<span class="token macro property"># Bootstrap GDT</span><span class="token punctuation">.</span>p2align <span class="token number">2</span>                                # force <span class="token number">4</span> byte alignmentgdt<span class="token punctuation">:</span>  SEG_NULL                # null seg  <span class="token function">SEG</span><span class="token punctuation">(</span>STA_X<span class="token operator">|</span>STA_R<span class="token punctuation">,</span> <span class="token number">0x0</span><span class="token punctuation">,</span> <span class="token number">0xffffffff</span><span class="token punctuation">)</span>    # code seg  <span class="token function">SEG</span><span class="token punctuation">(</span>STA_W<span class="token punctuation">,</span> <span class="token number">0x0</span><span class="token punctuation">,</span> <span class="token number">0xffffffff</span><span class="token punctuation">)</span>            # data seggdtdesc<span class="token punctuation">:</span>  <span class="token punctuation">.</span>word   <span class="token number">0x17</span>                            # <span class="token keyword">sizeof</span><span class="token punctuation">(</span>gdt<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span>  <span class="token punctuation">.</span><span class="token keyword">long</span>   gdt                             # address gdt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p><a href="https://www.cnblogs.com/maruixin/p/3175894.html" target="_blank" rel="noopener">https://www.cnblogs.com/maruixin/p/3175894.html</a><br><a href="https://blog.csdn.net/suz_cheney/article/details/24198003?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&amp;depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param" target="_blank" rel="noopener">https://blog.csdn.net/suz_cheney/article/details/24198003?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&amp;depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param</a><br><a href="https://docs.oracle.com/cd/E19455-01/806-3773/instructionset-73/index.html" target="_blank" rel="noopener">https://docs.oracle.com/cd/E19455-01/806-3773/instructionset-73/index.html</a></p>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>考点</title>
-      <link href="/ArtistArthur.github.io/2020/11/02/kao-dian/"/>
-      <url>/ArtistArthur.github.io/2020/11/02/kao-dian/</url>
-      
-        <content type="html"><![CDATA[<ul><li>决策单调性</li></ul><a id="more"></a>]]></content>
       
       
       
@@ -288,7 +327,7 @@
       <link href="/ArtistArthur.github.io/2020/09/21/linux-ming-ling/"/>
       <url>/ArtistArthur.github.io/2020/09/21/linux-ming-ling/</url>
       
-        <content type="html"><![CDATA[<h2 id="用到的Linux常用命令及解释"><a href="#用到的Linux常用命令及解释" class="headerlink" title="用到的Linux常用命令及解释"></a>用到的Linux常用命令及解释</h2><a id="more"></a><p>uname : 英文全拼 unix name  用于显示系统信息 可显示电脑以及操作系统的相关信息<br>-a 或 –a 显示全部的信息<br>-m 或 –machine 显示电脑类型<br>-n 或 –nodename 显示在网络上的主机名称<br>-r 或 –release 显示操作系统的发行编号<br>-s 或 –sysname 显示操作系统名称<br>-v 显示操作系统的版本</p><p>apt : advanced package tool<br>apt-get  xxx  install  </p><p>cp ：英文全拼 copy file 用于复制文件或目录<br>cp [options] source dest</p><p>#是管理员 $是用户<br>了解了<br>yum : yellow dogUpdater， Modified<br>sudo : superuser do</p><h2 id="杂乱的知识"><a href="#杂乱的知识" class="headerlink" title="杂乱的知识"></a>杂乱的知识</h2><p>大端：数据低字节在内存高位 可以优先看到符号位快速判断正负和大小<br>小端：数据高字节在内存低位 可以优先进行计算最后考虑符号位<br>现在intel的80x86用小端<br>ARM芯片默认用小端，可切换到大端<br>MIPS芯片采用大端，可切换<br>网络序为大端</p><h2 id="待练习"><a href="#待练习" class="headerlink" title="待练习"></a>待练习</h2><p>vim的使用：以后用vim语法写题</p><h2 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h2><p>TCP向应用层提供一种面向连接的、可靠的字节流服务。<br>面向连接意味着两个使用TCP的应用（通常是一个客户和一个服务器）在彼此交换数据之前必须先建立一个TCP连接。<br>在一个TCP连接中，仅有两方进行彼此通信，广播和多播不能用于TCP。</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="用到的Linux常用命令及解释"><a href="#用到的Linux常用命令及解释" class="headerlink" title="用到的Linux常用命令及解释"></a>用到的Linux常用命令及解释</h2><a id="more"></a><p>uname : 英文全拼 unix name  用于显示系统信息 可显示电脑以及操作系统的相关信息<br>-a 或 –a 显示全部的信息<br>-m 或 –machine 显示电脑类型<br>-n 或 –nodename 显示在网络上的主机名称<br>-r 或 –release 显示操作系统的发行编号<br>-s 或 –sysname 显示操作系统名称<br>-v 显示操作系统的版本</p><p>apt : advanced package tool<br>apt-get  xxx  install  </p><p>cp ：英文全拼 copy file 用于复制文件或目录<br>cp [options] source dest</p><p>#是管理员 $是用户<br>了解了<br>yum : yellow dogUpdater， Modified<br>sudo : superuser do<br>rm -rf: rm remove -r delete files recrusively -f force  delete without warning</p><h2 id="杂乱的知识"><a href="#杂乱的知识" class="headerlink" title="杂乱的知识"></a>杂乱的知识</h2><p>大端：数据低字节在内存高位 可以优先看到符号位快速判断正负和大小<br>小端：数据高字节在内存低位 可以优先进行计算最后考虑符号位<br>现在intel的80x86用小端<br>ARM芯片默认用小端，可切换到大端<br>MIPS芯片采用大端，可切换<br>网络序为大端  </p><h2 id="简写来源"><a href="#简写来源" class="headerlink" title="简写来源"></a>简写来源</h2><ul><li>寄存器的ax,bx,cx,dx一般叫做通用寄存器，但也有说法是:Accumulator Base Counter Data    <h2 id="待练习"><a href="#待练习" class="headerlink" title="待练习"></a>待练习</h2>vim的使用：以后用vim语法写题</li></ul><h2 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h2><p>TCP向应用层提供一种面向连接的、可靠的字节流服务。<br>面向连接意味着两个使用TCP的应用（通常是一个客户和一个服务器）在彼此交换数据之前必须先建立一个TCP连接。<br>在一个TCP连接中，仅有两方进行彼此通信，广播和多播不能用于TCP。</p>]]></content>
       
       
       
