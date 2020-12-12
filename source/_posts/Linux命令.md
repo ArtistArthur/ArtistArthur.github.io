@@ -30,15 +30,18 @@ cp [options] source dest
 #是管理员 $是用户
 了解了
 yum : yellow dogUpdater， Modified
-sudo : superuser do
+sudo : superuser do  
+rm -rf: rm remove -r delete files recrusively -f force  delete without warning
 ## 杂乱的知识
 大端：数据低字节在内存高位 可以优先看到符号位快速判断正负和大小
 小端：数据高字节在内存低位 可以优先进行计算最后考虑符号位
 现在intel的80x86用小端
 ARM芯片默认用小端，可切换到大端
 MIPS芯片采用大端，可切换
-网络序为大端
+网络序为大端  
 
+## 简写来源
+* 寄存器的ax,bx,cx,dx一般叫做通用寄存器，但也有说法是:Accumulator Base Counter Data    
 ## 待练习
 vim的使用：以后用vim语法写题
 

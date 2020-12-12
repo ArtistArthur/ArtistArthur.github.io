@@ -1,16 +1,12 @@
 ---
-title: 考点
+title: mit6.828-lab3
 top: false
 cover: false
 toc: true
 mathjax: true
-date: 2020-11-02 14:11:04
+date: 2020-12-02 23:40:02
 password:
 summary:
 tags:
 categories:
 ---
-
-* 决策单调性
-
-<!--more-->
