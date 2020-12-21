@@ -1369,85 +1369,87 @@ gdtdesc<span class="token punctuation">:</span>
 <li><code>env_run</code>:在用户模式下启动一个给定的<code>environment</code>.<br>代码解析:  </li>
 <li><code>env_init()</code>:  </li>
 </ul>
-<pre><code>
-// Mark all environments in &#39;envs&#39; as free, set their env_ids to 0,
-// and insert them into the env_free_list.
-// Make sure the environments are in the free list in the same order
-// they are in the envs array (i.e., so that the first call to
-// env_alloc() returns envs[0]).
-//
-void
-env_init(void)
-{
-    // Set up envs array
-    // LAB 3: Your code here.
-    size_t i = 0;
-    env_free_list = envs;
-    //让env_free_list等于数组第一个元素,再让整个数组通过链表连起来
-    //env_link指向下一个节点,同时把id设置为0
-    //让最后一个节点指向null
-    for (i = 0; i &lt; NENV-1; i++)
-    {
-        envs[i].env_link = envs + i + 1;
-        envs[i].id = 0;
+<pre class="line-numbers language-c"><code class="language-c">
+<span class="token comment" spellcheck="true">// Mark all environments in 'envs' as free, set their env_ids to 0,</span>
+<span class="token comment" spellcheck="true">// and insert them into the env_free_list.</span>
+<span class="token comment" spellcheck="true">// Make sure the environments are in the free list in the same order</span>
+<span class="token comment" spellcheck="true">// they are in the envs array (i.e., so that the first call to</span>
+<span class="token comment" spellcheck="true">// env_alloc() returns envs[0]).</span>
+<span class="token comment" spellcheck="true">//</span>
+<span class="token keyword">void</span>
+<span class="token function">env_init</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// Set up envs array</span>
+    <span class="token comment" spellcheck="true">// LAB 3: Your code here.</span>
+    size_t i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    env_free_list <span class="token operator">=</span> envs<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//让env_free_list等于数组第一个元素,再让整个数组通过链表连起来</span>
+    <span class="token comment" spellcheck="true">//env_link指向下一个节点,同时把id设置为0</span>
+    <span class="token comment" spellcheck="true">//让最后一个节点指向null</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> NENV<span class="token number">-1</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        envs<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>env_link <span class="token operator">=</span> envs <span class="token operator">+</span> i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        envs<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>id <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
 
-    }
-    (envs + NENV - 1)-&gt;env_link = NULL;
-    // Per-CPU part of the initialization
-    env_init_percpu();
-}
-</code></pre><ul>
+    <span class="token punctuation">}</span>
+    <span class="token punctuation">(</span>envs <span class="token operator">+</span> NENV <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">-></span>env_link <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// Per-CPU part of the initialization</span>
+    <span class="token function">env_init_percpu</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
 <li>env_setup_vm():</li>
 </ul>
-<pre><code>
-// Initialize the kernel virtual memory layout for environment e.
-// Allocate a page directory, set e-&gt;env_pgdir accordingly,
-// and initialize the kernel portion of the new environment&#39;s address space.
-// Do NOT (yet) map anything into the user portion
-// of the environment&#39;s virtual address space.
-//
-// Returns 0 on success, &lt; 0 on error.  Errors include:
-//    -E_NO_MEM if page directory or table could not be allocated.
-//
-static int
-env_setup_vm(struct Env *e)
-{
-    int i;
-    struct PageInfo *p = NULL;
+<pre class="line-numbers language-c"><code class="language-c">
+<span class="token comment" spellcheck="true">// Initialize the kernel virtual memory layout for environment e.</span>
+<span class="token comment" spellcheck="true">// Allocate a page directory, set e->env_pgdir accordingly,</span>
+<span class="token comment" spellcheck="true">// and initialize the kernel portion of the new environment's address space.</span>
+<span class="token comment" spellcheck="true">// Do NOT (yet) map anything into the user portion</span>
+<span class="token comment" spellcheck="true">// of the environment's virtual address space.</span>
+<span class="token comment" spellcheck="true">//</span>
+<span class="token comment" spellcheck="true">// Returns 0 on success, &lt; 0 on error.  Errors include:</span>
+<span class="token comment" spellcheck="true">//    -E_NO_MEM if page directory or table could not be allocated.</span>
+<span class="token comment" spellcheck="true">//</span>
+<span class="token keyword">static</span> <span class="token keyword">int</span>
+<span class="token function">env_setup_vm</span><span class="token punctuation">(</span><span class="token keyword">struct</span> Env <span class="token operator">*</span>e<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">int</span> i<span class="token punctuation">;</span>
+    <span class="token keyword">struct</span> PageInfo <span class="token operator">*</span>p <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
 
-    // Allocate a page for the page directory
-    if (!(p = page_alloc(ALLOC_ZERO)))
-        return -E_NO_MEM;
+    <span class="token comment" spellcheck="true">// Allocate a page for the page directory</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>p <span class="token operator">=</span> <span class="token function">page_alloc</span><span class="token punctuation">(</span>ALLOC_ZERO<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token operator">-</span>E_NO_MEM<span class="token punctuation">;</span>
 
-    // Now, set e-&gt;env_pgdir and initialize the page directory.
-    //
-    // Hint:
-    //    - The VA space of all envs is identical above UTOP
-    //    (except at UVPT, which we&#39;ve set below).
-    //    See inc/memlayout.h for permissions and layout.
-    //    Can you use kern_pgdir as a template?  Hint: Yes.
-    //    (Make sure you got the permissions right in Lab 2.)
-    //    - The initial VA below UTOP is empty.
-    //    - You do not need to make any more calls to page_alloc.
-    //    - Note: In general, pp_ref is not maintained for
-    //    physical pages mapped only above UTOP, but env_pgdir
-    //    is an exception -- you need to increment env_pgdir&#39;s
-    //    pp_ref for env_free to work correctly.
-    //    - The functions in kern/pmap.h are handy.
+    <span class="token comment" spellcheck="true">// Now, set e->env_pgdir and initialize the page directory.</span>
+    <span class="token comment" spellcheck="true">//</span>
+    <span class="token comment" spellcheck="true">// Hint:</span>
+    <span class="token comment" spellcheck="true">//    - The VA space of all envs is identical above UTOP</span>
+    <span class="token comment" spellcheck="true">//    (except at UVPT, which we've set below).</span>
+    <span class="token comment" spellcheck="true">//    See inc/memlayout.h for permissions and layout.</span>
+    <span class="token comment" spellcheck="true">//    Can you use kern_pgdir as a template?  Hint: Yes.</span>
+    <span class="token comment" spellcheck="true">//    (Make sure you got the permissions right in Lab 2.)</span>
+    <span class="token comment" spellcheck="true">//    - The initial VA below UTOP is empty.</span>
+    <span class="token comment" spellcheck="true">//    - You do not need to make any more calls to page_alloc.</span>
+    <span class="token comment" spellcheck="true">//    - Note: In general, pp_ref is not maintained for</span>
+    <span class="token comment" spellcheck="true">//    physical pages mapped only above UTOP, but env_pgdir</span>
+    <span class="token comment" spellcheck="true">//    is an exception -- you need to increment env_pgdir's</span>
+    <span class="token comment" spellcheck="true">//    pp_ref for env_free to work correctly.</span>
+    <span class="token comment" spellcheck="true">//    - The functions in kern/pmap.h are handy.</span>
 
-    // LAB 3: Your code here.
+    <span class="token comment" spellcheck="true">// LAB 3: Your code here.</span>
 
-    e-&gt;env_pgdir =(pde_t*) page2kva(p);
-    memcpy(e-&gt;env_pgdir, kern_pgdir, PGSIZE);
-    p-&gt;pp_ref++;
-    // UVPT maps the env&#39;s own page table read-only.
-    // Permissions: kernel R, user R
-    e-&gt;env_pgdir[PDX(UVPT)] = PADDR(e-&gt;env_pgdir) | PTE_P | PTE_U;
+    e<span class="token operator">-></span>env_pgdir <span class="token operator">=</span><span class="token punctuation">(</span>pde_t<span class="token operator">*</span><span class="token punctuation">)</span> <span class="token function">page2kva</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">memcpy</span><span class="token punctuation">(</span>e<span class="token operator">-></span>env_pgdir<span class="token punctuation">,</span> kern_pgdir<span class="token punctuation">,</span> PGSIZE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    p<span class="token operator">-></span>pp_ref<span class="token operator">++</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// UVPT maps the env's own page table read-only.</span>
+    <span class="token comment" spellcheck="true">// Permissions: kernel R, user R</span>
+    e<span class="token operator">-></span>env_pgdir<span class="token punctuation">[</span><span class="token function">PDX</span><span class="token punctuation">(</span>UVPT<span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">PADDR</span><span class="token punctuation">(</span>e<span class="token operator">-></span>env_pgdir<span class="token punctuation">)</span> <span class="token operator">|</span> PTE_P <span class="token operator">|</span> PTE_U<span class="token punctuation">;</span>
 
-    return 0;
-}
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-</code></pre>]]></content>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+]]></content>
       <tags>
         <tag>OS</tag>
       </tags>
