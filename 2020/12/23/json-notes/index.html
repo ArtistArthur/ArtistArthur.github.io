@@ -79,15 +79,15 @@
 
 
 
-<meta name="description" content="宏写成 do {} while(0) 由于宏对外是表现为一个语句，但是内部可能是多个语句，为了避免这种差异产生预期外的情况当宏后面加分号时可以不出错 liujianghu 2020 0723 birthday nongli 6.3c语言文件">
+<meta name="description" content="c语言写项目时注意的事项 宏写成 do {} while(0) 这样写的原因:宏对外是表现为一个语句，但是内部可能是多个语句，为了避免这种差异产生预期外的情况,当宏后面加分号时可以不出错">
 <meta property="og:type" content="article">
 <meta property="og:title" content="json-notes">
 <meta property="og:url" content="https://github.com/ArtistArthur/ArtistArthur.github.io/2020/12/23/json-notes/index.html">
 <meta property="og:site_name" content="Arthur">
-<meta property="og:description" content="宏写成 do {} while(0) 由于宏对外是表现为一个语句，但是内部可能是多个语句，为了避免这种差异产生预期外的情况当宏后面加分号时可以不出错 liujianghu 2020 0723 birthday nongli 6.3c语言文件">
+<meta property="og:description" content="c语言写项目时注意的事项 宏写成 do {} while(0) 这样写的原因:宏对外是表现为一个语句，但是内部可能是多个语句，为了避免这种差异产生预期外的情况,当宏后面加分号时可以不出错">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-12-22T19:00:01.625Z">
-<meta property="article:modified_time" content="2020-12-22T19:18:48.402Z">
+<meta property="article:modified_time" content="2020-12-22T19:29:30.372Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="math">
 <meta name="twitter:card" content="summary">
@@ -350,10 +350,15 @@
       
 
       
-        <p>宏写成 do {} while(0)</p>
-<p>由于宏对外是表现为一个语句，但是内部可能是多个语句，为了避免这种差异产生预期外的情况<br>当宏后面加分号时可以不出错 liujianghu 2020 0723 birthday nongli 6.3<br>c语言文件</p>
-<a id="more"></a>
-<p>FILE是个文件类型，不能直接当字符串用<br>FILE* fp=fopen(“filename”,”r+); read add and modify<br>为了避免读取空文件，应该while((ch=getc(fp))!=EOF)<br>fclose(fp)成功返回0，否则返回EOF，应该判断是否成功：if(fclose(fp)!=0) printf(“Error in closing file %s\n”, argv[1]); 磁盘已满，磁盘被移走，I/O错误都会fclose失败</p>
+        <h1 id="c语言写项目时注意的事项"><a href="#c语言写项目时注意的事项" class="headerlink" title="c语言写项目时注意的事项"></a>c语言写项目时注意的事项</h1><ul>
+<li>宏写成 <code>do {} while(0)</code></li>
+<li>这样写的原因:宏对外是表现为一个语句，但是内部可能是多个语句，为了避免这种差异产生预期外的情况,当宏后面加分号时可以不出错 <a id="more"></a>
+<h1 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h1></li>
+<li>FILE是个文件类型，不能直接当字符串用</li>
+<li><code>FILE* fp=fopen(&quot;filename&quot;,&quot;r+);</code> read add and modify</li>
+<li>为了避免读取空文件，应该<code>while((ch=getc(fp))!=EOF)</code>成功返回0，否则返回EOF</li>
+<li>应该判断是否成功：<code>if(fclose(fp)!=0) printf(&quot;Error in closing file %s\n&quot;, argv[1]);</code>磁盘已满，磁盘被移走，I/O错误都会fclose失败</li>
+</ul>
 
       
     </div>
@@ -438,8 +443,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -515,6 +529,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#c语言写项目时注意的事项"><span class="nav-number">1.</span> <span class="nav-text">c语言写项目时注意的事项</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文件"><span class="nav-number">2.</span> <span class="nav-text">文件</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1080,10 +1110,10 @@
 
   
 
-<script src="/ArtistArthur.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/ArtistArthur.github.io/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script><script>
+<script>
             window.imageLazyLoadSetting = {
                 isSPA: false,
                 processImages: null,
             };
-        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=i;var e=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function i(){e&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,a=0;a<r.length;a++)0<=(t=(t=r[a]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(n.innerHeight+240||document.documentElement.clientHeight+240)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}i(),n.addEventListener("scroll",function(){var t,e;t=i,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script></body>
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=i;var e=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function i(){e&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,a=0;a<r.length;a++)0<=(t=(t=r[a]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(n.innerHeight+240||document.documentElement.clientHeight+240)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}i(),n.addEventListener("scroll",function(){var t,e;t=i,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script><script src="/ArtistArthur.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/ArtistArthur.github.io/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
 </html>
