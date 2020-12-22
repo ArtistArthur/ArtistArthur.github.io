@@ -25,7 +25,11 @@ apt : advanced package tool
 apt-get  xxx  install  
 
 cp ：英文全拼 copy file 用于复制文件或目录
-cp [options] source dest
+cp [options] source dest  
+
+pwd:print working dictory 显示当前目录的路径  
+
+~:用户根目录
 
 #是管理员 $是用户
 了解了

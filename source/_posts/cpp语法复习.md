@@ -7,10 +7,10 @@ mathjax: true
 date: 2020-12-11 16:32:46
 password:
 summary:
-tags:
+tags: [readnotes,C++]
 categories:
 ---
-## Primer C++ review
+### Primer C++ review
 <!--more-->
 ### OOP  
 #### 继承
@@ -38,6 +38,8 @@ categories:
 * 纯虚函数的声明方式是在分号前加一个`=0`。
 * 含有纯虚函数的类叫做抽象基类，抽象基类不能实例化，只能有引用和指针，此时他们指向的实际上是它的派生类的对象。
 * 派生类可以把基类中的虚函数定义为纯虚函数（吗？）
+* **基类的构造函数应该是虚的**：当一个基类的指针指向一个派生类时，如果析构函数不是虚的，此时调用析构函数会调用基类的，大多数情况下这不是所期望的。
+* 构造函数绝对不能是虚函数，这是不被支持的错误语法。因为`Avirtual call is a mechanism to get work done given partialinformation. In particular, "virtual" allows us to call afunction knowing only an interfaces and not the exact type of theobject. To create an object you need complete information. Inparticular, you need to know the exact type of what you want tocreate. Consequently, a "call to a constructor" cannot bevirtual.`
 ##### 类型转换
 * 不管是公有继承还是私有继承，派生类中都有基类中的全部成员。
 * 公有继承的派生类可以在使用基类指针或者基类引用的地方使用。
@@ -64,4 +66,5 @@ categories:
   * 对于派生类的派生类来说，它的友元和成员函数可以使用公有的继承和受保护的继承转换，但是不可以转换私有的。
 ##### 友元与继承
 * 友元不能传递，也不能继承: 基类的友元访问派生类新的成员没有特殊性，但是可以访问基类的部分，即基类的友元不是派生类的友元，但是此友元可以访问派生类中对应的基类部分。派生类没有继承基类的友元。而友元的派生类仍然是友元，但是新定义的函数以及重写的虚函数不是友元。
-* 
+
+ $\p_3u_0$

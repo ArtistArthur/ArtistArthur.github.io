@@ -7,7 +7,7 @@ mathjax: true
 date: 2020-10-21 23:00:33
 password:
 summary:
-tags:
+tags: [OS]
 categories:
 ---
 ## Introduction

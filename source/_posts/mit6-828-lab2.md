@@ -7,7 +7,7 @@ mathjax: true
 date: 2020-11-30 02:28:16
 password:
 summary:
-tags:
+tags: [OS]
 categories:
 ---
 ### mit6.828-lab2:memory management  
