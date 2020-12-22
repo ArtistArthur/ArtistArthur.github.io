@@ -87,7 +87,7 @@
 <meta property="og:description" content="exercise2完成几个函数:  env_init():初始化所有的在envs数组中的Enc结构体，并把他们添加到env_free_list指针后面，之后调用env_init_per_cpu以设置段管理的相关硬件，它们分别是特权级0(kernel)和特权级3(user)的段。 env_setup_vm():为新的environment分配一个页目录表,并且初始化新的地址空间中的内核部分(通过复制">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-12-02T15:40:02.000Z">
-<meta property="article:modified_time" content="2020-12-21T18:27:03.452Z">
+<meta property="article:modified_time" content="2020-12-21T19:40:07.061Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="OS">
 <meta name="twitter:card" content="summary">
@@ -360,6 +360,8 @@
 <li><code>env_run</code>:在用户模式下启动一个给定的<code>environment</code>.<br>代码解析:  </li>
 <li><code>env_init()</code>:  </li>
 </ul>
+<a id="more"></a>
+
 <pre class="line-numbers language-c"><code class="language-c">
 <span class="token comment" spellcheck="true">// Mark all environments in 'envs' as free, set their env_ids to 0,</span>
 <span class="token comment" spellcheck="true">// and insert them into the env_free_list.</span>
@@ -440,6 +442,47 @@
 <span class="token punctuation">}</span>
 
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li><code>region_alloc</code>:<br>为进程分配<code>len</code>个字节的物理内存并且映射到<code>va</code>所代表的虚拟地址上,不要设置0或者初始化被映射的页(page_alloc()传0进去就可以).<br>页面的权限应该是用户和内核都可写的.<br>如果分配失败则<code>panic</code>  </li>
+</ul>
+<pre class="line-numbers language-c"><code class="language-c">
+<span class="token comment" spellcheck="true">//</span>
+<span class="token comment" spellcheck="true">// Allocate len bytes of physical memory for environment env,</span>
+<span class="token comment" spellcheck="true">// and map it at virtual address va in the environment's address space.</span>
+<span class="token comment" spellcheck="true">// Does not zero or otherwise initialize the mapped pages in any way.</span>
+<span class="token comment" spellcheck="true">// Pages should be writable by user and kernel.</span>
+<span class="token comment" spellcheck="true">// Panic if any allocation attempt fails.</span>
+<span class="token comment" spellcheck="true">//</span>
+<span class="token keyword">static</span> <span class="token keyword">void</span>
+<span class="token function">region_alloc</span><span class="token punctuation">(</span><span class="token keyword">struct</span> Env <span class="token operator">*</span>e<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>va<span class="token punctuation">,</span> size_t len<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// LAB 3: Your code here.</span>
+    <span class="token comment" spellcheck="true">// (But only if you need it for load_icode.)</span>
+    <span class="token comment" spellcheck="true">//</span>
+    <span class="token comment" spellcheck="true">// Hint: It is easier to use region_alloc if the caller can pass</span>
+    <span class="token comment" spellcheck="true">//   'va' and 'len' values that are not page-aligned.</span>
+    <span class="token comment" spellcheck="true">//   You should round va down, and round (va + len) up.</span>
+    <span class="token comment" spellcheck="true">//   (Watch out for corner-cases!)</span>
+    <span class="token keyword">void</span> <span class="token operator">*</span>low <span class="token operator">=</span> <span class="token function">ROUNDDOWN</span><span class="token punctuation">(</span>va<span class="token punctuation">,</span> PGSIZE<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//向下取整,即把va所在的那一页全部映射,从va前面页面对齐开始</span>
+    <span class="token keyword">void</span> <span class="token operator">*</span>up <span class="token operator">=</span> <span class="token function">ROUNDUO</span><span class="token punctuation">(</span>va <span class="token operator">+</span> len<span class="token punctuation">,</span> PGSIZE<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//向上取整</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token punctuation">;</span> low <span class="token operator">&lt;</span> up<span class="token punctuation">;</span>low<span class="token operator">+</span><span class="token operator">=</span>PGSIZE<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">struct</span> PageInfo <span class="token operator">*</span>p <span class="token operator">=</span> <span class="token function">page_alloc</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>p<span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            <span class="token function">panic</span><span class="token punctuation">(</span><span class="token string">"region_alloc error: region_alloc failed!\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        p<span class="token operator">-></span>pp_ref<span class="token operator">++</span><span class="token punctuation">;</span>
+        <span class="token function">page_insert</span><span class="token punctuation">(</span>e<span class="token operator">-></span>env_pgdir<span class="token punctuation">,</span> p<span class="token punctuation">,</span> low<span class="token punctuation">,</span> PTE_W<span class="token operator">|</span>PTE_U<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li><code>load_icode</code>:<br>为用户进程设置初始的二进制程序,栈,处理器标志等.<br>这个函数只在内核初始化的时候被调用,在运行第一个用户态进程之前.<br>这个函数从二进制镜像加载所有可加载的段到进程的内存中,从适当的、二进制文件头里描述的虚拟地址开始.<br>同时它把在二进制头里要求的一些段的内容设置为0,比如<code>bss segment</code>.<br>这些和我们的<code>boot loader</code>所做的很像,但是它是从硬盘读取代码.去参考下<code>boot/main.c</code>里的代码.<br>最后,这个函数从这个进程的初始栈映射一个页.<br>如果它遇到任何问题,则会<code>panic</code>,请思考它在什么情况下会出错.</li>
+</ul>
+<pre class="line-numbers language-c"><code class="language-c">
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
       
     </div>
@@ -559,7 +602,7 @@
               
                 <a href="/ArtistArthur.github.io/archives">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1201,10 +1244,10 @@
 
   
 
-<script>
+<script src="/ArtistArthur.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/ArtistArthur.github.io/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script><script>
             window.imageLazyLoadSetting = {
                 isSPA: false,
                 processImages: null,
             };
-        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=i;var e=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function i(){e&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,a=0;a<r.length;a++)0<=(t=(t=r[a]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(n.innerHeight+240||document.documentElement.clientHeight+240)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}i(),n.addEventListener("scroll",function(){var t,e;t=i,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script><script src="/ArtistArthur.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/ArtistArthur.github.io/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=i;var e=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function i(){e&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,a=0;a<r.length;a++)0<=(t=(t=r[a]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(n.innerHeight+240||document.documentElement.clientHeight+240)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}i(),n.addEventListener("scroll",function(){var t,e;t=i,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script></body>
 </html>
