@@ -529,7 +529,12 @@
 
       
         
-          <h2 id="分页机制的具体细节"><a href="#分页机制的具体细节" class="headerlink" title="分页机制的具体细节"></a>分页机制的具体细节</h2>
+          <h2 id="分页机制的具体细节"><a href="#分页机制的具体细节" class="headerlink" title="分页机制的具体细节"></a>分页机制的具体细节</h2><ul>
+<li>页目录：存放页表地址的一个目录（或者说是一个表）</li>
+<li>页表:存放具体的页帧的地址的一个表<br><img src="/images/loading.gif" data-original="https://ftp.bmp.ovh/imgs/2020/10/226caa5bbf53d9bd.png" alt="线性地址和物理地址之间的变换"></li>
+<li>页目录和页表里面的内容都是一样的：共32位，高20位是页帧的物理地址，后12位是一些标志位（比如存在为P），实际上他们无区别，只是解释不同<br><img src="/images/loading.gif" data-original="https://ftp.bmp.ovh/imgs/2020/10/00b5e0e8aed71b34.png" alt="页目录页表项"></li>
+<li>实际上一个页目录本身也是一个页面（帧）大小是4K，一个页目录项占4B，因此一个页目录可以放1024个目录项</li>
+<li>同理，一个页表本身也是一个页面（帧），大小是4K，一个页表项占4B，因此一个页表可以存1024个页帧地址。
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/ArtistArthur.github.io/2020/10/31/fen-ye/#more" rel="contents">
@@ -835,7 +840,14 @@
       
         
           <h1 id="xv6-a-simple-Unix-like-teaching-operating-system"><a href="#xv6-a-simple-Unix-like-teaching-operating-system" class="headerlink" title="xv6 a simple, Unix-like teaching operating system"></a>xv6 a simple, Unix-like teaching operating system</h1><p>简介：xv6是一个Unix version6的重新实现，v6的结构和风格、ANSI 的标准、基于x86的多进程。</p>
-<h2 id="chapter-0"><a href="#chapter-0" class="headerlink" title="chapter 0"></a>chapter 0</h2>
+<h2 id="chapter-0"><a href="#chapter-0" class="headerlink" title="chapter 0"></a>chapter 0</h2><h3 id="Operating-system-interfaces"><a href="#Operating-system-interfaces" class="headerlink" title="Operating system interfaces"></a>Operating system interfaces</h3><ul>
+<li><p>操作系统的工作是在多个程序之间分享计算机的资源，并提供比仅仅只有硬件更有用的服务。  </p>
+</li>
+<li><p>操作系统管理并抽象低层次的硬件，因此，一个字符处理器就不需要关心自己需要使用的是什么类型的储存介质。</p>
+</li>
+<li><p>操作系统也把硬件资源分享给多个程序使用，以便让他们（看起来）同时运行</p>
+</li>
+<li><p>操作系统还提供一些控制方法，以便不同的程序之间互动：分享数据、协同工作</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/ArtistArthur.github.io/2020/10/29/xv6-read-notes/#more" rel="contents">
@@ -1109,7 +1121,7 @@
 
       
         
-          <h1 id="单调栈（monostone）"><a href="#单调栈（monostone）" class="headerlink" title="单调栈（monostone）"></a>单调栈（monostone）</h1><ul>
+          <h1 id="monostone"><a href="#monostone" class="headerlink" title="monostone"></a>monostone</h1><ul>
 <li>单调栈顾名思义就是一个储存元素单调排列的栈，可以是单调递增也可以是单调递减的</li>
 <li>单调栈可以解决的问题是：对于于一个数列，可以在线性时间内找到每一个数的下一个比自己大的或者小的数
           <!--noindex-->
@@ -1235,7 +1247,7 @@
 
       
         
-          <h2 id="用到的Linux常用命令及解释"><a href="#用到的Linux常用命令及解释" class="headerlink" title="用到的Linux常用命令及解释"></a>用到的Linux常用命令及解释</h2>
+          <h2 id="用到的Linux常用命令及解释"><a href="#用到的Linux常用命令及解释" class="headerlink" title="用到的Linux常用命令及解释"></a>用到的Linux常用命令及解释</h2><p>uname : 英文全拼 unix name  用于显示系统信息 可显示电脑以及操作系统的相关信息<br>-a 或 –a 显示全部的信息<br>-m 或 –machine 显示电脑类型<br>-n 或 –nodename 显示在网络上的主机名称<br>-r 或 –release 显示操作系统的发行编号<br>-s 或 –sysname 显示操作系统名称<br>-v 显示操作系统的版本</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/ArtistArthur.github.io/2020/09/21/linux-ming-ling/#more" rel="contents">
@@ -1359,7 +1371,14 @@
 
       
         
-          <h2 id="git常用命令以及与github的结合使用"><a href="#git常用命令以及与github的结合使用" class="headerlink" title="git常用命令以及与github的结合使用"></a>git常用命令以及与github的结合使用</h2><h3 id="git中的四个区域"><a href="#git中的四个区域" class="headerlink" title="git中的四个区域"></a>git中的四个区域</h3>
+          <h2 id="git常用命令以及与github的结合使用"><a href="#git常用命令以及与github的结合使用" class="headerlink" title="git常用命令以及与github的结合使用"></a>git常用命令以及与github的结合使用</h2><h3 id="git中的四个区域"><a href="#git中的四个区域" class="headerlink" title="git中的四个区域"></a>git中的四个区域</h3><ul>
+<li><p>workspace：写和修改代码的地方</p>
+</li>
+<li><p>index/stage：暂存区，git add [file name]把修改从workspace提交到暂存区</p>
+</li>
+<li><p>local repository：本地仓库，git commit -m [message] 把修改从暂存区提交到本地仓库</p>
+</li>
+<li><p>remote ：远程仓库，git push 把修改从本地仓库推送到远程仓库<br><img src="/images/loading.gif" data-original="https://i.bmp.ovh/imgs/2019/07/c49a713c776e6967.png" alt="git区域关系"></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/ArtistArthur.github.io/2020/07/09/git-command/#more" rel="contents">
@@ -1483,7 +1502,7 @@
 
       
         
-          <h1 id="计算机网络细节"><a href="#计算机网络细节" class="headerlink" title="计算机网络细节"></a>计算机网络细节</h1>
+          <h1 id="计算机网络细节"><a href="#计算机网络细节" class="headerlink" title="计算机网络细节"></a>计算机网络细节</h1><h2 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h2><p>ICMP是IP协议的附属协议，IP层用它来与其他主机或者路由器交换错误报文和其他重要信息。尽管ICMP主要被IP使用，但应用程序也有可能访问它，比如Ping和Traceroute。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/ArtistArthur.github.io/2020/07/02/tcp-ip/#more" rel="contents">
@@ -1629,7 +1648,11 @@
 
       
         
-          <h1 id="permutation-全排列"><a href="#permutation-全排列" class="headerlink" title="permutation(全排列)"></a>permutation(全排列)</h1><h2 id="全排列的各种输出方法"><a href="#全排列的各种输出方法" class="headerlink" title="全排列的各种输出方法"></a>全排列的各种输出方法</h2>
+          <h2 id="全排列的各种输出方法"><a href="#全排列的各种输出方法" class="headerlink" title="全排列的各种输出方法"></a>全排列的各种输出方法</h2><h3 id="最朴素的输出方法"><a href="#最朴素的输出方法" class="headerlink" title="最朴素的输出方法"></a>最朴素的输出方法</h3><ul>
+<li>和乘法原理相同的过程，先确定第一位，再确定第二位，以此类推。</li>
+<li>没有顺序要求</li>
+<li>其实也是无约束的深度优先DFS</li>
+</ul>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/ArtistArthur.github.io/2020/06/29/permutation-quan-pai-lie/#more" rel="contents">
@@ -2491,10 +2514,10 @@
 
   
 
-<script>
+<script src="/ArtistArthur.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/ArtistArthur.github.io/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script><script>
             window.imageLazyLoadSetting = {
                 isSPA: false,
                 processImages: null,
             };
-        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=i;var e=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function i(){e&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,a=0;a<r.length;a++)0<=(t=(t=r[a]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(n.innerHeight+240||document.documentElement.clientHeight+240)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}i(),n.addEventListener("scroll",function(){var t,e;t=i,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script><script src="/ArtistArthur.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/ArtistArthur.github.io/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=i;var e=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function i(){e&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,a=0;a<r.length;a++)0<=(t=(t=r[a]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(n.innerHeight+240||document.documentElement.clientHeight+240)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}i(),n.addEventListener("scroll",function(){var t,e;t=i,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script></body>
 </html>

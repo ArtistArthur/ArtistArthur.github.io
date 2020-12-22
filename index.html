@@ -347,10 +347,8 @@
 
       
         
-          
-          宏写成 do {} while(0)
-由于宏对外是表现为一个语句，但是内部可能是多个语句，为了避免这种差异产生预期外的情况当宏后面加分号时可以不出错 liujianghu 2020 0723 birt
-          ...
+          <p>宏写成 do {} while(0)</p>
+<p>由于宏对外是表现为一个语句，但是内部可能是多个语句，为了避免这种差异产生预期外的情况<br>当宏后面加分号时可以不出错 liujianghu 2020 0723 birthday nongli 6.3<br>c语言文件</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/ArtistArthur.github.io/2020/12/23/json-notes/#more" rel="contents">
@@ -599,6 +597,7 @@
       
         
           <h2 id="make-manual-read-notes"><a href="#make-manual-read-notes" class="headerlink" title="make manual read notes"></a>make manual read notes</h2><p>manual download: <a href="https://www.gnu.org/software/make/manual/make.pdf" target="_blank" rel="noopener">https://www.gnu.org/software/make/manual/make.pdf</a>  </p>
+<h3 id="1-Overview-of-make"><a href="#1-Overview-of-make" class="headerlink" title="1 Overview of make"></a>1 Overview of make</h3><p>&emsp;&emsp;make可以自动地决定一个大型项目中的哪些部分需要被重新编译，并且列出重新编译他们的命令(所以make是为了更好地自动编译项目)。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/ArtistArthur.github.io/2020/12/11/make/#more" rel="contents">
@@ -722,7 +721,10 @@
 
       
         
-          <h3 id="Primer-C-review"><a href="#Primer-C-review" class="headerlink" title="Primer C++ review"></a>Primer C++ review</h3>
+          <h3 id="Primer-C-review"><a href="#Primer-C-review" class="headerlink" title="Primer C++ review"></a>Primer C++ review</h3><h3 id="OOP"><a href="#OOP" class="headerlink" title="OOP"></a>OOP</h3><h4 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h4><h5 id="虚函数"><a href="#虚函数" class="headerlink" title="虚函数"></a>虚函数</h5><ul>
+<li>类的三个用户分别是：类的实现者，类的普通用户和类的继承者(派生类):<br>　　1 、类的实现者：类的设计者，拥有最大的权限，可以访问类中任何权限的成员，主要负责编写类的成员和友元的代码。可以访问类中的公有部分（public），保护部分（protect)和(private)私有部分。<br>　　2、类的普通用户：就是使用类的对象，这部分用户只能访问类的接口（也就是公用部分poublic)。<br>　　3、类的继承者：就是派生类。派生类能访问基类中的公有部分和受保护的部分，普通用户不能访问受保护的成员。  </li>
+<li>基类应该将类型相关的函数与派生类不做改变直接继承的函数区分对待。对于某些函数，基类希望它的派生类各自定义自身的版本，此时基类就将这些函数声明为<strong>虚函数</strong>。</li>
+</ul>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/ArtistArthur.github.io/2020/12/11/cpp-yu-fa-fu-xi/#more" rel="contents">
@@ -1801,8 +1803,7 @@
         
           <h2 id="虚表的具体细节"><a href="#虚表的具体细节" class="headerlink" title="虚表的具体细节"></a>虚表的具体细节</h2><ul>
 <li>虚表是cpp实现多态的一个方式，是编译器的具体实现，cpp标准并未规定该如何实现</li>
-<li>虚表的作用是，对于虚函数来说，可以使得通过父类调用子类的特定方法，而不是父类的方法，可以做到灵活，或者说是一种多态</li>
-<li>
+<li>虚表的作用是，对于虚函数来说，可以使得通过父类调用子类的特定方法，而不是父类的方法，可以做到灵活，或者说是一种多态
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/ArtistArthur.github.io/2020/11/01/c-xu-biao/#more" rel="contents">
@@ -2515,10 +2516,10 @@
 
   
 
-<script>
+<script src="/ArtistArthur.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/ArtistArthur.github.io/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script><script>
             window.imageLazyLoadSetting = {
                 isSPA: false,
                 processImages: null,
             };
-        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=i;var e=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function i(){e&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,a=0;a<r.length;a++)0<=(t=(t=r[a]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(n.innerHeight+240||document.documentElement.clientHeight+240)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}i(),n.addEventListener("scroll",function(){var t,e;t=i,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script><script src="/ArtistArthur.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/ArtistArthur.github.io/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=i;var e=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function i(){e&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,a=0;a<r.length;a++)0<=(t=(t=r[a]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(n.innerHeight+240||document.documentElement.clientHeight+240)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}i(),n.addEventListener("scroll",function(){var t,e;t=i,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script></body>
 </html>
