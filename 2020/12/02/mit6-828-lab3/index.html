@@ -79,15 +79,15 @@
 
 
 
-<meta name="description" content="exercise2完成几个函数:  env_init():初始化所有的在envs数组中的Enc结构体，并把他们添加到env_free_list指针后面，之后调用env_init_per_cpu以设置段管理的相关硬件，它们分别是特权级0(kernel)和特权级3(user)的段。 env_setup_vm():为新的environment分配一个页目录表,并且初始化新的地址空间中的内核部分(通过复制">
+<meta name="description" content="struct PushRegs {     &#x2F;* registers as pushed by pusha *&#x2F;     uint32_t reg_edi;     uint32_t reg_esi;     uint32_t reg_ebp;     uint32_t reg_oesp;        &#x2F;* Useless *&#x2F;     uint32_t reg_ebx;     uint32_">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mit6.828-lab3">
 <meta property="og:url" content="https://github.com/ArtistArthur/ArtistArthur.github.io/2020/12/02/mit6-828-lab3/index.html">
 <meta property="og:site_name" content="Arthur">
-<meta property="og:description" content="exercise2完成几个函数:  env_init():初始化所有的在envs数组中的Enc结构体，并把他们添加到env_free_list指针后面，之后调用env_init_per_cpu以设置段管理的相关硬件，它们分别是特权级0(kernel)和特权级3(user)的段。 env_setup_vm():为新的environment分配一个页目录表,并且初始化新的地址空间中的内核部分(通过复制">
+<meta property="og:description" content="struct PushRegs {     &#x2F;* registers as pushed by pusha *&#x2F;     uint32_t reg_edi;     uint32_t reg_esi;     uint32_t reg_ebp;     uint32_t reg_oesp;        &#x2F;* Useless *&#x2F;     uint32_t reg_ebx;     uint32_">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-12-02T15:40:02.000Z">
-<meta property="article:modified_time" content="2020-12-21T19:40:07.061Z">
+<meta property="article:modified_time" content="2021-02-03T09:51:57.194Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="OS">
 <meta name="twitter:card" content="summary">
@@ -350,7 +350,74 @@
       
 
       
-        <h4 id="exercise2"><a href="#exercise2" class="headerlink" title="exercise2"></a>exercise2</h4><p>完成几个函数:</p>
+        <pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">struct</span> PushRegs <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">/* registers as pushed by pusha */</span>
+    uint32_t reg_edi<span class="token punctuation">;</span>
+    uint32_t reg_esi<span class="token punctuation">;</span>
+    uint32_t reg_ebp<span class="token punctuation">;</span>
+    uint32_t reg_oesp<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">/* Useless */</span>
+    uint32_t reg_ebx<span class="token punctuation">;</span>
+    uint32_t reg_edx<span class="token punctuation">;</span>
+    uint32_t reg_ecx<span class="token punctuation">;</span>
+    uint32_t reg_eax<span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token function">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>packed<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">struct</span> Trapframe <span class="token punctuation">{</span>
+    <span class="token keyword">struct</span> PushRegs tf_regs<span class="token punctuation">;</span>
+    uint16_t tf_es<span class="token punctuation">;</span>
+    uint16_t tf_padding1<span class="token punctuation">;</span>
+    uint16_t tf_ds<span class="token punctuation">;</span>
+    uint16_t tf_padding2<span class="token punctuation">;</span>
+    uint32_t tf_trapno<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">/* below here defined by x86 hardware */</span>
+    uint32_t tf_err<span class="token punctuation">;</span>
+    uintptr_t tf_eip<span class="token punctuation">;</span>
+    uint16_t tf_cs<span class="token punctuation">;</span>
+    uint16_t tf_padding3<span class="token punctuation">;</span>
+    uint32_t tf_eflags<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">/* below here only when crossing rings, such as from user to kernel */</span>
+    uintptr_t tf_esp<span class="token punctuation">;</span>
+    uint16_t tf_ss<span class="token punctuation">;</span>
+    uint16_t tf_padding4<span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token function">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>packed<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span>
+<span class="token function">env_pop_tf</span><span class="token punctuation">(</span><span class="token keyword">struct</span> Trapframe <span class="token operator">*</span>tf<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">asm</span> <span class="token keyword">volatile</span><span class="token punctuation">(</span>
+        <span class="token string">"\tmovl %0,%%esp\n"</span>
+        <span class="token string">"\tpopal\n"</span>
+        <span class="token string">"\tpopl %%es\n"</span>
+        <span class="token string">"\tpopl %%ds\n"</span>
+        <span class="token string">"\taddl $0x8,%%esp\n"</span> <span class="token comment" spellcheck="true">/* skip tf_trapno and tf_errcode */</span>
+        <span class="token string">"\tiret\n"</span>
+        <span class="token punctuation">:</span> <span class="token punctuation">:</span> <span class="token string">"g"</span> <span class="token punctuation">(</span>tf<span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token string">"memory"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">panic</span><span class="token punctuation">(</span><span class="token string">"iret failed"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">/* mostly to placate the compiler */</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>%0</code>表示<code>tf</code>代表的寄存器,<code>movl %0,%%esp</code>把<code>tf</code>的地址存入<code>esp</code>寄存器中,<code>popal</code>是<code>popa</code>的长指令(pop all).<br><code>pusha</code>作用是:把八个通用寄存器全部<code>push</code>入<code>esp</code>中,顺序为<code>eax ecx edx ebx oldesp ebp esi edi</code>而<code>popa</code>的作用相反:从<code>esp</code>中把这八个值弹出到相应的寄存器,但是并不弹出<code>old_esp</code>,会跳过它,方式是<code>esp</code>+4.</p>
+<pre><code>
+Operation
+IF OperandSize = 32 (* instruction = POPAD *)
+THEN
+EDI ← Pop();
+ESI ← Pop();
+EBP ← Pop();
+increment ESP by 4 (* skip next 4 bytes of stack *)
+EBX ← Pop();
+EDX ← Pop();
+ECX ← Pop();
+EAX ← Pop();
+ELSE (* OperandSize = 16, instruction = POPA *)
+DI ← Pop();
+SI ← Pop();
+BP ← Pop();
+increment ESP by 2 (* skip next 2 bytes of stack *)
+BX ← Pop();
+DX ← Pop();
+CX ← Pop();
+AX ← Pop();
+参考资料:https://www.cs.cmu.edu/~410/doc/intel-isr.pdf</code></pre><p>参考:<a href="https://www.cnblogs.com/whutzhou/articles/2638498.html" target="_blank" rel="noopener">https://www.cnblogs.com/whutzhou/articles/2638498.html</a><br><code>env_pop_tf()</code>的作用是:转到<code>tf</code>代表的用户程序,先把<code>esp</code>设为这个<code>Trapframe</code>的地址,然后<code>popa</code>,即从<code>tf</code>中的<code>struct PushRegs tf_regs</code>弹出值到相应的寄存器,实现上下文的切换.然后再从<code>tf</code>中弹出<code>es</code>和<code>ds</code>的值,再跳过<code>tf_trapno and tf_errcode</code>,最后<code>iret</code>.<br>值得注意的是:栈是从上往下增长的,<code>tf</code>陷阱门是从下网上长的,因此把<code>esp</code>设为<code>tf</code>,<code>pop</code>弹出值的时候,<code>esp</code>回退(即往上),对应着<code>tf</code>往上依次读取成员.</p>
+<h4 id="exercise2"><a href="#exercise2" class="headerlink" title="exercise2"></a>exercise2</h4><p>完成几个函数:</p>
 <ul>
 <li><code>env_init()</code>:初始化所有的在<code>envs</code>数组中的<code>Enc</code>结构体，并把他们添加到<code>env_free_list</code>指针后面，之后调用<code>env_init_per_cpu</code>以设置段管理的相关硬件，它们分别是特权级0(kernel)和特权级3(user)的段。</li>
 <li><code>env_setup_vm()</code>:为新的<code>environment</code>分配一个页目录表,并且初始化新的地址空间中的内核部分(通过复制)。</li>
@@ -483,6 +550,19 @@
 <pre class="line-numbers language-c"><code class="language-c">
 
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h4 id="the-task-state-segment"><a href="#the-task-state-segment" class="headerlink" title="the task state segment"></a>the task state segment</h4><p>处理器需要一个地方储存中断或者异常发生之前的处理器状态，比如<code>EIP</code>和<code>CS</code>的值,以便当异常或者中断执行完毕后可以恢复cpu的状态,并从原来的程序位置重新执行.<br>但是这个储存的地方,也必须免受权限不够的用户态程序影响,否则一些恶意程序会影响kernel.<br>因此x86处理器当特权级切换的时候也会切换栈,<code>TSS</code>任务状态段的目的便是服务这一过程,它指定了段选择符并指出这个栈在段中的位置,处理器会<code>push</code> <code>SS,ESP,EFLAGS,CS,EIP</code>和error code到这个栈里(error code只有某些中断或者异常会有,有的没有).随后处理器从中断描述符中加载<code>CS</code>和<code>EIP</code>以切换到新栈.<br>以上的意思是:当转移控制权时,如果特权级发生变化,那么先要把当前处理器状态存入一个安全的<code>TSS</code>指定的栈中,再切换到目的栈,这个过程涉及到三个栈:当前栈,<code>TSS</code>指定的栈和将要转移到的代码段的栈.  </p>
+<h4 id="nested-exceptions-and-interrupt"><a href="#nested-exceptions-and-interrupt" class="headerlink" title="nested exceptions and interrupt"></a>nested exceptions and interrupt</h4><p>在用户态和内核态处理器都可以接受异常和中断,但是x86只有从用户态切换到内核态的时候才会在储存cpu当前状态时自动切换栈(其他时候不会),然后再从中断向量表中invoke适当的中断或异常.<br>如果处理器以及处于内核态了(即<code>CS</code>的低2位为0),那么处理器只是把当前处理器状态再次储存到当前栈中而不切换栈.下面在<code>system call</code>中我们可以看到这个特性的好处.<br>如果处理器已经在内核态了,并出发了嵌套异常,由于它不用切换栈,因此<code>SS</code>和<code>ESP</code>寄存器的状态就没有必要储存了,因此只需储存 <code>EFLAGS,CS,EIP</code>和error code,如果内核栈已经满了,这个时候再次出现中断或者异常, <code>EFLAGS,CS,EIP</code>压不进去了,就会出现不能恢复原来现场的功能,这是一个bug,处理器面对这样的情况时,粗暴地重置自己,设计kernel的时候应该避免这种情况.  </p>
+<h4 id="setting-up-the-idt"><a href="#setting-up-the-idt" class="headerlink" title="setting up the idt"></a>setting up the idt</h4><p>下面我们将设置idt去处理0-31的异常和中断,system call和32-47的中断和异常会在以后的lab实现.<br><code>inc/trap.h</code>和<code>kern/trap.h</code>中有中断和异常的相关定义,<code>kern/trap.h</code>中定义的只用在kernel里,<code>inc/trap.h</code>中定义的在用户程序中也会起作用.<br>note:0-31中有intel保留的项,这些项随便自己怎么处理.<br>每个异常或者中断都应该在<code>trapentry.S</code>中有它自己的handler,并且<code>trap_init()</code>应该用这些handler的地址初始化IDT.每个handler应该在栈上建立一个<code>struct Trapframe</code>并且通过一个指向Trapframe的地址call<code>trap()</code>.然后<code>trap()</code>会处理异常/中断,或者交给另一个处理函数处理.  </p>
+<h4 id="exercise-4"><a href="#exercise-4" class="headerlink" title="exercise 4"></a>exercise 4</h4><p>任务:编辑<code>trapentr.S</code>和<code>trap.c</code>并且实现上述描述的功能,<code>TRAPHANDLER</code>和<code>TRAPHANDLER_NOEC</code>宏可以帮到你,<code>T_*</code>也可以.你需要在<code>trapentry.S</code>为每一个<code>trap</code>添加entry point,你需要提供<code>TRAPHANDLER</code>指向的<code>_alltrap</code>函数,你也要修改<code>trap_init()</code>去初始化idt使得它指向每个entry point,<code>SETGAE</code>宏会帮到你.  </p>
+<ul>
+<li><code>_alltrap</code>应该:<ul>
+<li>push values 以让栈看起来像一个<code>struct Trapframe</code></li>
+<li>把<code>GD_KD</code>(kernel data段)加载进<code>%ds</code>和<code>%es</code>中</li>
+<li><code>pushl %esp</code>把地址传给<code>Trapframe</code>将作为一个<code>trap()</code>的一个参数</li>
+<li>call <code>trap()</code> trap可以返回吗?</li>
+</ul>
+</li>
+</ul>
 
       
     </div>
@@ -602,7 +682,7 @@
               
                 <a href="/ArtistArthur.github.io/archives">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">27</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -673,7 +753,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#exercise2"><span class="nav-number">1.</span> <span class="nav-text">exercise2</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#exercise2"><span class="nav-number">1.</span> <span class="nav-text">exercise2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#the-task-state-segment"><span class="nav-number">2.</span> <span class="nav-text">the task state segment</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nested-exceptions-and-interrupt"><span class="nav-number">3.</span> <span class="nav-text">nested exceptions and interrupt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#setting-up-the-idt"><span class="nav-number">4.</span> <span class="nav-text">setting up the idt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#exercise-4"><span class="nav-number">5.</span> <span class="nav-text">exercise 4</span></a></li></ol></div>
             
 
           </div>
@@ -693,7 +773,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

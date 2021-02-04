@@ -87,7 +87,7 @@
 <meta property="og:description" content="用到的Linux常用命令及解释uname : 英文全拼 unix name  用于显示系统信息 可显示电脑以及操作系统的相关信息-a 或 –a 显示全部的信息-m 或 –machine 显示电脑类型-n 或 –nodename 显示在网络上的主机名称-r 或 –release 显示操作系统的发行编号-s 或 –sysname 显示操作系统名称-v 显示操作系统的版本">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-21T11:33:52.000Z">
-<meta property="article:modified_time" content="2020-12-22T19:19:06.885Z">
+<meta property="article:modified_time" content="2021-02-02T09:53:17.585Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="math">
 <meta name="twitter:card" content="summary">
@@ -353,13 +353,38 @@
         <h2 id="用到的Linux常用命令及解释"><a href="#用到的Linux常用命令及解释" class="headerlink" title="用到的Linux常用命令及解释"></a>用到的Linux常用命令及解释</h2><p>uname : 英文全拼 unix name  用于显示系统信息 可显示电脑以及操作系统的相关信息<br>-a 或 –a 显示全部的信息<br>-m 或 –machine 显示电脑类型<br>-n 或 –nodename 显示在网络上的主机名称<br>-r 或 –release 显示操作系统的发行编号<br>-s 或 –sysname 显示操作系统名称<br>-v 显示操作系统的版本</p>
 <a id="more"></a>
 <p>apt : advanced package tool<br>apt-get  xxx  install  </p>
-<p>cp ：英文全拼 copy file 用于复制文件或目录<br>cp [options] source dest  </p>
+<p>cp :英文全拼 copy file 用于复制文件或目录<br>cp [options] source dest  </p>
 <p>pwd:print working dictory 显示当前目录的路径  </p>
 <p>~:用户根目录</p>
 <p>#是管理员 $是用户<br>了解了<br>yum : yellow dogUpdater， Modified<br>sudo : superuser do<br>rm -rf: rm remove -r delete files recrusively -f force  delete without warning</p>
-<h2 id="杂乱的知识"><a href="#杂乱的知识" class="headerlink" title="杂乱的知识"></a>杂乱的知识</h2><p>大端：数据低字节在内存高位 可以优先看到符号位快速判断正负和大小<br>小端：数据高字节在内存低位 可以优先进行计算最后考虑符号位<br>现在intel的80x86用小端<br>ARM芯片默认用小端，可切换到大端<br>MIPS芯片采用大端，可切换<br>网络序为大端  </p>
+<h2 id="vim语法"><a href="#vim语法" class="headerlink" title="vim语法"></a>vim语法</h2><p>1.在命令模式下输入v进入自由选取模式,选择需要剪切的文字，按下d可以剪切.<br>2.其他命令模式下剪切命令:   </p>
+<pre><code>dd:剪切当前行    
+ndd:n表示大于1的数字，剪切n行  
+dw:从光标处剪切至一个单词的末尾，包括空格  
+de:从光标处剪切至一个单词的末尾，不包括空格  
+d$:从当前光标剪切到行末  
+d0:从当前光标位置（不包括光标位置）剪切之行首  
+d3l:从光标位置（包括光标位置）向右剪切3个字符  
+d5G:将当前行（包括当前行）至第5行（不包括它）剪切  
+d3B:从当前光标位置（不包括光标位置）反向剪切3个单词  
+dH:剪切从当前行至所显示屏幕顶行的全部行  
+dM:剪切从当前行至命令M所指定行的全部行  
+dL:剪切从当前行至所显示屏幕底的全部行   </code></pre><p>3.复制</p>
+<pre><code>yy：复制当前行
+nyy：n表示大于1的数字，复制n行
+yw：从光标处复制至一个单词的末尾，包括空格
+ye：从光标处复制至一个单词的末尾，不包括空格
+y$：从当前光标复制到行末
+y0：从当前光标位置（不包括光标位置）复制之行首
+y3l：从光标位置（包括光标位置）向右复制3个字符
+y5G：将当前行（包括当前行）至第5行（不包括它）复制
+y3B：从当前光标位置（不包括光标位置）反向复制3个单词</code></pre><h2 id="杂乱的知识"><a href="#杂乱的知识" class="headerlink" title="杂乱的知识"></a>杂乱的知识</h2><p>大端:数据低字节在内存高位 可以优先看到符号位快速判断正负和大小<br>小端:数据高字节在内存低位 可以优先进行计算最后考虑符号位<br>现在intel的80x86用小端<br>ARM芯片默认用小端，可切换到大端<br>MIPS芯片采用大端，可切换<br>网络序为大端<br>XCHG的原理</p>
 <h2 id="简写来源"><a href="#简写来源" class="headerlink" title="简写来源"></a>简写来源</h2><ul>
-<li>寄存器的ax,bx,cx,dx一般叫做通用寄存器，但也有说法是:Accumulator Base Counter Data    <h2 id="待练习"><a href="#待练习" class="headerlink" title="待练习"></a>待练习</h2>vim的使用：以后用vim语法写题</li>
+<li>寄存器的ax,bx,cx,dx一般叫做通用寄存器，但也有说法是:Accumulator Base Counter Data    </li>
+<li>BX —— based register——基地址寄存器</li>
+<li>BP —— base point——基础指针</li>
+<li>SI —— source index——源变址寄存器</li>
+<li>DI —— destination index——目的变址寄存器<h2 id="待练习"><a href="#待练习" class="headerlink" title="待练习"></a>待练习</h2>vim的使用:以后用vim语法写题</li>
 </ul>
 <h2 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h2><p>TCP向应用层提供一种面向连接的、可靠的字节流服务。<br>面向连接意味着两个使用TCP的应用（通常是一个客户和一个服务器）在彼此交换数据之前必须先建立一个TCP连接。<br>在一个TCP连接中，仅有两方进行彼此通信，广播和多播不能用于TCP。</p>
 
@@ -475,7 +500,7 @@
               
                 <a href="/ArtistArthur.github.io/archives">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">27</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -546,7 +571,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#用到的Linux常用命令及解释"><span class="nav-number">1.</span> <span class="nav-text">用到的Linux常用命令及解释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#杂乱的知识"><span class="nav-number">2.</span> <span class="nav-text">杂乱的知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简写来源"><span class="nav-number">3.</span> <span class="nav-text">简写来源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#待练习"><span class="nav-number">4.</span> <span class="nav-text">待练习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP"><span class="nav-number">5.</span> <span class="nav-text">TCP</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#用到的Linux常用命令及解释"><span class="nav-number">1.</span> <span class="nav-text">用到的Linux常用命令及解释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vim语法"><span class="nav-number">2.</span> <span class="nav-text">vim语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#杂乱的知识"><span class="nav-number">3.</span> <span class="nav-text">杂乱的知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简写来源"><span class="nav-number">4.</span> <span class="nav-text">简写来源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#待练习"><span class="nav-number">5.</span> <span class="nav-text">待练习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP"><span class="nav-number">6.</span> <span class="nav-text">TCP</span></a></li></ol></div>
             
 
           </div>
@@ -566,7 +591,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
