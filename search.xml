@@ -1365,37 +1365,57 @@ gdtdesc<span class="token punctuation">:</span>
   <entry>
     <title>mit6.828-lab3</title>
     <url>/ArtistArthur.github.io/2020/12/02/mit6-828-lab3/</url>
-    <content><![CDATA[<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">struct</span> PushRegs <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">/* registers as pushed by pusha */</span>
-    uint32_t reg_edi<span class="token punctuation">;</span>
-    uint32_t reg_esi<span class="token punctuation">;</span>
-    uint32_t reg_ebp<span class="token punctuation">;</span>
-    uint32_t reg_oesp<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">/* Useless */</span>
-    uint32_t reg_ebx<span class="token punctuation">;</span>
-    uint32_t reg_edx<span class="token punctuation">;</span>
-    uint32_t reg_ecx<span class="token punctuation">;</span>
-    uint32_t reg_eax<span class="token punctuation">;</span>
-<span class="token punctuation">}</span> <span class="token function">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>packed<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">struct</span> Trapframe <span class="token punctuation">{</span>
-    <span class="token keyword">struct</span> PushRegs tf_regs<span class="token punctuation">;</span>
-    uint16_t tf_es<span class="token punctuation">;</span>
-    uint16_t tf_padding1<span class="token punctuation">;</span>
-    uint16_t tf_ds<span class="token punctuation">;</span>
-    uint16_t tf_padding2<span class="token punctuation">;</span>
-    uint32_t tf_trapno<span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">/* below here defined by x86 hardware */</span>
-    uint32_t tf_err<span class="token punctuation">;</span>
-    uintptr_t tf_eip<span class="token punctuation">;</span>
-    uint16_t tf_cs<span class="token punctuation">;</span>
-    uint16_t tf_padding3<span class="token punctuation">;</span>
-    uint32_t tf_eflags<span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">/* below here only when crossing rings, such as from user to kernel */</span>
-    uintptr_t tf_esp<span class="token punctuation">;</span>
-    uint16_t tf_ss<span class="token punctuation">;</span>
-    uint16_t tf_padding4<span class="token punctuation">;</span>
-<span class="token punctuation">}</span> <span class="token function">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>packed<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span>
+    <content><![CDATA[<h2 id="mit6-828-lab3-user-environments"><a href="#mit6-828-lab3-user-environments" class="headerlink" title="mit6.828-lab3:user environments"></a>mit6.828-lab3:user environments</h2><p>在这个lab里你将:</p>
+<ul>
+<li>完成基本的用户进程相关设施和数据结构(envs struct等). </li>
+<li>加载一个程序镜像到内存并运行它.</li>
+<li>完成中断/异常,系统调用的相关设施,让kernel有能力处理中断/异常和系统调用.  <h3 id="partA-user-environments-and-exception-handling"><a href="#partA-user-environments-and-exception-handling" class="headerlink" title="partA:user environments and exception handling"></a>partA:user environments and exception handling</h3>首先是用户相关的数据结构<code>Env</code>:<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">struct</span> Env <span class="token punctuation">{</span>
+  <span class="token keyword">struct</span> Trapframe env_tf<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// Saved registers</span>
+  <span class="token keyword">struct</span> Env <span class="token operator">*</span>env_link<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// Next free Env</span>
+  envid_t env_id<span class="token punctuation">;</span>            <span class="token comment" spellcheck="true">// Unique environment identifier</span>
+  envid_t env_parent_id<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// env_id of this env's parent</span>
+  <span class="token keyword">enum</span> EnvType env_type<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// Indicates special system environments</span>
+  <span class="token keyword">unsigned</span> env_status<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// Status of the environment</span>
+  uint32_t env_runs<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// Number of times environment has run</span>
+  <span class="token comment" spellcheck="true">// Address space</span>
+  pde_t <span class="token operator">*</span>env_pgdir<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// Kernel virtual address of page dir</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<p>};</p>
+<pre><code>&lt;!--more--&gt;
+进程上下文切换的相关结构:
+```c
+struct PushRegs {
+    /* registers as pushed by pusha */
+    uint32_t reg_edi;
+    uint32_t reg_esi;
+    uint32_t reg_ebp;
+    uint32_t reg_oesp;        /* Useless */
+    uint32_t reg_ebx;
+    uint32_t reg_edx;
+    uint32_t reg_ecx;
+    uint32_t reg_eax;
+} __attribute__((packed));
+struct Trapframe {
+    struct PushRegs tf_regs;
+    uint16_t tf_es;
+    uint16_t tf_padding1;
+    uint16_t tf_ds;
+    uint16_t tf_padding2;
+    uint32_t tf_trapno;
+    /* below here defined by x86 hardware */
+    uint32_t tf_err;
+    uintptr_t tf_eip;
+    uint16_t tf_cs;
+    uint16_t tf_padding3;
+    uint32_t tf_eflags;
+    /* below here only when crossing rings, such as from user to kernel */
+    uintptr_t tf_esp;
+    uint16_t tf_ss;
+    uint16_t tf_padding4;
+} __attribute__((packed));
+</code></pre><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span>
 <span class="token function">env_pop_tf</span><span class="token punctuation">(</span><span class="token keyword">struct</span> Trapframe <span class="token operator">*</span>tf<span class="token punctuation">)</span>
 <span class="token punctuation">{</span>
     <span class="token keyword">asm</span> <span class="token keyword">volatile</span><span class="token punctuation">(</span>
@@ -1409,7 +1429,7 @@ gdtdesc<span class="token punctuation">:</span>
     <span class="token function">panic</span><span class="token punctuation">(</span><span class="token string">"iret failed"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">/* mostly to placate the compiler */</span>
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>%0</code>表示<code>tf</code>代表的寄存器,<code>movl %0,%%esp</code>把<code>tf</code>的地址存入<code>esp</code>寄存器中,<code>popal</code>是<code>popa</code>的长指令(pop all).<br><code>pusha</code>作用是:把八个通用寄存器全部<code>push</code>入<code>esp</code>中,顺序为<code>eax ecx edx ebx oldesp ebp esi edi</code>而<code>popa</code>的作用相反:从<code>esp</code>中把这八个值弹出到相应的寄存器,但是并不弹出<code>old_esp</code>,会跳过它,方式是<code>esp</code>+4.</p>
+<p><code>%0</code>表示<code>tf</code>代表的寄存器,<code>movl %0,%%esp</code>把<code>tf</code>的地址存入<code>esp</code>寄存器中,<code>popal</code>是<code>popa</code>的长指令(pop all).<br><code>pusha</code>作用是:把八个通用寄存器全部<code>push</code>入<code>esp</code>中,顺序为<code>eax ecx edx ebx oldesp ebp esi edi</code>而<code>popa</code>的作用相反:从<code>esp</code>中把这八个值弹出到相应的寄存器,但是并不弹出<code>old_esp</code>,会跳过它,方式是<code>esp</code>+4.<br>IRET是一个汇编指令,这个指令会做很多事情:<br>the IRET instruction pops the return instruction pointer, return code segment selector, and EFLAGS image from the stack to the EIP, CS, and EFLAGS registers, respectively, and then resumes execution of the interrupted program or procedure. If the return is to another privilege level, the IRET instruction also pops the stack pointer and SS from the stack, before resuming program execution.  </p>
 <pre><code>
 Operation
 IF OperandSize = 32 (* instruction = POPAD *)

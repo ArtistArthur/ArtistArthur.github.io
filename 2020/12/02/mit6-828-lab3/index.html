@@ -79,15 +79,15 @@
 
 
 
-<meta name="description" content="struct PushRegs {     &#x2F;* registers as pushed by pusha *&#x2F;     uint32_t reg_edi;     uint32_t reg_esi;     uint32_t reg_ebp;     uint32_t reg_oesp;        &#x2F;* Useless *&#x2F;     uint32_t reg_ebx;     uint32_">
+<meta name="description" content="mit6.828-lab3:user environments在这个lab里你将:  完成基本的用户进程相关设施和数据结构(envs struct等).  加载一个程序镜像到内存并运行它. 完成中断&#x2F;异常,系统调用的相关设施,让kernel有能力处理中断&#x2F;异常和系统调用.  partA:user environments and exception handling首先是用户相关的数据结构Env:">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mit6.828-lab3">
 <meta property="og:url" content="https://github.com/ArtistArthur/ArtistArthur.github.io/2020/12/02/mit6-828-lab3/index.html">
 <meta property="og:site_name" content="Arthur">
-<meta property="og:description" content="struct PushRegs {     &#x2F;* registers as pushed by pusha *&#x2F;     uint32_t reg_edi;     uint32_t reg_esi;     uint32_t reg_ebp;     uint32_t reg_oesp;        &#x2F;* Useless *&#x2F;     uint32_t reg_ebx;     uint32_">
+<meta property="og:description" content="mit6.828-lab3:user environments在这个lab里你将:  完成基本的用户进程相关设施和数据结构(envs struct等).  加载一个程序镜像到内存并运行它. 完成中断&#x2F;异常,系统调用的相关设施,让kernel有能力处理中断&#x2F;异常和系统调用.  partA:user environments and exception handling首先是用户相关的数据结构Env:">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-12-02T15:40:02.000Z">
-<meta property="article:modified_time" content="2021-02-09T10:21:04.276Z">
+<meta property="article:modified_time" content="2021-02-09T20:59:04.961Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="OS">
 <meta name="twitter:card" content="summary">
@@ -350,37 +350,57 @@
       
 
       
-        <pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">struct</span> PushRegs <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">/* registers as pushed by pusha */</span>
-    uint32_t reg_edi<span class="token punctuation">;</span>
-    uint32_t reg_esi<span class="token punctuation">;</span>
-    uint32_t reg_ebp<span class="token punctuation">;</span>
-    uint32_t reg_oesp<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">/* Useless */</span>
-    uint32_t reg_ebx<span class="token punctuation">;</span>
-    uint32_t reg_edx<span class="token punctuation">;</span>
-    uint32_t reg_ecx<span class="token punctuation">;</span>
-    uint32_t reg_eax<span class="token punctuation">;</span>
-<span class="token punctuation">}</span> <span class="token function">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>packed<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">struct</span> Trapframe <span class="token punctuation">{</span>
-    <span class="token keyword">struct</span> PushRegs tf_regs<span class="token punctuation">;</span>
-    uint16_t tf_es<span class="token punctuation">;</span>
-    uint16_t tf_padding1<span class="token punctuation">;</span>
-    uint16_t tf_ds<span class="token punctuation">;</span>
-    uint16_t tf_padding2<span class="token punctuation">;</span>
-    uint32_t tf_trapno<span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">/* below here defined by x86 hardware */</span>
-    uint32_t tf_err<span class="token punctuation">;</span>
-    uintptr_t tf_eip<span class="token punctuation">;</span>
-    uint16_t tf_cs<span class="token punctuation">;</span>
-    uint16_t tf_padding3<span class="token punctuation">;</span>
-    uint32_t tf_eflags<span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">/* below here only when crossing rings, such as from user to kernel */</span>
-    uintptr_t tf_esp<span class="token punctuation">;</span>
-    uint16_t tf_ss<span class="token punctuation">;</span>
-    uint16_t tf_padding4<span class="token punctuation">;</span>
-<span class="token punctuation">}</span> <span class="token function">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>packed<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span>
+        <h2 id="mit6-828-lab3-user-environments"><a href="#mit6-828-lab3-user-environments" class="headerlink" title="mit6.828-lab3:user environments"></a>mit6.828-lab3:user environments</h2><p>在这个lab里你将:</p>
+<ul>
+<li>完成基本的用户进程相关设施和数据结构(envs struct等). </li>
+<li>加载一个程序镜像到内存并运行它.</li>
+<li>完成中断/异常,系统调用的相关设施,让kernel有能力处理中断/异常和系统调用.  <h3 id="partA-user-environments-and-exception-handling"><a href="#partA-user-environments-and-exception-handling" class="headerlink" title="partA:user environments and exception handling"></a>partA:user environments and exception handling</h3>首先是用户相关的数据结构<code>Env</code>:<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">struct</span> Env <span class="token punctuation">{</span>
+  <span class="token keyword">struct</span> Trapframe env_tf<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// Saved registers</span>
+  <span class="token keyword">struct</span> Env <span class="token operator">*</span>env_link<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// Next free Env</span>
+  envid_t env_id<span class="token punctuation">;</span>            <span class="token comment" spellcheck="true">// Unique environment identifier</span>
+  envid_t env_parent_id<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// env_id of this env's parent</span>
+  <span class="token keyword">enum</span> EnvType env_type<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// Indicates special system environments</span>
+  <span class="token keyword">unsigned</span> env_status<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// Status of the environment</span>
+  uint32_t env_runs<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// Number of times environment has run</span>
+  <span class="token comment" spellcheck="true">// Address space</span>
+  pde_t <span class="token operator">*</span>env_pgdir<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// Kernel virtual address of page dir</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<p>};</p>
+<pre><code>&lt;!--more--&gt;
+进程上下文切换的相关结构:
+```c
+struct PushRegs {
+    /* registers as pushed by pusha */
+    uint32_t reg_edi;
+    uint32_t reg_esi;
+    uint32_t reg_ebp;
+    uint32_t reg_oesp;        /* Useless */
+    uint32_t reg_ebx;
+    uint32_t reg_edx;
+    uint32_t reg_ecx;
+    uint32_t reg_eax;
+} __attribute__((packed));
+struct Trapframe {
+    struct PushRegs tf_regs;
+    uint16_t tf_es;
+    uint16_t tf_padding1;
+    uint16_t tf_ds;
+    uint16_t tf_padding2;
+    uint32_t tf_trapno;
+    /* below here defined by x86 hardware */
+    uint32_t tf_err;
+    uintptr_t tf_eip;
+    uint16_t tf_cs;
+    uint16_t tf_padding3;
+    uint32_t tf_eflags;
+    /* below here only when crossing rings, such as from user to kernel */
+    uintptr_t tf_esp;
+    uint16_t tf_ss;
+    uint16_t tf_padding4;
+} __attribute__((packed));
+</code></pre><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span>
 <span class="token function">env_pop_tf</span><span class="token punctuation">(</span><span class="token keyword">struct</span> Trapframe <span class="token operator">*</span>tf<span class="token punctuation">)</span>
 <span class="token punctuation">{</span>
     <span class="token keyword">asm</span> <span class="token keyword">volatile</span><span class="token punctuation">(</span>
@@ -394,7 +414,7 @@
     <span class="token function">panic</span><span class="token punctuation">(</span><span class="token string">"iret failed"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">/* mostly to placate the compiler */</span>
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>%0</code>表示<code>tf</code>代表的寄存器,<code>movl %0,%%esp</code>把<code>tf</code>的地址存入<code>esp</code>寄存器中,<code>popal</code>是<code>popa</code>的长指令(pop all).<br><code>pusha</code>作用是:把八个通用寄存器全部<code>push</code>入<code>esp</code>中,顺序为<code>eax ecx edx ebx oldesp ebp esi edi</code>而<code>popa</code>的作用相反:从<code>esp</code>中把这八个值弹出到相应的寄存器,但是并不弹出<code>old_esp</code>,会跳过它,方式是<code>esp</code>+4.</p>
+<p><code>%0</code>表示<code>tf</code>代表的寄存器,<code>movl %0,%%esp</code>把<code>tf</code>的地址存入<code>esp</code>寄存器中,<code>popal</code>是<code>popa</code>的长指令(pop all).<br><code>pusha</code>作用是:把八个通用寄存器全部<code>push</code>入<code>esp</code>中,顺序为<code>eax ecx edx ebx oldesp ebp esi edi</code>而<code>popa</code>的作用相反:从<code>esp</code>中把这八个值弹出到相应的寄存器,但是并不弹出<code>old_esp</code>,会跳过它,方式是<code>esp</code>+4.<br>IRET是一个汇编指令,这个指令会做很多事情:<br>the IRET instruction pops the return instruction pointer, return code segment selector, and EFLAGS image from the stack to the EIP, CS, and EFLAGS registers, respectively, and then resumes execution of the interrupted program or procedure. If the return is to another privilege level, the IRET instruction also pops the stack pointer and SS from the stack, before resuming program execution.  </p>
 <pre><code>
 Operation
 IF OperandSize = 32 (* instruction = POPAD *)
@@ -1003,7 +1023,7 @@ bootstacktop:
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#exercise2"><span class="nav-number">1.</span> <span class="nav-text">exercise2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#the-task-state-segment"><span class="nav-number">2.</span> <span class="nav-text">the task state segment</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nested-exceptions-and-interrupt"><span class="nav-number">3.</span> <span class="nav-text">nested exceptions and interrupt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#setting-up-the-idt"><span class="nav-number">4.</span> <span class="nav-text">setting up the idt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#exercise-4"><span class="nav-number">5.</span> <span class="nav-text">exercise 4</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#the-breakpoint-exception"><span class="nav-number">5.1.</span> <span class="nav-text">the breakpoint exception</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#system-call"><span class="nav-number">5.2.</span> <span class="nav-text">system call</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#"><span class="nav-number">5.3.</span> <span class="nav-text"></span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#杂"><span class="nav-number">6.</span> <span class="nav-text">杂</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#mit6-828-lab3-user-environments"><span class="nav-number">1.</span> <span class="nav-text">mit6.828-lab3:user environments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#partA-user-environments-and-exception-handling"><span class="nav-number">1.1.</span> <span class="nav-text">partA:user environments and exception handling</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#exercise2"><span class="nav-number">1.1.1.</span> <span class="nav-text">exercise2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#the-task-state-segment"><span class="nav-number">1.1.2.</span> <span class="nav-text">the task state segment</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nested-exceptions-and-interrupt"><span class="nav-number">1.1.3.</span> <span class="nav-text">nested exceptions and interrupt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#setting-up-the-idt"><span class="nav-number">1.1.4.</span> <span class="nav-text">setting up the idt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#exercise-4"><span class="nav-number">1.1.5.</span> <span class="nav-text">exercise 4</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#the-breakpoint-exception"><span class="nav-number">1.1.5.1.</span> <span class="nav-text">the breakpoint exception</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#system-call"><span class="nav-number">1.1.5.2.</span> <span class="nav-text">system call</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#"><span class="nav-number">1.1.5.3.</span> <span class="nav-text"></span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#杂"><span class="nav-number">1.1.6.</span> <span class="nav-text">杂</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

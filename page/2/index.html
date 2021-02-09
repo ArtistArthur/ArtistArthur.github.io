@@ -347,7 +347,28 @@
 
       
         
-          <pre><code class="c">struct PushRegs {
+          <h2 id="mit6-828-lab3-user-environments"><a href="#mit6-828-lab3-user-environments" class="headerlink" title="mit6.828-lab3:user environments"></a>mit6.828-lab3:user environments</h2><p>在这个lab里你将:</p>
+<ul>
+<li>完成基本的用户进程相关设施和数据结构(envs struct等). </li>
+<li>加载一个程序镜像到内存并运行它.</li>
+<li>完成中断/异常,系统调用的相关设施,让kernel有能力处理中断/异常和系统调用.  <h3 id="partA-user-environments-and-exception-handling"><a href="#partA-user-environments-and-exception-handling" class="headerlink" title="partA:user environments and exception handling"></a>partA:user environments and exception handling</h3>首先是用户相关的数据结构<code>Env</code>:<pre><code class="c">struct Env {
+  struct Trapframe env_tf;    // Saved registers
+  struct Env *env_link;        // Next free Env
+  envid_t env_id;            // Unique environment identifier
+  envid_t env_parent_id;        // env_id of this env&#39;s parent
+  enum EnvType env_type;        // Indicates special system environments
+  unsigned env_status;        // Status of the environment
+  uint32_t env_runs;        // Number of times environment has run
+  // Address space
+  pde_t *env_pgdir;        // Kernel virtual address of page dir
+</code></pre>
+</li>
+</ul>
+<p>};</p>
+<pre><code>&lt;!--more--&gt;
+进程上下文切换的相关结构:
+```c
+struct PushRegs {
     /* registers as pushed by pusha */
     uint32_t reg_edi;
     uint32_t reg_esi;
@@ -376,8 +397,7 @@ struct Trapframe {
     uint16_t tf_ss;
     uint16_t tf_padding4;
 } __attribute__((packed));
-</code></pre>
-<pre><code class="c">void
+</code></pre><pre><code class="c">void
 env_pop_tf(struct Trapframe *tf)
 {
     asm volatile(
@@ -391,7 +411,7 @@ env_pop_tf(struct Trapframe *tf)
     panic(&quot;iret failed&quot;);  /* mostly to placate the compiler */
 }
 </code></pre>
-<p><code>%0</code>表示<code>tf</code>代表的寄存器,<code>movl %0,%%esp</code>把<code>tf</code>的地址存入<code>esp</code>寄存器中,<code>popal</code>是<code>popa</code>的长指令(pop all).<br><code>pusha</code>作用是:把八个通用寄存器全部<code>push</code>入<code>esp</code>中,顺序为<code>eax ecx edx ebx oldesp ebp esi edi</code>而<code>popa</code>的作用相反:从<code>esp</code>中把这八个值弹出到相应的寄存器,但是并不弹出<code>old_esp</code>,会跳过它,方式是<code>esp</code>+4.</p>
+<p><code>%0</code>表示<code>tf</code>代表的寄存器,<code>movl %0,%%esp</code>把<code>tf</code>的地址存入<code>esp</code>寄存器中,<code>popal</code>是<code>popa</code>的长指令(pop all).<br><code>pusha</code>作用是:把八个通用寄存器全部<code>push</code>入<code>esp</code>中,顺序为<code>eax ecx edx ebx oldesp ebp esi edi</code>而<code>popa</code>的作用相反:从<code>esp</code>中把这八个值弹出到相应的寄存器,但是并不弹出<code>old_esp</code>,会跳过它,方式是<code>esp</code>+4.<br>IRET是一个汇编指令,这个指令会做很多事情:<br>the IRET instruction pops the return instruction pointer, return code segment selector, and EFLAGS image from the stack to the EIP, CS, and EFLAGS registers, respectively, and then resumes execution of the interrupted program or procedure. If the return is to another privilege level, the IRET instruction also pops the stack pointer and SS from the stack, before resuming program execution.  </p>
 <pre><code>
 Operation
 IF OperandSize = 32 (* instruction = POPAD *)
