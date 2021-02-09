@@ -79,15 +79,15 @@
 
 
 
-<meta name="description" content="北京航空航天大学 | 数学">
-<meta property="og:type" content="website">
-<meta property="og:title" content="contact">
-<meta property="og:url" content="https://github.com/ArtistArthur/ArtistArthur.github.io/contact/index.html">
+<meta name="description" content="I&#x2F;O models in unix network programming通过&lt;UNIX Network Programming(Volume1,3rd)&gt; 学习unix下的io模型###there are  five I&#x2F;O models that are available to us under Unix:  blocking I&#x2F;O nonblocking I&#x2F;O I&#x2F;O m">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IOmodels">
+<meta property="og:url" content="https://github.com/ArtistArthur/ArtistArthur.github.io/2021/02/06/iomodels/index.html">
 <meta property="og:site_name" content="Arthur">
-<meta property="og:description" content="北京航空航天大学 | 数学">
+<meta property="og:description" content="I&#x2F;O models in unix network programming通过&lt;UNIX Network Programming(Volume1,3rd)&gt; 学习unix下的io模型###there are  five I&#x2F;O models that are available to us under Unix:  blocking I&#x2F;O nonblocking I&#x2F;O I&#x2F;O m">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-06-23T20:18:47.000Z">
-<meta property="article:modified_time" content="2020-06-23T20:35:47.541Z">
+<meta property="article:published_time" content="2021-02-06T02:55:12.000Z">
+<meta property="article:modified_time" content="2021-02-06T03:07:33.168Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="math">
 <meta name="twitter:card" content="summary">
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="https://github.com/ArtistArthur/ArtistArthur.github.io/contact/"/>
+  <link rel="canonical" href="https://github.com/ArtistArthur/ArtistArthur.github.io/2021/02/06/iomodels/"/>
 
 
 
 
 
-  <title>contact | Arthur</title>
+  <title>IOmodels | Arthur</title>
   
 
 
@@ -266,33 +266,170 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/ArtistArthur/ArtistArthur.github.io/ArtistArthur.github.io/2021/02/06/iomodels/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arthur Luo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/ArtistArthur.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arthur">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h1 class="post-title" itemprop="name headline">contact</h1>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
+          <h1 class="post-title" itemprop="name headline">IOmodels</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-02-06T10:55:12+08:00">
+                2021-02-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        
-      </div>
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>  阅读数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <h2 id="I-O-models-in-unix-network-programming"><a href="#I-O-models-in-unix-network-programming" class="headerlink" title="I/O models in unix network programming"></a>I/O models in unix network programming</h2><p>通过<a href="https://mathcs.clarku.edu/~jbreecher/cs280/UNIX%20Network%20Programming(Volume1,3rd).pdf" target="_blank" rel="noopener">&lt;UNIX Network Programming(Volume1,3rd)&gt;</a> 学习unix下的io模型<br>###<br>there are  five I/O models that are available to us under Unix:</p>
+<ul>
+<li>blocking I/O</li>
+<li>nonblocking I/O</li>
+<li>I/O multiplexing (select and poll)</li>
+<li>signal driven I/O (SIGIO)</li>
+<li>asynchronous I/O (the POSIX aio_functions)<br>As we show in all the examples in this section, there are normally two distinct phases for<br>an input operation:</li>
+</ul>
+<ol>
+<li>Waiting for the data to be ready</li>
+<li>Copying the data from the kernel to the process<br>For an input operation on a socket, the first step normally involves waiting for data to<br>arrive on the network. When the packet arrives, it is copied into a buffer within the kernel.<br>The second step is copying this data from the kernel’s buffer into our application buffer.<br>在unix下有五种I/O模型:</li>
+</ol>
+<ul>
+<li>阻塞I/O</li>
+<li>非阻塞I/O</li>
+<li>多路复用I/O</li>
+<li>信号驱动I/O</li>
+<li>异步I/O<br>所有的例子中,输入有两个阶段的操作:</li>
+</ul>
+<ol>
+<li>等待数据就位</li>
+<li>从内核中copy数据到进程中</li>
+<li></li>
+</ol>
+
       
     </div>
     
     
     
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/ArtistArthur.github.io/2021/02/05/offer67/" rel="next" title="offer67">
+                <i class="fa fa-chevron-left"></i> offer67
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/ArtistArthur.github.io/2021/02/06/jin-cheng-jian-tong-xin-ipc/" rel="prev" title="进程间通信IPC">
+                进程间通信IPC <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -325,8 +462,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -402,6 +548,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#I-O-models-in-unix-network-programming"><span class="nav-number">1.</span> <span class="nav-text">I&#x2F;O models in unix network programming</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
