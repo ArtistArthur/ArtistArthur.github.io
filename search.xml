@@ -1369,67 +1369,37 @@ gdtdesc<span class="token punctuation">:</span>
 <ul>
 <li>完成基本的用户进程相关设施和数据结构(envs struct等). </li>
 <li>加载一个程序镜像到内存并运行它.</li>
-<li>完成中断/异常,系统调用的相关设施,让kernel有能力处理中断/异常和系统调用.  <h3 id="partA-user-environments-and-exception-handling"><a href="#partA-user-environments-and-exception-handling" class="headerlink" title="partA:user environments and exception handling"></a>partA:user environments and exception handling</h3>首先是用户相关的数据结构<code>Env</code>:<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">struct</span> Env <span class="token punctuation">{</span>
-  <span class="token keyword">struct</span> Trapframe env_tf<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// Saved registers</span>
-  <span class="token keyword">struct</span> Env <span class="token operator">*</span>env_link<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// Next free Env</span>
-  envid_t env_id<span class="token punctuation">;</span>            <span class="token comment" spellcheck="true">// Unique environment identifier</span>
-  envid_t env_parent_id<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// env_id of this env's parent</span>
-  <span class="token keyword">enum</span> EnvType env_type<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// Indicates special system environments</span>
-  <span class="token keyword">unsigned</span> env_status<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// Status of the environment</span>
-  uint32_t env_runs<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// Number of times environment has run</span>
-  <span class="token comment" spellcheck="true">// Address space</span>
-  pde_t <span class="token operator">*</span>env_pgdir<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// Kernel virtual address of page dir</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-</li>
+<li>完成中断/异常,系统调用的相关设施,让kernel有能力处理中断/异常和系统调用.  <h3 id="partA-user-environments-and-exception-handling"><a href="#partA-user-environments-and-exception-handling" class="headerlink" title="partA:user environments and exception handling"></a>partA:user environments and exception handling</h3>首先是用户相关的数据结构<code>Env</code>:<pre><code>struct Env {
+  struct Trapframe env_tf;    // Saved registers
+  struct Env *env_link;        // Next free Env
+  envid_t env_id;            // Unique environment identifier
+  envid_t env_parent_id;        // env_id of this env&#39;s parent
+  enum EnvType env_type;        // Indicates special system environments
+  unsigned env_status;        // Status of the environment
+  uint32_t env_runs;        // Number of times environment has run
+  // Address space
+  pde_t *env_pgdir;        // Kernel virtual address of page dir
+</code></pre></li>
 </ul>
 <p>};</p>
 <pre><code>&lt;!--more--&gt;
-进程上下文切换的相关结构:
+进程上下文切换的相关结构:</code></pre><p>struct PushRegs {<br>    /<em> registers as pushed by pusha </em>/<br>    uint32_t reg_edi;<br>    uint32_t reg_esi;<br>    uint32_t reg_ebp;<br>    uint32_t reg_oesp;        /<em> Useless </em>/<br>    uint32_t reg_ebx;<br>    uint32_t reg_edx;<br>    uint32_t reg_ecx;<br>    uint32_t reg_eax;<br>} <strong>attribute</strong>((packed));<br>struct Trapframe {<br>    struct PushRegs tf_regs;<br>    uint16_t tf_es;<br>    uint16_t tf_padding1;<br>    uint16_t tf_ds;<br>    uint16_t tf_padding2;<br>    uint32_t tf_trapno;<br>    /<em> below here defined by x86 hardware </em>/<br>    uint32_t tf_err;<br>    uintptr_t tf_eip;<br>    uint16_t tf_cs;<br>    uint16_t tf_padding3;<br>    uint32_t tf_eflags;<br>    /<em> below here only when crossing rings, such as from user to kernel </em>/<br>    uintptr_t tf_esp;<br>    uint16_t tf_ss;<br>    uint16_t tf_padding4;<br>} <strong>attribute</strong>((packed));</p>
+<pre><code>
 ```c
-struct PushRegs {
-    /* registers as pushed by pusha */
-    uint32_t reg_edi;
-    uint32_t reg_esi;
-    uint32_t reg_ebp;
-    uint32_t reg_oesp;        /* Useless */
-    uint32_t reg_ebx;
-    uint32_t reg_edx;
-    uint32_t reg_ecx;
-    uint32_t reg_eax;
-} __attribute__((packed));
-struct Trapframe {
-    struct PushRegs tf_regs;
-    uint16_t tf_es;
-    uint16_t tf_padding1;
-    uint16_t tf_ds;
-    uint16_t tf_padding2;
-    uint32_t tf_trapno;
-    /* below here defined by x86 hardware */
-    uint32_t tf_err;
-    uintptr_t tf_eip;
-    uint16_t tf_cs;
-    uint16_t tf_padding3;
-    uint32_t tf_eflags;
-    /* below here only when crossing rings, such as from user to kernel */
-    uintptr_t tf_esp;
-    uint16_t tf_ss;
-    uint16_t tf_padding4;
-} __attribute__((packed));
-</code></pre><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span>
-<span class="token function">env_pop_tf</span><span class="token punctuation">(</span><span class="token keyword">struct</span> Trapframe <span class="token operator">*</span>tf<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-    <span class="token keyword">asm</span> <span class="token keyword">volatile</span><span class="token punctuation">(</span>
-        <span class="token string">"\tmovl %0,%%esp\n"</span>
-        <span class="token string">"\tpopal\n"</span>
-        <span class="token string">"\tpopl %%es\n"</span>
-        <span class="token string">"\tpopl %%ds\n"</span>
-        <span class="token string">"\taddl $0x8,%%esp\n"</span> <span class="token comment" spellcheck="true">/* skip tf_trapno and tf_errcode */</span>
-        <span class="token string">"\tiret\n"</span>
-        <span class="token punctuation">:</span> <span class="token punctuation">:</span> <span class="token string">"g"</span> <span class="token punctuation">(</span>tf<span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token string">"memory"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">panic</span><span class="token punctuation">(</span><span class="token string">"iret failed"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">/* mostly to placate the compiler */</span>
-<span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>%0</code>表示<code>tf</code>代表的寄存器,<code>movl %0,%%esp</code>把<code>tf</code>的地址存入<code>esp</code>寄存器中,<code>popal</code>是<code>popa</code>的长指令(pop all).<br><code>pusha</code>作用是:把八个通用寄存器全部<code>push</code>入<code>esp</code>中,顺序为<code>eax ecx edx ebx oldesp ebp esi edi</code>而<code>popa</code>的作用相反:从<code>esp</code>中把这八个值弹出到相应的寄存器,但是并不弹出<code>old_esp</code>,会跳过它,方式是<code>esp</code>+4.<br>IRET是一个汇编指令,这个指令会做很多事情:<br>the IRET instruction pops the return instruction pointer, return code segment selector, and EFLAGS image from the stack to the EIP, CS, and EFLAGS registers, respectively, and then resumes execution of the interrupted program or procedure. If the return is to another privilege level, the IRET instruction also pops the stack pointer and SS from the stack, before resuming program execution.  </p>
+void
+env_pop_tf(struct Trapframe *tf)
+{
+    asm volatile(
+        &quot;\tmovl %0,%%esp\n&quot;
+        &quot;\tpopal\n&quot;
+        &quot;\tpopl %%es\n&quot;
+        &quot;\tpopl %%ds\n&quot;
+        &quot;\taddl $0x8,%%esp\n&quot; /* skip tf_trapno and tf_errcode */
+        &quot;\tiret\n&quot;
+        : : &quot;g&quot; (tf) : &quot;memory&quot;);
+    panic(&quot;iret failed&quot;);  /* mostly to placate the compiler */
+}
+</code></pre><p><code>%0</code>表示<code>tf</code>代表的寄存器,<code>movl %0,%%esp</code>把<code>tf</code>的地址存入<code>esp</code>寄存器中,<code>popal</code>是<code>popa</code>的长指令(pop all).<br><code>pusha</code>作用是:把八个通用寄存器全部<code>push</code>入<code>esp</code>中,顺序为<code>eax ecx edx ebx oldesp ebp esi edi</code>而<code>popa</code>的作用相反:从<code>esp</code>中把这八个值弹出到相应的寄存器,但是并不弹出<code>old_esp</code>,会跳过它,方式是<code>esp</code>+4.<br>IRET是一个汇编指令,这个指令会做很多事情:<br>the IRET instruction pops the return instruction pointer, return code segment selector, and EFLAGS image from the stack to the EIP, CS, and EFLAGS registers, respectively, and then resumes execution of the interrupted program or procedure. If the return is to another privilege level, the IRET instruction also pops the stack pointer and SS from the stack, before resuming program execution.  </p>
 <pre><code>
 Operation
 IF OperandSize = 32 (* instruction = POPAD *)
@@ -2268,5 +2238,164 @@ Anderson最早提出了入侵检测系统IDS的概念，这标志着人们已经
 <li>右边的两个进程有一块每个进程都可以引用的共享内存.一旦共享内存在进程之间建立起来,之后获取数据的操作便不需要内核参与.某些形式的同步在这个过程中也是需要的.<br>注意:所有的进程间通信技术都没有限制进程的数量,虽然有时只通过两个进程举例,但是这对多少个进程都是适用的.  <h5 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h5>在一个进程中的所有线程共享全局变量.我们必须关心的是大量线程获取这些全局数据的同步情况.虽然同步并不是一个很显然的IPC形式,却被用在许多形式的IPC中以控制对共享信息的获取.<br>我们将描述进程间的通信以及线程间的通信.  </li>
 </ol>
 ]]></content>
+  </entry>
+  <entry>
+    <title>mit6.828 lab4</title>
+    <url>/ArtistArthur.github.io/2021/12/20/mit6-828-lab4/</url>
+    <content><![CDATA[<h2 id="introduce"><a href="#introduce" class="headerlink" title="introduce"></a>introduce</h2><p>这个实验将完成多处理器中的进程调度.<br>在partA中将:</p>
+<ul>
+<li>给JOS添加多处理器的支持</li>
+<li>完成轮询调度</li>
+<li>添加基本的进程管理系统调用(产生和销毁新进程,分配和映射内存)<br>在partB中:</li>
+<li>实现一个和unix类似的<code>fork()</code>函数以允许用户进程产生一个自己的拷贝<br>在partC中:</li>
+<li>实现进程间通讯以允许不同的用户进程进行交流和同步</li>
+<li>实现时钟中断和优先权</li>
+</ul>
+<h3 id="partA-multiprocessor-support-and-cooperative-multitasking-多处理器支持和协作任务"><a href="#partA-multiprocessor-support-and-cooperative-multitasking-多处理器支持和协作任务" class="headerlink" title="partA: multiprocessor support and cooperative multitasking(多处理器支持和协作任务)"></a>partA: multiprocessor support and cooperative multitasking(多处理器支持和协作任务)</h3><ul>
+<li>让系统可以跑在多处理器环境中</li>
+<li>实现一个新的系统调用以允许用户进程创建新进程</li>
+<li>实现协作轮询调度以允许用户进程可以资源放弃cpu,让内核切换进程<h4 id="multiprocessor-support"><a href="#multiprocessor-support" class="headerlink" title="multiprocessor support"></a>multiprocessor support</h4>让JOS支持symmetric multiprocessor(SMP,对称多处理器,即地位相同).  </li>
+</ul>
+<p><strong>excercise 1</strong><br>参照<code>boot_map_region()</code>就行,值得注意的是<code>pa</code>和<code>size</code>分别都要取整,<code>pa</code>想下取整,即从<code>pa</code>开始的那个页首开始映射,<code>size</code>向上取整,即每次映射<code>PGSIZE</code>整数倍的大小.<br>而返回值根据调用它的函数</p>
+<pre><code>// lapicaddr is the physical address of the LAPIC&#39;s 4K MMIO
+    // region.  Map it in to virtual memory so we can access it.
+    lapic = mmio_map_region(lapicaddr, 4096);</code></pre><p>可以看出,返回的是映射的首地址.  </p>
+<pre><code>//
+// Reserve size bytes in the MMIO region and map [pa,pa+size) at this
+// location.  Return the base of the reserved region.  size does *not*
+// have to be multiple of PGSIZE.
+//
+void *
+mmio_map_region(physaddr_t pa, size_t size)
+{
+    // Where to start the next region.  Initially, this is the
+    // beginning of the MMIO region.  Because this is static, its
+    // value will be preserved between calls to mmio_map_region
+    // (just like nextfree in boot_alloc).
+    static uintptr_t base = MMIOBASE;
+
+    // Reserve size bytes of virtual memory starting at base and
+    // map physical pages [pa,pa+size) to virtual addresses
+    // [base,base+size).  Since this is device memory and not
+    // regular DRAM, you&#39;ll have to tell the CPU that it isn&#39;t
+    // safe to cache access to this memory.  Luckily, the page
+    // tables provide bits for this purpose; simply create the
+    // mapping with PTE_PCD|PTE_PWT (cache-disable and
+    // write-through) in addition to PTE_W.  (If you&#39;re interested
+    // in more details on this, see section 10.5 of IA32 volume
+    // 3A.)
+    //
+    // Be sure to round size up to a multiple of PGSIZE and to
+    // handle if this reservation would overflow MMIOLIM (it&#39;s
+    // okay to simply panic if this happens).
+    //
+    // Hint: The staff solution uses boot_map_region.
+    //
+    // Your code here:
+    size = ROUNDUP(size, PGSIZE);
+    pa = ROUNDDOWN(pa, PGSIZE);
+    if (base + size &gt;= MMIOLIM)
+    {
+        panic(&quot;mmio_map_region overflow MMIOLIM!\n&quot;);
+    }
+    boot_map_region(kern_pgdir, base, size, pa, PTE_PCD | PTE_PWT | PTE_W);
+    base += size;
+    //panic(&quot;mmio_map_region not implemented&quot;);
+    //返回此次映射的base
+    return (void *)(base - size);
+}</code></pre><p><strong>exercise 2</strong><br>在<code>page_init()</code>里面再加个条件就行.   </p>
+<pre><code>    if (i == 0 || i == (MPENTRY_PADDR / PGSIZE)) 
+        {
+            pages[i].pp_ref = 1;
+            pages[i].pp_link = NULL;
+        }</code></pre><pre><code>Question 
+
+1.Compare kern/mpentry.S side by side with boot/boot.S. Bearing in mind that kern/mpentry.S is compiled and linked to run above KERNBASE just like everything else in the kernel, what is the purpose of macro MPBOOTPHYS? Why is it necessary in kern/mpentry.S but not in boot/boot.S? In other words, what could go wrong if it were omitted in kern/mpentry.S?
+Hint: recall the differences between the link address and the load address that we have discussed in Lab 1.</code></pre><p>答:因为对于<code>boot/boot.S</code>来说,它是运行在实模式下的,对它的寻址就是对实模式下物理地址中的寻址,因此它的寻址是对的.而对于<code>kern/mpentry.S</code>来说,这个文件的二进制代码也是和其他文件一起加载进物理内存的,并且<code>kern/mpentry.S</code>运行时,BSP开启了分页,且有了页表,此时对<code>kern/mpentry.S</code>文件里的对象寻址,得到的是<code>KERNBASE</code>上面的一个虚拟地址,而它实际上是被加载进0x7000的,如果按照原来的linker设置的地址寻址,会出问题.</p>
+<h4 id="Locking"><a href="#Locking" class="headerlink" title="Locking"></a>Locking</h4><p>现在我们的代码会在<code>mp_main()</code>里初始化AP后自旋/无限循环(一个for循环).在进行下一步之前,我们需要强调一下当多处理器同时运行内核代码时的竞争条件(race conditions).实现这个的最简单方式是用一个大内核锁.大内核锁是一个单独的全局锁,当有进程进入内核态时就拥有这把锁,然后在返回用户态时释放锁.在这个模型中,在用户态的进程能在多cpu上并发,但是只有一个进程能运行在内核态;任何其他想要进入内核态的进程将被强制阻塞(等待).<br>这个锁使得同时只有一个cpu处于内核态,而其他cpu想要进入内核态只能等待其他cpu退出内核态.<br>问题:为什么只能允许一个进程进入内核态?<br>如果同时有多个cpu处于内核态,它们可能会修改相关的数据和数据结构,使得cpu之间出现混乱.<br><code>kern/spinlock.h</code>声明了一个大内核锁:<code>extern struct spinlock kernel_lock;</code><br>定义在<code>kern/spinlock.c</code>:</p>
+<pre><code>// The big kernel lock
+struct spinlock kernel_lock = {
+#ifdef DEBUG_SPINLOCK
+    .name = &quot;kernel_lock&quot;
+#endif
+};</code></pre><p>这个锁的结构:</p>
+<pre><code>// Mutual exclusion lock.
+//互斥锁
+struct spinlock {
+    //如果锁被获取,locked=1,反之lock=0
+    unsigned locked;       // Is the lock held?
+    //为了debug时能发现是谁拥有锁
+#ifdef DEBUG_SPINLOCK
+    // For debugging:
+    char *name;            // Name of lock.
+    struct CpuInfo *cpu;   // The CPU holding the lock.
+    uintptr_t pcs[10];     // The call stack (an array of program counters)
+                           // that locked the lock.
+#endif
+};</code></pre><p>并且提供了<code>lock_kernel()</code>和<code>unlock_kernel()</code>函数来获取和释放锁.<br>对于锁的实现需要用到一些原子指令,一个不用原子指令的获取锁的实现是:<br>Logically, xv6 should acquire a lock by executing code like</p>
+<pre><code>21 void
+22 acquire(struct spinlock *lk)
+23 {
+24 for(;;) {
+25 if(!lk-&gt;locked) {
+26 lk-&gt;locked = 1;
+27 break;
+28 }
+29 }
+30 }</code></pre><p>Unfortunately, this implementation does not guarantee mutual exclusion on a multiprocessor. It could happen that two CPUs simultaneously reach line 25, see that lk-&gt;locked is zero, and then both grab the lock by executing line 26. At this point, two<br>different CPUs hold the lock, which violates the mutual exclusion property. Rather<br>than helping us avoid race conditions, this implementation of acquire has its own<br>race condition. The problem here is that lines 25 and 26 executed as separate actions.<br>In order for the routine above to be correct, lines 25 and 26 must execute in one<br>atomic (i.e., indivisible) step.<br>为了把25,26行变为一行,可以使用<code>xchgl</code>汇编指令,它原子地交换两个寄存器或者内存寄存器的内容.<br><code>xchgl</code>的原理是:x86提供了一个指令前缀<code>lock</code>(0xf0),当检测到这个前缀时,就”锁定”内存总线,知道这条指令执行完成为止.因此在执行<code>xchgl</code>时,其他处理器不能访问这个内存单元.(参考深入理解linux内核-内核同步-原子操作)<br>其他的解释:<a href="https://zhuanlan.zhihu.com/p/33445834" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/33445834</a><br>JOS的实现中<code>xchg()</code>封装了<code>xchgl</code>指令:</p>
+<pre><code>void
+spin_lock(struct spinlock *lk)
+{
+    // The xchg is atomic.
+    // It also serializes, so that reads after acquire are not
+    // reordered before it. 
+    while (xchg(&amp;lk-&gt;locked, 1) != 0)
+        asm volatile (&quot;pause&quot;);
+}</code></pre><p><code>asm volatile (&quot;pause&quot;);</code>的作用是提高性能,参见<a href="https://c9x.me/x86/html/file_module_x86_id_232.html" target="_blank" rel="noopener">https://c9x.me/x86/html/file_module_x86_id_232.html</a><br><a href="https://kb.cnblogs.com/page/105657/" target="_blank" rel="noopener">https://kb.cnblogs.com/page/105657/</a><br><a href="http://web.cecs.pdx.edu/~alaa/courses/ece587/spring2012/notes/memory-ordering.pdf" target="_blank" rel="noopener">http://web.cecs.pdx.edu/~alaa/courses/ece587/spring2012/notes/memory-ordering.pdf</a><br>在这四个地方应该应用这个大内核锁:</p>
+<blockquote>
+<p>In i386_init(), acquire the lock before the BSP wakes up the other CPUs.</p>
+<p>In mp_main(), acquire the lock after initializing the AP, and then call sched_yield() to start running environments on this AP.</p>
+<p>In trap(), acquire the lock when trapped from user mode. To determine whether a trap happened in user mode or in kernel mode, check the low bits of the tf_cs.<br>In env_run(), release the lock right before switching to user mode. Do not do that too early or too late, otherwise you will experience races or deadlocks.</p>
+</blockquote>
+<blockquote>
+<p>Exercise 5. Apply the big kernel lock as described above, by calling lock_kernel() and unlock_kernel() at the proper locations.   </p>
+</blockquote>
+<p>在对应位置加入<code>lock_kernel();</code>或者<code>unlock_kernel();</code>就行.      </p>
+<pre><code>Question 2
+It seems that using the big kernel lock guarantees that only one CPU can run the kernel code at a time. Why do we still need separate kernel stacks for each CPU? Describe a scenario in which using a shared kernel stack will go wrong, even with the protection of the big kernel lock.</code></pre><p>因为在<code>_alltraps</code>到<code>lock_kernel()</code>的过程中(即引发中断进入内核态时和内核上锁之间),进程已经切换到了内核态,但并没有上内核锁,此时如果有其他CPU进入内核,如果用同一个内核栈,则<code>_alltraps</code>中保存的上下文信息会被破坏(因为切换中断时,指针会重置,被压栈的数据会被覆盖(或者两个cpu使用的段可能不同)),所以即使有大内核栈,CPU也不能用用同一个内核栈.同样的,解锁也是在内核态内解锁,在解锁到真正返回用户态这段过程中,也存在上述这种情况.   </p>
+<h4 id="round-robin-scheduling-轮询调度"><a href="#round-robin-scheduling-轮询调度" class="headerlink" title="round-robin scheduling(轮询调度)"></a>round-robin scheduling(轮询调度)</h4><p>轮询调度算法的原理是每一次把来自用户的请求轮流分配给内部中的处理器,从1开始,直到N(内部处理个数),然后重新开始循环.<br>算法的优点是其简洁性,它无需记录当前所有连接的状态,所以它是一种无状态调度.<br>JOS的round-robin:</p>
+<ul>
+<li><code>kern/schec.c</code>里的<code>sched_yield()</code>函数负责挑选一个新的进程运行,因此它可以用来让出cpu.它循环线性搜索<code>envs[]</code>里的进程,对遇到的第一个<code>ENV_RUNNABLE</code>进程调用<code>env_run()</code>.</li>
+<li><code>sched_yield()</code>绝对能在两个cpu上运行同一个进程.它能从进程的状态<code>ENV_RUNNABLE</code>分辨一个进程现在运行在某个cpu(可能是现在这个)</li>
+<li>我们已经实现了一个系统调用<code>sys_yield()</code>,用户进程可以调用它来执行内核的<code>sched_yield()</code>,然后自动放弃cpu以运行不同的进程.</li>
+<li><em>exercise 6*</em>  </li>
+</ul>
+<p>问题:</p>
+<h1 id="Call-mp-main-Exercise-for-the-reader-why-the-indirect-call"><a href="#Call-mp-main-Exercise-for-the-reader-why-the-indirect-call" class="headerlink" title="Call mp_main().  (Exercise for the reader: why the indirect call?)"></a>Call mp_main().  (Exercise for the reader: why the indirect call?)</h1><pre><code>#无页表?
+movl    $mp_main, %eax
+call    *%eax</code></pre><p>分页开启前是怎么寻址的?</p>
+<pre><code>//复习实模式寻址:
+# Each non-boot CPU (&quot;AP&quot;) is started up in response to a STARTUP
+# IPI from the boot CPU.  Section B.4.2 of the Multi-Processor
+# Specification says that the AP will start in real mode with CS:IP
+# set to XY00:0000, where XY is an 8-bit value sent with the
+# STARTUP. Thus this code must start at a 4096-byte boundary.
+#
+//为什么?
+# Because this code sets DS to zero, it must run from an address in
+# the low 2^16 bytes of physical memory.
+#
+# boot_aps() (in init.c) copies this code to MPENTRY_PADDR (which
+# satisfies the above restrictions).  Then, for each AP, it stores the
+# address of the pre-allocated per-core stack in mpentry_kstack, sends
+# the STARTUP IPI, and waits for this code to acknowledge that it has
+# started (which happens in mp_main in init.c).
+#
+# This code is similar to boot/boot.S except that
+#    - it does not need to enable A20
+//为什么?
+#    - it uses MPBOOTPHYS to calculate absolute addresses of its
+#      symbols, rather than relying on the linker to fill them
+</code></pre>]]></content>
   </entry>
 </search>

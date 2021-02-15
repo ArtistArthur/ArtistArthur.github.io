@@ -277,6 +277,133 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/ArtistArthur/ArtistArthur.github.io/ArtistArthur.github.io/2020/12/11/cpp-yu-fa-fu-xi/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arthur Luo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/ArtistArthur.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arthur">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/ArtistArthur.github.io/2020/12/11/cpp-yu-fa-fu-xi/" itemprop="url">C++语法复习</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-12-11T16:32:46+08:00">
+                2020-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="Primer-C-review"><a href="#Primer-C-review" class="headerlink" title="Primer C++ review"></a>Primer C++ review</h3><h3 id="OOP"><a href="#OOP" class="headerlink" title="OOP"></a>OOP</h3><h4 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h4><h5 id="虚函数"><a href="#虚函数" class="headerlink" title="虚函数"></a>虚函数</h5><ul>
+<li>类的三个用户分别是：类的实现者，类的普通用户和类的继承者(派生类):<br>　　1 、类的实现者：类的设计者，拥有最大的权限，可以访问类中任何权限的成员，主要负责编写类的成员和友元的代码。可以访问类中的公有部分（public），保护部分（protect)和(private)私有部分。<br>　　2、类的普通用户：就是使用类的对象，这部分用户只能访问类的接口（也就是公用部分poublic)。<br>　　3、类的继承者：就是派生类。派生类能访问基类中的公有部分和受保护的部分，普通用户不能访问受保护的成员。  </li>
+<li>基类应该将类型相关的函数与派生类不做改变直接继承的函数区分对待。对于某些函数，基类希望它的派生类各自定义自身的版本，此时基类就将这些函数声明为<strong>虚函数</strong>。</li>
+</ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/ArtistArthur.github.io/2020/12/11/cpp-yu-fa-fu-xi/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://github.com/ArtistArthur/ArtistArthur.github.io/ArtistArthur.github.io/2020/12/02/mit6-828-lab3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -351,7 +478,7 @@
 <ul>
 <li>完成基本的用户进程相关设施和数据结构(envs struct等). </li>
 <li>加载一个程序镜像到内存并运行它.</li>
-<li>完成中断/异常,系统调用的相关设施,让kernel有能力处理中断/异常和系统调用.  <h3 id="partA-user-environments-and-exception-handling"><a href="#partA-user-environments-and-exception-handling" class="headerlink" title="partA:user environments and exception handling"></a>partA:user environments and exception handling</h3>首先是用户相关的数据结构<code>Env</code>:<pre><code class="c">struct Env {
+<li>完成中断/异常,系统调用的相关设施,让kernel有能力处理中断/异常和系统调用.  <h3 id="partA-user-environments-and-exception-handling"><a href="#partA-user-environments-and-exception-handling" class="headerlink" title="partA:user environments and exception handling"></a>partA:user environments and exception handling</h3>首先是用户相关的数据结构<code>Env</code>:<pre><code>struct Env {
   struct Trapframe env_tf;    // Saved registers
   struct Env *env_link;        // Next free Env
   envid_t env_id;            // Unique environment identifier
@@ -361,43 +488,14 @@
   uint32_t env_runs;        // Number of times environment has run
   // Address space
   pde_t *env_pgdir;        // Kernel virtual address of page dir
-</code></pre>
-</li>
+</code></pre></li>
 </ul>
 <p>};</p>
 <pre><code>&lt;!--more--&gt;
-进程上下文切换的相关结构:
+进程上下文切换的相关结构:</code></pre><p>struct PushRegs {<br>    /<em> registers as pushed by pusha </em>/<br>    uint32_t reg_edi;<br>    uint32_t reg_esi;<br>    uint32_t reg_ebp;<br>    uint32_t reg_oesp;        /<em> Useless </em>/<br>    uint32_t reg_ebx;<br>    uint32_t reg_edx;<br>    uint32_t reg_ecx;<br>    uint32_t reg_eax;<br>} <strong>attribute</strong>((packed));<br>struct Trapframe {<br>    struct PushRegs tf_regs;<br>    uint16_t tf_es;<br>    uint16_t tf_padding1;<br>    uint16_t tf_ds;<br>    uint16_t tf_padding2;<br>    uint32_t tf_trapno;<br>    /<em> below here defined by x86 hardware </em>/<br>    uint32_t tf_err;<br>    uintptr_t tf_eip;<br>    uint16_t tf_cs;<br>    uint16_t tf_padding3;<br>    uint32_t tf_eflags;<br>    /<em> below here only when crossing rings, such as from user to kernel </em>/<br>    uintptr_t tf_esp;<br>    uint16_t tf_ss;<br>    uint16_t tf_padding4;<br>} <strong>attribute</strong>((packed));</p>
+<pre><code>
 ```c
-struct PushRegs {
-    /* registers as pushed by pusha */
-    uint32_t reg_edi;
-    uint32_t reg_esi;
-    uint32_t reg_ebp;
-    uint32_t reg_oesp;        /* Useless */
-    uint32_t reg_ebx;
-    uint32_t reg_edx;
-    uint32_t reg_ecx;
-    uint32_t reg_eax;
-} __attribute__((packed));
-struct Trapframe {
-    struct PushRegs tf_regs;
-    uint16_t tf_es;
-    uint16_t tf_padding1;
-    uint16_t tf_ds;
-    uint16_t tf_padding2;
-    uint32_t tf_trapno;
-    /* below here defined by x86 hardware */
-    uint32_t tf_err;
-    uintptr_t tf_eip;
-    uint16_t tf_cs;
-    uint16_t tf_padding3;
-    uint32_t tf_eflags;
-    /* below here only when crossing rings, such as from user to kernel */
-    uintptr_t tf_esp;
-    uint16_t tf_ss;
-    uint16_t tf_padding4;
-} __attribute__((packed));
-</code></pre><pre><code class="c">void
+void
 env_pop_tf(struct Trapframe *tf)
 {
     asm volatile(
@@ -410,8 +508,7 @@ env_pop_tf(struct Trapframe *tf)
         : : &quot;g&quot; (tf) : &quot;memory&quot;);
     panic(&quot;iret failed&quot;);  /* mostly to placate the compiler */
 }
-</code></pre>
-<p><code>%0</code>表示<code>tf</code>代表的寄存器,<code>movl %0,%%esp</code>把<code>tf</code>的地址存入<code>esp</code>寄存器中,<code>popal</code>是<code>popa</code>的长指令(pop all).<br><code>pusha</code>作用是:把八个通用寄存器全部<code>push</code>入<code>esp</code>中,顺序为<code>eax ecx edx ebx oldesp ebp esi edi</code>而<code>popa</code>的作用相反:从<code>esp</code>中把这八个值弹出到相应的寄存器,但是并不弹出<code>old_esp</code>,会跳过它,方式是<code>esp</code>+4.<br>IRET是一个汇编指令,这个指令会做很多事情:<br>the IRET instruction pops the return instruction pointer, return code segment selector, and EFLAGS image from the stack to the EIP, CS, and EFLAGS registers, respectively, and then resumes execution of the interrupted program or procedure. If the return is to another privilege level, the IRET instruction also pops the stack pointer and SS from the stack, before resuming program execution.  </p>
+</code></pre><p><code>%0</code>表示<code>tf</code>代表的寄存器,<code>movl %0,%%esp</code>把<code>tf</code>的地址存入<code>esp</code>寄存器中,<code>popal</code>是<code>popa</code>的长指令(pop all).<br><code>pusha</code>作用是:把八个通用寄存器全部<code>push</code>入<code>esp</code>中,顺序为<code>eax ecx edx ebx oldesp ebp esi edi</code>而<code>popa</code>的作用相反:从<code>esp</code>中把这八个值弹出到相应的寄存器,但是并不弹出<code>old_esp</code>,会跳过它,方式是<code>esp</code>+4.<br>IRET是一个汇编指令,这个指令会做很多事情:<br>the IRET instruction pops the return instruction pointer, return code segment selector, and EFLAGS image from the stack to the EIP, CS, and EFLAGS registers, respectively, and then resumes execution of the interrupted program or procedure. If the return is to another privilege level, the IRET instruction also pops the stack pointer and SS from the stack, before resuming program execution.  </p>
 <pre><code>
 Operation
 IF OperandSize = 32 (* instruction = POPAD *)
@@ -1900,160 +1997,6 @@ AX ← Pop();
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/ArtistArthur/ArtistArthur.github.io/ArtistArthur.github.io/2020/10/29/xv6-read-notes/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Arthur Luo">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/ArtistArthur.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Arthur">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/ArtistArthur.github.io/2020/10/29/xv6-read-notes/" itemprop="url">xv6-read-notes</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-10-29T21:33:33+08:00">
-                2020-10-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/ArtistArthur.github.io/categories/OS/" itemprop="url" rel="index">
-                    <span itemprop="name">OS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="xv6-a-simple-Unix-like-teaching-operating-system"><a href="#xv6-a-simple-Unix-like-teaching-operating-system" class="headerlink" title="xv6 a simple, Unix-like teaching operating system"></a>xv6 a simple, Unix-like teaching operating system</h1><p>简介：xv6是一个Unix version6的重新实现，v6的结构和风格、ANSI 的标准、基于x86的多进程。</p>
-<h2 id="chapter-0"><a href="#chapter-0" class="headerlink" title="chapter 0"></a>chapter 0</h2><h3 id="Operating-system-interfaces"><a href="#Operating-system-interfaces" class="headerlink" title="Operating system interfaces"></a>Operating system interfaces</h3><ul>
-<li><p>操作系统的工作是在多个程序之间分享计算机的资源，并提供比仅仅只有硬件更有用的服务。  </p>
-</li>
-<li><p>操作系统管理并抽象低层次的硬件，因此，一个字符处理器就不需要关心自己需要使用的是什么类型的储存介质。</p>
-</li>
-<li><p>操作系统也把硬件资源分享给多个程序使用，以便让他们（看起来）同时运行</p>
-</li>
-<li><p>操作系统还提供一些控制方法，以便不同的程序之间互动：分享数据、协同工作</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/ArtistArthur.github.io/2020/10/29/xv6-read-notes/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2104,7 +2047,7 @@ AX ← Pop();
               
                 <a href="/ArtistArthur.github.io/archives">
               
-                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
