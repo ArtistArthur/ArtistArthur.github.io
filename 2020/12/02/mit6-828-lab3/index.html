@@ -87,7 +87,7 @@
 <meta property="og:description" content="mit6.828-lab3:user environments在这个lab里你将:  完成基本的用户进程相关设施和数据结构(envs struct等).  加载一个程序镜像到内存并运行它. 完成中断&#x2F;异常,系统调用的相关设施,让kernel有能力处理中断&#x2F;异常和系统调用.    partA:user environments and exception handling首先是用户相关的数据结构En">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-12-02T15:40:02.000Z">
-<meta property="article:modified_time" content="2021-02-15T12:58:11.118Z">
+<meta property="article:modified_time" content="2021-02-15T15:22:33.519Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="OS">
 <meta name="twitter:card" content="summary">
@@ -357,267 +357,34 @@
 <li>完成中断/异常,系统调用的相关设施,让kernel有能力处理中断/异常和系统调用.  </li>
 </ul>
 <h3 id="partA-user-environments-and-exception-handling"><a href="#partA-user-environments-and-exception-handling" class="headerlink" title="partA:user environments and exception handling"></a>partA:user environments and exception handling</h3><p>首先是用户相关的数据结构<code>Env</code>:</p>
-<pre><code>struct Env {
-    struct Trapframe env_tf;    // Saved registers
-    struct Env *env_link;        // Next free Env
-    envid_t env_id;            // Unique environment identifier
-    envid_t env_parent_id;        // env_id of this env&#39;s parent
-    enum EnvType env_type;        // Indicates special system environments
-    unsigned env_status;        // Status of the environment
-    uint32_t env_runs;        // Number of times environment has run
-    // Address space
-    pde_t *env_pgdir;        // Kernel virtual address of page dir
-};
-</code></pre><a id="more"></a>     
-<p>进程上下文切换的相关结构:   </p>
-<pre><code>struct PushRegs {
-    /* registers as pushed by pusha */
-    uint32_t reg_edi;
-    uint32_t reg_esi;
-    uint32_t reg_ebp;
-    uint32_t reg_oesp;        /* Useless */
-    uint32_t reg_ebx;
-    uint32_t reg_edx;
-    uint32_t reg_ecx;
-    uint32_t reg_eax;
-} __attribute__((packed));
-struct Trapframe {
-    struct PushRegs tf_regs;
-    uint16_t tf_es;
-    uint16_t tf_padding1;
-    uint16_t tf_ds;
-    uint16_t tf_padding2;
-    uint32_t tf_trapno;
-    /* below here defined by x86 hardware */
-    uint32_t tf_err;
-    uintptr_t tf_eip;
-    uint16_t tf_cs;
-    uint16_t tf_padding3;
-    uint32_t tf_eflags;
-    /* below here only when crossing rings, such as from user to kernel */
-    uintptr_t tf_esp;
-    uint16_t tf_ss;
-    uint16_t tf_padding4;
-} __attribute__((packed));
-</code></pre><pre><code>void
-env_pop_tf(struct Trapframe *tf)
-{
-    asm volatile(
-        &quot;\tmovl %0,%%esp\n&quot;
-        &quot;\tpopal\n&quot;
-        &quot;\tpopl %%es\n&quot;
-        &quot;\tpopl %%ds\n&quot;
-        &quot;\taddl $0x8,%%esp\n&quot; /* skip tf_trapno and tf_errcode */
-        &quot;\tiret\n&quot;
-        : : &quot;g&quot; (tf) : &quot;memory&quot;);
-    panic(&quot;iret failed&quot;);  /* mostly to placate the compiler */
-}
-</code></pre><p><code>%0</code>表示<code>tf</code>代表的寄存器,<code>movl %0,%%esp</code>把<code>tf</code>的地址存入<code>esp</code>寄存器中,<code>popal</code>是<code>popa</code>的长指令(pop all).<br><code>pusha</code>作用是:把八个通用寄存器全部<code>push</code>入<code>esp</code>中,顺序为<code>eax ecx edx ebx oldesp ebp esi edi</code>而<code>popa</code>的作用相反:从<code>esp</code>中把这八个值弹出到相应的寄存器,但是并不弹出<code>old_esp</code>,会跳过它,方式是<code>esp</code>+4.<br>IRET是一个汇编指令,这个指令会做很多事情:<br>the IRET instruction pops the return instruction pointer, return code segment selector, and EFLAGS image from the stack to the EIP, CS, and EFLAGS registers, respectively, and then resumes execution of the interrupted program or procedure. If the return is to another privilege level, the IRET instruction also pops the stack pointer and SS from the stack, before resuming program execution.  </p>
-<pre><code>
-Operation
-IF OperandSize = 32 (* instruction = POPAD *)
-THEN
-EDI ← Pop();
-ESI ← Pop();
-EBP ← Pop();
-increment ESP by 4 (* skip next 4 bytes of stack *)
-EBX ← Pop();
-EDX ← Pop();
-ECX ← Pop();
-EAX ← Pop();
-ELSE (* OperandSize = 16, instruction = POPA *)
-DI ← Pop();
-SI ← Pop();
-BP ← Pop();
-increment ESP by 2 (* skip next 2 bytes of stack *)
-BX ← Pop();
-DX ← Pop();
-CX ← Pop();
-AX ← Pop();
-参考资料:https://www.cs.cmu.edu/~410/doc/intel-isr.pdf</code></pre><p>参考:<a href="https://www.cnblogs.com/whutzhou/articles/2638498.html" target="_blank" rel="noopener">https://www.cnblogs.com/whutzhou/articles/2638498.html</a><br><code>env_pop_tf()</code>的作用是:转到<code>tf</code>代表的用户程序,先把<code>esp</code>设为这个<code>Trapframe</code>的地址,然后<code>popa</code>,即从<code>tf</code>中的<code>struct PushRegs tf_regs</code>弹出值到相应的寄存器,实现上下文的切换.然后再从<code>tf</code>中弹出<code>es</code>和<code>ds</code>的值,再跳过<code>tf_trapno and tf_errcode</code>,最后<code>iret</code>.<br>值得注意的是:栈是从上往下增长的,<code>tf</code>陷阱门是从下网上长的,因此把<code>esp</code>设为<code>tf</code>,<code>pop</code>弹出值的时候,<code>esp</code>回退(即往上),对应着<code>tf</code>往上依次读取成员.</p>
-<h4 id="exercise2"><a href="#exercise2" class="headerlink" title="exercise2"></a>exercise2</h4><p>完成几个函数:</p>
-<ul>
-<li><code>env_init()</code>:初始化所有的在<code>envs</code>数组中的<code>Enc</code>结构体,并把他们添加到<code>env_free_list</code>指针后面,之后调用<code>env_init_per_cpu</code>以设置段管理的相关硬件,它们分别是特权级0(kernel)和特权级3(user)的段.</li>
-<li><code>env_setup_vm()</code>:为新的<code>environment</code>分配一个页目录表,并且初始化新的地址空间中的内核部分(通过复制).</li>
-<li><code>region_alloc()</code>:为新的<code>environment</code>分配并映射物理地址.</li>
-<li><code>load_icode()</code>:需要自己实现解析ELF二进制文件的功能(就和<code>bootloader</code>里面做的一样),并把二进制文件的内容加载到新的<code>environment</code>的用户地址空间中.</li>
-<li><code>env_create</code>:通过<code>env_alloc()</code>分配一个<code>environment</code>,并且调用<code>load_icode()</code>把ELF二进制文件加载进去.</li>
-<li><code>env_run</code>:在用户模式下启动一个给定的<code>environment</code>.<br>代码解析:  </li>
-<li><code>env_init()</code>:  </li>
-</ul>
-<!--more-->
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Env</span> &#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">Trapframe</span> <span class="title">env_tf</span>;</span>	<span class="comment">// Saved registers</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">Env</span> *<span class="title">env_link</span>;</span>		<span class="comment">// Next free Env</span></span><br><span class="line">	<span class="keyword">envid_t</span> env_id;			<span class="comment">// Unique environment identifier</span></span><br><span class="line">	<span class="keyword">envid_t</span> env_parent_id;		<span class="comment">// env_id of this env's parent</span></span><br><span class="line">	<span class="keyword">enum</span> EnvType env_type;		<span class="comment">// Indicates special system environments</span></span><br><span class="line">	<span class="keyword">unsigned</span> env_status;		<span class="comment">// Status of the environment</span></span><br><span class="line">	<span class="keyword">uint32_t</span> env_runs;		<span class="comment">// Number of times environment has run</span></span><br><span class="line">	<span class="comment">// Address space</span></span><br><span class="line">	<span class="keyword">pde_t</span> *env_pgdir;		<span class="comment">// Kernel virtual address of page dir</span></span><br><span class="line">&#125;;   </span><br><span class="line"></span><br><span class="line">```    </span><br><span class="line">&lt;!--more--&gt;     </span><br><span class="line">进程上下文切换的相关结构:   </span><br><span class="line">```c   </span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">PushRegs</span> &#123;</span></span><br><span class="line">	<span class="comment">/* registers as pushed by pusha */</span></span><br><span class="line">	<span class="keyword">uint32_t</span> reg_edi;</span><br><span class="line">	<span class="keyword">uint32_t</span> reg_esi;</span><br><span class="line">	<span class="keyword">uint32_t</span> reg_ebp;</span><br><span class="line">	<span class="keyword">uint32_t</span> reg_oesp;		<span class="comment">/* Useless */</span></span><br><span class="line">	<span class="keyword">uint32_t</span> reg_ebx;</span><br><span class="line">	<span class="keyword">uint32_t</span> reg_edx;</span><br><span class="line">	<span class="keyword">uint32_t</span> reg_ecx;</span><br><span class="line">	<span class="keyword">uint32_t</span> reg_eax;</span><br><span class="line">&#125; __attribute__((packed));</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Trapframe</span> &#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">PushRegs</span> <span class="title">tf_regs</span>;</span></span><br><span class="line">	<span class="keyword">uint16_t</span> tf_es;</span><br><span class="line">	<span class="keyword">uint16_t</span> tf_padding1;</span><br><span class="line">	<span class="keyword">uint16_t</span> tf_ds;</span><br><span class="line">	<span class="keyword">uint16_t</span> tf_padding2;</span><br><span class="line">	<span class="keyword">uint32_t</span> tf_trapno;</span><br><span class="line">	<span class="comment">/* below here defined by x86 hardware */</span></span><br><span class="line">	<span class="keyword">uint32_t</span> tf_err;</span><br><span class="line">	<span class="keyword">uintptr_t</span> tf_eip;</span><br><span class="line">	<span class="keyword">uint16_t</span> tf_cs;</span><br><span class="line">	<span class="keyword">uint16_t</span> tf_padding3;</span><br><span class="line">	<span class="keyword">uint32_t</span> tf_eflags;</span><br><span class="line">	<span class="comment">/* below here only when crossing rings, such as from user to kernel */</span></span><br><span class="line">	<span class="keyword">uintptr_t</span> tf_esp;</span><br><span class="line">	<span class="keyword">uint16_t</span> tf_ss;</span><br><span class="line">	<span class="keyword">uint16_t</span> tf_padding4;</span><br><span class="line">&#125; __attribute__((packed));</span><br><span class="line"></span><br><span class="line">```   </span><br><span class="line"></span><br><span class="line">```c   </span><br><span class="line"><span class="keyword">void</span></span><br><span class="line">env_pop_tf(struct Trapframe *tf)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="function"><span class="keyword">asm</span> <span class="title">volatile</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="string">"\tmovl %0,%%esp\n"</span></span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="string">"\tpopal\n"</span></span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="string">"\tpopl %%es\n"</span></span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="string">"\tpopl %%ds\n"</span></span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="string">"\taddl $0x8,%%esp\n"</span> <span class="comment">/* skip tf_trapno and tf_errcode */</span></span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="string">"\tiret\n"</span></span></span></span><br><span class="line"><span class="function"><span class="params">		: : <span class="string">"g"</span> (tf) : <span class="string">"memory"</span>)</span></span>;</span><br><span class="line">	panic(<span class="string">"iret failed"</span>);  <span class="comment">/* mostly to placate the compiler */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">```     </span><br><span class="line">`%<span class="number">0</span>`表示`tf`代表的寄存器,`movl %<span class="number">0</span>,%%esp`把`tf`的地址存入`esp`寄存器中,`popal`是`popa`的长指令(pop all).  </span><br><span class="line">`pusha`作用是:把八个通用寄存器全部`push`入`esp`中,顺序为`eax ecx edx ebx oldesp ebp esi edi`而`popa`的作用相反:从`esp`中把这八个值弹出到相应的寄存器,但是并不弹出`old_esp`,会跳过它,方式是`esp`+<span class="number">4.</span>   </span><br><span class="line">IRET是一个汇编指令,这个指令会做很多事情:   </span><br><span class="line">the IRET instruction pops the <span class="keyword">return</span> instruction pointer, <span class="keyword">return</span> code segment selector, <span class="keyword">and</span> EFLAGS <span class="built_in">image</span> from the <span class="built_in">stack</span> to the EIP, CS, <span class="keyword">and</span> EFLAGS registers, respectively, <span class="keyword">and</span> then resumes execution of the interrupted program <span class="keyword">or</span> procedure. If the <span class="keyword">return</span> is to another privilege level, the IRET instruction also pops the <span class="built_in">stack</span> pointer <span class="keyword">and</span> SS from the <span class="built_in">stack</span>, before resuming program execution.</span><br></pre></td></tr></table></figure>
 
-<pre class="line-numbers language-c"><code class="language-c">
-<span class="token comment" spellcheck="true">// Mark all environments in 'envs' as free, set their env_ids to 0,</span>
-<span class="token comment" spellcheck="true">// and insert them into the env_free_list.</span>
-<span class="token comment" spellcheck="true">// Make sure the environments are in the free list in the same order</span>
-<span class="token comment" spellcheck="true">// they are in the envs array (i.e., so that the first call to</span>
-<span class="token comment" spellcheck="true">// env_alloc() returns envs[0]).</span>
-<span class="token comment" spellcheck="true">//</span>
-<span class="token keyword">void</span>
-<span class="token function">env_init</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// Set up envs array</span>
-    <span class="token comment" spellcheck="true">// LAB 3: Your code here.</span>
-    size_t i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-    env_free_list <span class="token operator">=</span> envs<span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">//让env_free_list等于数组第一个元素,再让整个数组通过链表连起来</span>
-    <span class="token comment" spellcheck="true">//env_link指向下一个节点,同时把id设置为0</span>
-    <span class="token comment" spellcheck="true">//让最后一个节点指向null</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> NENV<span class="token number">-1</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-        envs<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>env_link <span class="token operator">=</span> envs <span class="token operator">+</span> i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
-        envs<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>id <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<p>Operation<br>IF OperandSize = 32 (<em> instruction = POPAD </em>)<br>THEN<br>EDI ← Pop();<br>ESI ← Pop();<br>EBP ← Pop();<br>increment ESP by 4 (<em> skip next 4 bytes of stack </em>)<br>EBX ← Pop();<br>EDX ← Pop();<br>ECX ← Pop();<br>EAX ← Pop();<br>ELSE (<em> OperandSize = 16, instruction = POPA </em>)<br>DI ← Pop();<br>SI ← Pop();<br>BP ← Pop();<br>increment ESP by 2 (<em> skip next 2 bytes of stack </em>)<br>BX ← Pop();<br>DX ← Pop();<br>CX ← Pop();<br>AX ← Pop();<br>参考资料:<a href="https://www.cs.cmu.edu/~410/doc/intel-isr.pdf" target="_blank" rel="noopener">https://www.cs.cmu.edu/~410/doc/intel-isr.pdf</a></p>
+<figure class="highlight autohotkey"><table><tr><td class="code"><pre><span class="line"><span class="title">参考:https:</span>//www.cnblogs.com/whutzhou/articles/<span class="number">2638498</span>.html  </span><br><span class="line">`env_pop_tf()`的作用是:转到`tf`代表的用户程序,先把`esp`设为这个`Trapframe`的地址,然后`popa`,即从`tf`中的`struct PushRegs tf_regs`弹出值到相应的寄存器,实现上下文的切换.然后再从`tf`中弹出`es`和`ds`的值,再跳过`tf_trapno <span class="literal">and</span> tf_errcode`,最后`iret`.    </span><br><span class="line"><span class="title">值得注意的是:</span>栈是从上往下增长的,`tf`陷阱门是从下网上长的,因此把`esp`设为`tf`,`pop`弹出值的时候,`esp`回退(即往上),对应着`tf`往上依次读取成员.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#### exercise2</span><br><span class="line"><span class="title">完成几个函数:</span></span><br><span class="line"><span class="title">* `env_init()`:</span>初始化所有的在`envs`数组中的`Enc`结构体,并把他们添加到`env_free_list`指针后面,之后调用`env_init_per_cpu`以设置段管理的相关硬件,它们分别是特权级<span class="number">0</span>(kernel)和特权级<span class="number">3</span>(user)的段.</span><br><span class="line"><span class="title">* `env_setup_vm()`:</span>为新的`environment`分配一个页目录表,并且初始化新的地址空间中的内核部分(通过复制).</span><br><span class="line"><span class="title">* `region_alloc()`:</span>为新的`environment`分配并映射物理地址.</span><br><span class="line"><span class="title">* `load_icode()`:</span>需要自己实现解析ELF二进制文件的功能(就和`bootloader`里面做的一样),并把二进制文件的内容加载到新的`environment`的用户地址空间中.</span><br><span class="line"><span class="title">* `env_create`:</span>通过`env_alloc()`分配一个`environment`,并且调用`load_icode()`把ELF二进制文件加载进去.</span><br><span class="line"><span class="title">* `env_run`:</span>在用户模式下启动一个给定的`environment`.</span><br><span class="line"><span class="title">代码解析:</span>  </span><br><span class="line"><span class="title">* `env_init()`:</span>  </span><br><span class="line"></span><br><span class="line">&lt;!--more--&gt;</span><br><span class="line"></span><br><span class="line">```c</span><br><span class="line"></span><br><span class="line">// Mark all environments in 'envs' as free, set their env_ids to <span class="number">0</span>,</span><br><span class="line">// <span class="literal">and</span> insert them into the env_free_list.</span><br><span class="line">// Make sure the environments are in the free list in the same order</span><br><span class="line">// they are in the envs array (i.e., so that the first call to</span><br><span class="line">// env_alloc() returns envs[<span class="number">0</span>]).</span><br><span class="line">//</span><br><span class="line">void</span><br><span class="line">env_init(void)</span><br><span class="line">&#123;</span><br><span class="line">	// Set up envs array</span><br><span class="line"><span class="title">	// LAB 3:</span> Your code here.</span><br><span class="line">	size_t i = <span class="number">0</span><span class="comment">;</span></span><br><span class="line">	env_free_list = envs<span class="comment">;</span></span><br><span class="line">    //让env_free_list等于数组第一个元素,再让整个数组通过链表连起来</span><br><span class="line">    //env_link指向下一个节点,同时把id设置为<span class="number">0</span></span><br><span class="line">    //让最后一个节点指向null</span><br><span class="line">	for (i = <span class="number">0</span><span class="comment">; i &lt; NENV-1; i++)</span></span><br><span class="line">	&#123;</span><br><span class="line">		envs[i].env_link = envs + i + <span class="number">1</span><span class="comment">;</span></span><br><span class="line">		envs[i].id = <span class="number">0</span><span class="comment">;</span></span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	(envs + NENV - <span class="number">1</span>)-&gt;env_link = NULL<span class="comment">;</span></span><br><span class="line">	// Per-CPU part of the initialization</span><br><span class="line">	env_init_percpu()<span class="comment">;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-    <span class="token punctuation">}</span>
-    <span class="token punctuation">(</span>envs <span class="token operator">+</span> NENV <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">-></span>env_link <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">// Per-CPU part of the initialization</span>
-    <span class="token function">env_init_percpu</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <ul>
 <li>env_setup_vm():</li>
 </ul>
-<pre class="line-numbers language-c"><code class="language-c">
-<span class="token comment" spellcheck="true">// Initialize the kernel virtual memory layout for environment e.</span>
-<span class="token comment" spellcheck="true">// Allocate a page directory, set e->env_pgdir accordingly,</span>
-<span class="token comment" spellcheck="true">// and initialize the kernel portion of the new environment's address space.</span>
-<span class="token comment" spellcheck="true">// Do NOT (yet) map anything into the user portion</span>
-<span class="token comment" spellcheck="true">// of the environment's virtual address space.</span>
-<span class="token comment" spellcheck="true">//</span>
-<span class="token comment" spellcheck="true">// Returns 0 on success, &lt; 0 on error.  Errors include:</span>
-<span class="token comment" spellcheck="true">//    -E_NO_MEM if page directory or table could not be allocated.</span>
-<span class="token comment" spellcheck="true">//</span>
-<span class="token keyword">static</span> <span class="token keyword">int</span>
-<span class="token function">env_setup_vm</span><span class="token punctuation">(</span><span class="token keyword">struct</span> Env <span class="token operator">*</span>e<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-    <span class="token keyword">int</span> i<span class="token punctuation">;</span>
-    <span class="token keyword">struct</span> PageInfo <span class="token operator">*</span>p <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// Initialize the kernel virtual memory layout for environment e.</span></span><br><span class="line"><span class="comment">// Allocate a page directory, set e-&gt;env_pgdir accordingly,</span></span><br><span class="line"><span class="comment">// and initialize the kernel portion of the new environment's address space.</span></span><br><span class="line"><span class="comment">// Do NOT (yet) map anything into the user portion</span></span><br><span class="line"><span class="comment">// of the environment's virtual address space.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Returns 0 on success, &lt; 0 on error.  Errors include:</span></span><br><span class="line"><span class="comment">//	-E_NO_MEM if page directory or table could not be allocated.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span></span><br><span class="line">env_setup_vm(struct Env *e)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">PageInfo</span> *<span class="title">p</span> = <span class="title">NULL</span>;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Allocate a page for the page directory</span></span><br><span class="line">	<span class="keyword">if</span> (!(p = page_alloc(ALLOC_ZERO)))</span><br><span class="line">		<span class="keyword">return</span> -E_NO_MEM;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Now, set e-&gt;env_pgdir and initialize the page directory.</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// Hint:</span></span><br><span class="line">	<span class="comment">//    - The VA space of all envs is identical above UTOP</span></span><br><span class="line">	<span class="comment">//	(except at UVPT, which we've set below).</span></span><br><span class="line">	<span class="comment">//	See inc/memlayout.h for permissions and layout.</span></span><br><span class="line">	<span class="comment">//	Can you use kern_pgdir as a template?  Hint: Yes.</span></span><br><span class="line">	<span class="comment">//	(Make sure you got the permissions right in Lab 2.)</span></span><br><span class="line">	<span class="comment">//    - The initial VA below UTOP is empty.</span></span><br><span class="line">	<span class="comment">//    - You do not need to make any more calls to page_alloc.</span></span><br><span class="line">	<span class="comment">//    - Note: In general, pp_ref is not maintained for</span></span><br><span class="line">	<span class="comment">//	physical pages mapped only above UTOP, but env_pgdir</span></span><br><span class="line">	<span class="comment">//	is an exception -- you need to increment env_pgdir's</span></span><br><span class="line">	<span class="comment">//	pp_ref for env_free to work correctly.</span></span><br><span class="line">	<span class="comment">//    - The functions in kern/pmap.h are handy.</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// LAB 3: Your code here.</span></span><br><span class="line"></span><br><span class="line">	e-&gt;env_pgdir =(<span class="keyword">pde_t</span>*) page2kva(p);</span><br><span class="line">	<span class="built_in">memcpy</span>(e-&gt;env_pgdir, kern_pgdir, PGSIZE);</span><br><span class="line">	p-&gt;pp_ref++;</span><br><span class="line">	<span class="comment">// UVPT maps the env's own page table read-only.</span></span><br><span class="line">	<span class="comment">// Permissions: kernel R, user R</span></span><br><span class="line">	e-&gt;env_pgdir[PDX(UVPT)] = PADDR(e-&gt;env_pgdir) | PTE_P | PTE_U;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-    <span class="token comment" spellcheck="true">// Allocate a page for the page directory</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>p <span class="token operator">=</span> <span class="token function">page_alloc</span><span class="token punctuation">(</span>ALLOC_ZERO<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-        <span class="token keyword">return</span> <span class="token operator">-</span>E_NO_MEM<span class="token punctuation">;</span>
-
-    <span class="token comment" spellcheck="true">// Now, set e->env_pgdir and initialize the page directory.</span>
-    <span class="token comment" spellcheck="true">//</span>
-    <span class="token comment" spellcheck="true">// Hint:</span>
-    <span class="token comment" spellcheck="true">//    - The VA space of all envs is identical above UTOP</span>
-    <span class="token comment" spellcheck="true">//    (except at UVPT, which we've set below).</span>
-    <span class="token comment" spellcheck="true">//    See inc/memlayout.h for permissions and layout.</span>
-    <span class="token comment" spellcheck="true">//    Can you use kern_pgdir as a template?  Hint: Yes.</span>
-    <span class="token comment" spellcheck="true">//    (Make sure you got the permissions right in Lab 2.)</span>
-    <span class="token comment" spellcheck="true">//    - The initial VA below UTOP is empty.</span>
-    <span class="token comment" spellcheck="true">//    - You do not need to make any more calls to page_alloc.</span>
-    <span class="token comment" spellcheck="true">//    - Note: In general, pp_ref is not maintained for</span>
-    <span class="token comment" spellcheck="true">//    physical pages mapped only above UTOP, but env_pgdir</span>
-    <span class="token comment" spellcheck="true">//    is an exception -- you need to increment env_pgdir's</span>
-    <span class="token comment" spellcheck="true">//    pp_ref for env_free to work correctly.</span>
-    <span class="token comment" spellcheck="true">//    - The functions in kern/pmap.h are handy.</span>
-
-    <span class="token comment" spellcheck="true">// LAB 3: Your code here.</span>
-
-    e<span class="token operator">-></span>env_pgdir <span class="token operator">=</span><span class="token punctuation">(</span>pde_t<span class="token operator">*</span><span class="token punctuation">)</span> <span class="token function">page2kva</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">memcpy</span><span class="token punctuation">(</span>e<span class="token operator">-></span>env_pgdir<span class="token punctuation">,</span> kern_pgdir<span class="token punctuation">,</span> PGSIZE<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    p<span class="token operator">-></span>pp_ref<span class="token operator">++</span><span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">// UVPT maps the env's own page table read-only.</span>
-    <span class="token comment" spellcheck="true">// Permissions: kernel R, user R</span>
-    e<span class="token operator">-></span>env_pgdir<span class="token punctuation">[</span><span class="token function">PDX</span><span class="token punctuation">(</span>UVPT<span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">PADDR</span><span class="token punctuation">(</span>e<span class="token operator">-></span>env_pgdir<span class="token punctuation">)</span> <span class="token operator">|</span> PTE_P <span class="token operator">|</span> PTE_U<span class="token punctuation">;</span>
-
-    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <ul>
 <li><code>region_alloc</code>:<br>为进程分配<code>len</code>个字节的物理内存并且映射到<code>va</code>所代表的虚拟地址上,不要设置0或者初始化被映射的页(page_alloc()传0进去就可以).<br>页面的权限应该是用户和内核都可写的.<br>如果分配失败则<code>panic</code>  </li>
 </ul>
-<pre class="line-numbers language-c"><code class="language-c">
-<span class="token comment" spellcheck="true">//</span>
-<span class="token comment" spellcheck="true">// Allocate len bytes of physical memory for environment env,</span>
-<span class="token comment" spellcheck="true">// and map it at virtual address va in the environment's address space.</span>
-<span class="token comment" spellcheck="true">// Does not zero or otherwise initialize the mapped pages in any way.</span>
-<span class="token comment" spellcheck="true">// Pages should be writable by user and kernel.</span>
-<span class="token comment" spellcheck="true">// Panic if any allocation attempt fails.</span>
-<span class="token comment" spellcheck="true">//</span>
-<span class="token keyword">static</span> <span class="token keyword">void</span>
-<span class="token function">region_alloc</span><span class="token punctuation">(</span><span class="token keyword">struct</span> Env <span class="token operator">*</span>e<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>va<span class="token punctuation">,</span> size_t len<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// LAB 3: Your code here.</span>
-    <span class="token comment" spellcheck="true">// (But only if you need it for load_icode.)</span>
-    <span class="token comment" spellcheck="true">//</span>
-    <span class="token comment" spellcheck="true">// Hint: It is easier to use region_alloc if the caller can pass</span>
-    <span class="token comment" spellcheck="true">//   'va' and 'len' values that are not page-aligned.</span>
-    <span class="token comment" spellcheck="true">//   You should round va down, and round (va + len) up.</span>
-    <span class="token comment" spellcheck="true">//   (Watch out for corner-cases!)</span>
-    <span class="token keyword">void</span> <span class="token operator">*</span>low <span class="token operator">=</span> <span class="token function">ROUNDDOWN</span><span class="token punctuation">(</span>va<span class="token punctuation">,</span> PGSIZE<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//向下取整,即把va所在的那一页全部映射,从va前面页面对齐开始</span>
-    <span class="token keyword">void</span> <span class="token operator">*</span>up <span class="token operator">=</span> <span class="token function">ROUNDUO</span><span class="token punctuation">(</span>va <span class="token operator">+</span> len<span class="token punctuation">,</span> PGSIZE<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//向上取整</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token punctuation">;</span> low <span class="token operator">&lt;</span> up<span class="token punctuation">;</span>low<span class="token operator">+</span><span class="token operator">=</span>PGSIZE<span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-        <span class="token keyword">struct</span> PageInfo <span class="token operator">*</span>p <span class="token operator">=</span> <span class="token function">page_alloc</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>p<span class="token punctuation">)</span>
-        <span class="token punctuation">{</span>
-            <span class="token function">panic</span><span class="token punctuation">(</span><span class="token string">"region_alloc error: region_alloc failed!\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        p<span class="token operator">-></span>pp_ref<span class="token operator">++</span><span class="token punctuation">;</span>
-        <span class="token function">page_insert</span><span class="token punctuation">(</span>e<span class="token operator">-></span>env_pgdir<span class="token punctuation">,</span> p<span class="token punctuation">,</span> low<span class="token punctuation">,</span> PTE_W<span class="token operator">|</span>PTE_U<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Allocate len bytes of physical memory for environment env,</span></span><br><span class="line"><span class="comment">// and map it at virtual address va in the environment's address space.</span></span><br><span class="line"><span class="comment">// Does not zero or otherwise initialize the mapped pages in any way.</span></span><br><span class="line"><span class="comment">// Pages should be writable by user and kernel.</span></span><br><span class="line"><span class="comment">// Panic if any allocation attempt fails.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line">region_alloc(struct Env *e, <span class="keyword">void</span> *va, <span class="keyword">size_t</span> len)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// LAB 3: Your code here.</span></span><br><span class="line">	<span class="comment">// (But only if you need it for load_icode.)</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// Hint: It is easier to use region_alloc if the caller can pass</span></span><br><span class="line">	<span class="comment">//   'va' and 'len' values that are not page-aligned.</span></span><br><span class="line">	<span class="comment">//   You should round va down, and round (va + len) up.</span></span><br><span class="line">	<span class="comment">//   (Watch out for corner-cases!)</span></span><br><span class="line">	<span class="keyword">void</span> *low = ROUNDDOWN(va, PGSIZE);<span class="comment">//向下取整,即把va所在的那一页全部映射,从va前面页面对齐开始</span></span><br><span class="line">	<span class="keyword">void</span> *up = ROUNDUO(va + len, PGSIZE);<span class="comment">//向上取整</span></span><br><span class="line">	<span class="keyword">for</span> (; low &lt; up;low+=PGSIZE)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="class"><span class="keyword">struct</span> <span class="title">PageInfo</span> *<span class="title">p</span> = <span class="title">page_alloc</span>(0);</span></span><br><span class="line">		<span class="keyword">if</span>(!p)</span><br><span class="line">		&#123;</span><br><span class="line">			panic(<span class="string">"region_alloc error: region_alloc failed!\n"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		p-&gt;pp_ref++;</span><br><span class="line">		page_insert(e-&gt;env_pgdir, p, low, PTE_W|PTE_U);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li><code>load_icode</code>:<br>为用户进程设置初始的二进制程序,栈,处理器标志等.<br>这个函数只在内核初始化的时候被调用,在运行第一个用户态进程之前.<br>这个函数从二进制镜像加载所有可加载的段到进程的内存中,从适当的、二进制文件头里描述的虚拟地址开始.<br>同时它把在二进制头里要求的一些段的内容设置为0,比如<code>bss segment</code>.<br>这些和我们的<code>boot loader</code>所做的很像,但是它是从硬盘读取代码.去参考下<code>boot/main.c</code>里的代码.<br>最后,这个函数从这个进程的初始栈映射一个页.<br>如果它遇到任何问题,则会<code>panic</code>,请思考它在什么情况下会出错.</li>
 </ul>
-<pre class="line-numbers language-c"><code class="language-c">
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
 <h4 id="the-task-state-segment"><a href="#the-task-state-segment" class="headerlink" title="the task state segment"></a>the task state segment</h4><p>处理器需要一个地方储存中断或者异常发生之前的处理器状态,比如<code>EIP</code>和<code>CS</code>的值,以便当异常或者中断执行完毕后可以恢复cpu的状态,并从原来的程序位置重新执行.<br>但是这个储存的地方,也必须免受权限不够的用户态程序影响,否则一些恶意程序会影响kernel.<br>因此x86处理器当特权级切换的时候也会切换栈,<code>TSS</code>任务状态段的目的便是服务这一过程,它指定了段选择符并指出这个栈在段中的位置,处理器会<code>push</code> <code>SS,ESP,EFLAGS,CS,EIP</code>和error code到这个栈里(error code只有某些中断或者异常会有,有的没有).随后处理器从中断描述符中加载<code>CS</code>和<code>EIP</code>以切换到新栈.<br>在JOS的实现中,当处理器从中断描述符中加载<code>CS</code>和<code>EIP</code>后,接下来的指令开始压入error code(如果cpu之前没有压的话),trap编号,然后<code>call _alltraps</code>,压入<code>ds es</code>然后<code>pushal</code>等等,目的是在kernel的栈上构造一个<code>Trapframe</code>,它保存了中断前进程的状态,在<code>trap()</code>中会复制这个结构体到<code>curenv-&gt;env_tf</code>中,以便之后恢复现场.<br>以上的意思是:当转移控制权时,如果特权级发生变化,那么先要把当前处理器状态存入一个安全的<code>TSS</code>指定的栈中,再切换到目的栈,这个过程涉及到三个栈:当前栈,<code>TSS</code>指定的栈和将要转移到的代码段的栈.    </p>
-<pre><code>http://blog.chinaunix.net/uid-685034-id-2076045.html  
-堆栈切换和任务切换
-堆栈切换
-中断发生时,从用户堆栈切换到内核堆栈是硬件完成的是吗？需要软件上哪些支持呢？
-x86处理器是由硬件完成的.
-但很多RISC(reduced instruction set computer,精简指令集计算机,例如：MIPS R3000、HP—PA8000系列,Motorola M88000等均属于RISC微处理器)处理器必须由软件来实现用户态与核态之间的堆栈切换
-X86是CISC处理器(复杂指令集计算机(Complex Instruction Set Computer,CISC))
-X86处理器的SP切换过程是这样的：
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">http:<span class="comment">//blog.chinaunix.net/uid-685034-id-2076045.html  </span></span><br><span class="line">堆栈切换和任务切换</span><br><span class="line">堆栈切换</span><br><span class="line">中断发生时,从用户堆栈切换到内核堆栈是硬件完成的是吗？需要软件上哪些支持呢？</span><br><span class="line">x86处理器是由硬件完成的.</span><br><span class="line">但很多RISC(reduced instruction <span class="keyword">set</span> computer,精简指令集计算机,例如：MIPS R3000、HP—PA8000系列,Motorola M88000等均属于RISC微处理器)处理器必须由软件来实现用户态与核态之间的堆栈切换</span><br><span class="line">X86是CISC处理器(复杂指令集计算机(Complex Instruction Set Computer,CISC))</span><br><span class="line">X86处理器的SP切换过程是这样的：</span><br><span class="line"></span><br><span class="line">当中断或异常发生时,处理器会检查是否有CPU运行级别的改变,如果有的话,则进行堆栈切换.切换的过程如下：</span><br><span class="line"></span><br><span class="line"><span class="number">1.</span> 读取TR寄存器以便访问当前进程的TSS段,因为TSS段中保存着当前进程在核心态下的堆栈指针.</span><br><span class="line"><span class="number">2.</span> 从TSS段中加载相应的堆栈地址到SS和ESP寄存器中.</span><br><span class="line"><span class="number">3.</span> 在核态堆栈中,保存用户态下的SS寄存器和ESP寄存器值.</span><br><span class="line"></span><br><span class="line">由于linux内核仅使用了一个TSS段,因此当发生进程切换时,内核必须将新进程的核态堆栈更新到TSS段中.</span><br><span class="line"></span><br><span class="line">而对于RISC处理器而言, 本着“简洁”的设计原则,当发生中断或异常时,CPU仅仅只是跳转到某个TRAP向量地址去执行(当然,硬件还是会自动设置处理器状态寄存器PSR中的核心态标志位,同时保存trap发生前的处理器运行级别),而其余的工作就都统统留给软件去完成了.</span><br><span class="line"></span><br><span class="line">因此,RISC处理器的trap handler通常都做这样的一些工作：</span><br><span class="line"></span><br><span class="line"><span class="number">1.</span>根据trap发生前的处理器运行级别判断是否需要进行堆栈切换. 如果trap发生之前就是处在核心态下,那显然就不要切换堆栈.而是直接去做SAVE_ALL好了.</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> 如果之前是用户态,那么从内核的某个固定的地址加载当前进程的核态SP指针.然后进行SAVE_ALL保存中断现场.</span><br><span class="line">#####</span><br><span class="line">我们知道每个进程都有一个用户堆栈与系统堆栈,那么此外是否还有一个操作系统内核专用的堆栈呢？</span><br><span class="line">BTW：内核代码都是运行在当前进程的核心态堆栈中的,并不需要专门的堆栈</span><br><span class="line">########</span><br><span class="line">那么当系统初始化时,系统中第一个进程还没有生成的时候,用的是哪个堆栈呢？</span><br><span class="line">从head.s程序起,系统开始正式在保护模式下运行.此时堆栈段被设置为内核数据段(<span class="number">0x10</span>),堆栈指针esp设置成指向user_stack数组的顶端,保留了<span class="number">1</span>页内存(<span class="number">4</span>K)最为堆栈使用.此时该堆栈是内核程序自己使用的堆栈.</span><br><span class="line">(有疑问的答案：系统初始化用的是<span class="number">0</span>进程的堆栈 －－ 也就是是init_task的堆栈.</span><br><span class="line">整个start_kernel()都是在init_task的堆栈中执行的.start_kernel()最后clone出<span class="number">1</span>进程－－也就是init进程.然后<span class="number">0</span>进程就去执行cpu_idle()函数了－－也就是变成idle进程了.然后发生一次进程调度(进程切换时会切换内核堆栈),init进程得到运行,此时内核就在init进程的堆栈中运行.)</span><br><span class="line">#####</span><br><span class="line">任务<span class="number">0</span>的堆栈</span><br><span class="line">    任务<span class="number">0</span>的堆栈比较特殊,在执行了move_to_user_mode()之后,它的内核堆栈位于其任务数据结构所在页面的末端,而它的用户态堆栈就是前面进入保护模式后所使用的堆栈,即user_stack数组的位置.任务<span class="number">0</span>的内核态堆栈是在其人工设置的初始化任务数据结构中指定的,而它的用户态堆栈是在执行move_to_user_mode()时,在模拟iret返回之前的堆栈中设置的.在该堆栈中,esp仍然是user_stack中原来的位置,而ss被设置成<span class="number">0x17</span>,也即用户局部表中的数据段,也即从内存地址<span class="number">0</span>开始并且限长<span class="number">640</span>KB的段.</span><br><span class="line"> </span><br><span class="line">任务切换</span><br><span class="line">I386硬件任务切换机制</span><br><span class="line"> </span><br><span class="line"><span class="number">1.</span>I386硬件任务切换机制</span><br><span class="line">　　 Intel 在i386体系的设计中考虑到了进程的管理和调度,并从硬件上支持任务间的切换.为此目的,Intel在i386系统结构中增设了一种新的段“任务状态段”TSS.一个TSS虽然说像代码段,数据段等一样,也是一个段,实际上却是一个<span class="number">104</span>字节的数据结构,用以记录一个任务的关键性的状态信息.</span><br><span class="line">　　 像其他段一样,TSS也要在段描述表中有个表项.不过TSS只能在GDT中,而不能放在任何一个LDT中或IDT中.若通过一个段选择项访问一个TSS,而选择项中的TI位为<span class="number">1</span>,就会产生一次GP异常.</span><br><span class="line">　　 另外,CPU中还增设一个任务寄存器TR,指向当前任务的TSS.相应地,还增加了一条指令LTR,对TR寄存器进行装入操作.像CS和DS一样,TR也有一个程序不可见部分,每当将一个段选择码装入到TR中时,CPU就会自动找到所选择的TSS描述项并将其装入到TR的程序不可见部分,以加速以后对该TSS段的访问.</span><br><span class="line">　　 还有,在IDT表中,除了中断门、陷阱门和调用门以为,还定义了一种任务门.任务门中包含一个TSS段选择码.当CPU因中断而穿过一个任务门时,就会将任务门中的选择码自动装入TR,使TR指向新的TSS,并完成任务的切换.CPU还可以通过JMP和CALL指令实现任务切换,当跳转或调用的目标段实际上指向GDT表中的一个TSS描述项时,就会引起一次任务切换.</span><br></pre></td></tr></table></figure>
 
-当中断或异常发生时,处理器会检查是否有CPU运行级别的改变,如果有的话,则进行堆栈切换.切换的过程如下：
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">内核栈的实现</span><br><span class="line">以linux内核为例,内核在创建进程并时,首先需要给进程分配task_struct结构体,在做这一步的时候内核实际上分配了两块连续的物理空间(一般是<span class="number">1</span>个物理页),上边供堆栈使用,下边保存进程描述符task_struct.这个整体叫做进程的内核栈,因此task_struct是在进程内核栈内部的.</span><br><span class="line">当为内核栈分配地址空间的时候,分配一个页面(这里以<span class="number">8</span>k为例)返回的地址是该该页面的低地址,而栈是由高地址向低地址增长的,栈顶指针只需将该内核栈的首地址+<span class="number">8</span>k即可</span><br></pre></td></tr></table></figure>
 
-1. 读取TR寄存器以便访问当前进程的TSS段,因为TSS段中保存着当前进程在核心态下的堆栈指针.
-2. 从TSS段中加载相应的堆栈地址到SS和ESP寄存器中.
-3. 在核态堆栈中,保存用户态下的SS寄存器和ESP寄存器值.
-
-由于linux内核仅使用了一个TSS段,因此当发生进程切换时,内核必须将新进程的核态堆栈更新到TSS段中.
-
-而对于RISC处理器而言, 本着“简洁”的设计原则,当发生中断或异常时,CPU仅仅只是跳转到某个TRAP向量地址去执行(当然,硬件还是会自动设置处理器状态寄存器PSR中的核心态标志位,同时保存trap发生前的处理器运行级别),而其余的工作就都统统留给软件去完成了.
-
-因此,RISC处理器的trap handler通常都做这样的一些工作：
-
-1.根据trap发生前的处理器运行级别判断是否需要进行堆栈切换. 如果trap发生之前就是处在核心态下,那显然就不要切换堆栈.而是直接去做SAVE_ALL好了.
-
-2. 如果之前是用户态,那么从内核的某个固定的地址加载当前进程的核态SP指针.然后进行SAVE_ALL保存中断现场.
-#####
-我们知道每个进程都有一个用户堆栈与系统堆栈,那么此外是否还有一个操作系统内核专用的堆栈呢？
-BTW：内核代码都是运行在当前进程的核心态堆栈中的,并不需要专门的堆栈
-########
-那么当系统初始化时,系统中第一个进程还没有生成的时候,用的是哪个堆栈呢？
-从head.s程序起,系统开始正式在保护模式下运行.此时堆栈段被设置为内核数据段(0x10),堆栈指针esp设置成指向user_stack数组的顶端,保留了1页内存(4K)最为堆栈使用.此时该堆栈是内核程序自己使用的堆栈.
-(有疑问的答案：系统初始化用的是0进程的堆栈 －－ 也就是是init_task的堆栈.
-整个start_kernel()都是在init_task的堆栈中执行的.start_kernel()最后clone出1进程－－也就是init进程.然后0进程就去执行cpu_idle()函数了－－也就是变成idle进程了.然后发生一次进程调度(进程切换时会切换内核堆栈),init进程得到运行,此时内核就在init进程的堆栈中运行.)
-#####
-任务0的堆栈
-    任务0的堆栈比较特殊,在执行了move_to_user_mode()之后,它的内核堆栈位于其任务数据结构所在页面的末端,而它的用户态堆栈就是前面进入保护模式后所使用的堆栈,即user_stack数组的位置.任务0的内核态堆栈是在其人工设置的初始化任务数据结构中指定的,而它的用户态堆栈是在执行move_to_user_mode()时,在模拟iret返回之前的堆栈中设置的.在该堆栈中,esp仍然是user_stack中原来的位置,而ss被设置成0x17,也即用户局部表中的数据段,也即从内存地址0开始并且限长640KB的段.
-
-任务切换
-I386硬件任务切换机制
-
-1.I386硬件任务切换机制
-　　 Intel 在i386体系的设计中考虑到了进程的管理和调度,并从硬件上支持任务间的切换.为此目的,Intel在i386系统结构中增设了一种新的段“任务状态段”TSS.一个TSS虽然说像代码段,数据段等一样,也是一个段,实际上却是一个104字节的数据结构,用以记录一个任务的关键性的状态信息.
-　　 像其他段一样,TSS也要在段描述表中有个表项.不过TSS只能在GDT中,而不能放在任何一个LDT中或IDT中.若通过一个段选择项访问一个TSS,而选择项中的TI位为1,就会产生一次GP异常.
-　　 另外,CPU中还增设一个任务寄存器TR,指向当前任务的TSS.相应地,还增加了一条指令LTR,对TR寄存器进行装入操作.像CS和DS一样,TR也有一个程序不可见部分,每当将一个段选择码装入到TR中时,CPU就会自动找到所选择的TSS描述项并将其装入到TR的程序不可见部分,以加速以后对该TSS段的访问.
-　　 还有,在IDT表中,除了中断门、陷阱门和调用门以为,还定义了一种任务门.任务门中包含一个TSS段选择码.当CPU因中断而穿过一个任务门时,就会将任务门中的选择码自动装入TR,使TR指向新的TSS,并完成任务的切换.CPU还可以通过JMP和CALL指令实现任务切换,当跳转或调用的目标段实际上指向GDT表中的一个TSS描述项时,就会引起一次任务切换.
-
-</code></pre><pre><code>内核栈的实现
-以linux内核为例,内核在创建进程并时,首先需要给进程分配task_struct结构体,在做这一步的时候内核实际上分配了两块连续的物理空间(一般是1个物理页),上边供堆栈使用,下边保存进程描述符task_struct.这个整体叫做进程的内核栈,因此task_struct是在进程内核栈内部的.
-当为内核栈分配地址空间的时候,分配一个页面(这里以8k为例)返回的地址是该该页面的低地址,而栈是由高地址向低地址增长的,栈顶指针只需将该内核栈的首地址+8k即可
-</code></pre><h4 id="nested-exceptions-and-interrupt"><a href="#nested-exceptions-and-interrupt" class="headerlink" title="nested exceptions and interrupt"></a>nested exceptions and interrupt</h4><p>在用户态和内核态处理器都可以接受异常和中断,但是x86只有从用户态切换到内核态的时候才会在储存cpu当前状态时自动切换栈(其他时候不会),然后再从中断向量表中invoke适当的中断或异常.<br>如果处理器以及处于内核态了(即<code>CS</code>的低2位为0),那么处理器只是把当前处理器状态再次储存到当前栈中而不切换栈.下面在<code>system call</code>中我们可以看到这个特性的好处.<br>如果处理器已经在内核态了,并出发了嵌套异常,由于它不用切换栈,因此<code>SS</code>和<code>ESP</code>寄存器的状态就没有必要储存了,因此只需储存 <code>EFLAGS,CS,EIP</code>和error code,如果内核栈已经满了,这个时候再次出现中断或者异常, <code>EFLAGS,CS,EIP</code>压不进去了,就会出现不能恢复原来现场的功能,这是一个bug,处理器面对这样的情况时,粗暴地重置自己,设计kernel的时候应该避免这种情况.  </p>
+<h4 id="nested-exceptions-and-interrupt"><a href="#nested-exceptions-and-interrupt" class="headerlink" title="nested exceptions and interrupt"></a>nested exceptions and interrupt</h4><p>在用户态和内核态处理器都可以接受异常和中断,但是x86只有从用户态切换到内核态的时候才会在储存cpu当前状态时自动切换栈(其他时候不会),然后再从中断向量表中invoke适当的中断或异常.<br>如果处理器以及处于内核态了(即<code>CS</code>的低2位为0),那么处理器只是把当前处理器状态再次储存到当前栈中而不切换栈.下面在<code>system call</code>中我们可以看到这个特性的好处.<br>如果处理器已经在内核态了,并出发了嵌套异常,由于它不用切换栈,因此<code>SS</code>和<code>ESP</code>寄存器的状态就没有必要储存了,因此只需储存 <code>EFLAGS,CS,EIP</code>和error code,如果内核栈已经满了,这个时候再次出现中断或者异常, <code>EFLAGS,CS,EIP</code>压不进去了,就会出现不能恢复原来现场的功能,这是一个bug,处理器面对这样的情况时,粗暴地重置自己,设计kernel的时候应该避免这种情况.  </p>
 <p>There are two sources for external interrupts and two sources for<br>exceptions:</p>
 <ol>
 <li>Interrupts</li>
@@ -644,125 +411,12 @@ I386硬件任务切换机制
 </ul>
 </li>
 </ul>
-<pre class="line-numbers language-c"><code class="language-c"><span class="token comment" spellcheck="true">/* See COPYRIGHT for copyright information. */</span>
-
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;inc/mmu.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;inc/memlayout.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;inc/trap.h></span></span>
-
-
-
-###################################################################
-<span class="token macro property"># exceptions/interrupts</span>
-###################################################################
-
-<span class="token comment" spellcheck="true">/* TRAPHANDLER defines a globally-visible function for handling a trap.  TRAPHANDLER为处理中断/异常定义了一个全局可见的函数
- * It pushes a trap number onto the stack, then jumps to _alltraps.        这个函数把trap number压栈然后跳转到 _alltraps函数
- * Use TRAPHANDLER for traps where the CPU automatically pushes an error code.    TRAPHANDLER用在处理器自动压栈错误码的中断/异常中(即有错误码的中断/异常,没有错误码的用下面的TRAPHANDLER_NOEC函数处理)
- *
- * You shouldn't call a TRAPHANDLER function from C, but you may    不能够在c语言程序中调用TRAPHANDLER
- * need to _declare_ one in C (for instance, to get a function pointer    但是需要在c语言程序中声明TRAPHANDLER定义的函数
- * during IDT setup).  You can declare the function with    以便于在建立idt的时候获得相应函数指针
- *   void NAME();                                            声明方式是: void name();
- * where NAME is the argument passed to TRAPHANDLER.
- */</span>
-
-<span class="token macro property">#<span class="token directive keyword">define</span> TRAPHANDLER(name, num)                        \
-    .globl name;        </span><span class="token comment" spellcheck="true">/* define global symbol for 'name' */</span>    \
-    <span class="token punctuation">.</span>type name<span class="token punctuation">,</span> @function<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">/* symbol type is function */</span>        \
-    <span class="token punctuation">.</span>align <span class="token number">2</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">/* align function definition */</span>        \
-    name<span class="token punctuation">:</span>            <span class="token comment" spellcheck="true">/* function starts here */</span>        \
-    pushl $<span class="token punctuation">(</span>num<span class="token punctuation">)</span><span class="token punctuation">;</span>                            \
-    jmp _alltraps
-
-<span class="token comment" spellcheck="true">/* Use TRAPHANDLER_NOEC for traps where the CPU doesn't push an error code.
- * It pushes a 0 in place of the error code, so the trap frame has the same
- * format in either case.
- */</span>
-<span class="token macro property">#<span class="token directive keyword">define</span> TRAPHANDLER_NOEC(name, num)                    \
-    .globl name;                            \
-    .type name, @function;                        \
-    .align 2;                            \
-    name:                                \
-    pushl $0;                            \
-    pushl $(num);                            \
-    jmp _alltraps</span>
-
-<span class="token punctuation">.</span>text
-
-<span class="token comment" spellcheck="true">/*
- * Lab 3: Your code here for generating entry points for the different traps.
- */</span>
-    <span class="token function">TRAPHANDLER_NOEC</span><span class="token punctuation">(</span>traphd0<span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span>
-    <span class="token function">TRAPHANDLER_NOEC</span><span class="token punctuation">(</span>traphd1<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span>
-    <span class="token function">TRAPHANDLER_NOEC</span><span class="token punctuation">(</span>traphd2<span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span>
-    <span class="token function">TRAPHANDLER_NOEC</span><span class="token punctuation">(</span>traphd3<span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span>
-    <span class="token function">TRAPHANDLER_NOEC</span><span class="token punctuation">(</span>traphd4<span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">)</span>
-    <span class="token function">TRAPHANDLER_NOEC</span><span class="token punctuation">(</span>traphd5<span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">)</span>
-    <span class="token function">TRAPHANDLER_NOEC</span><span class="token punctuation">(</span>traphd6<span class="token punctuation">,</span><span class="token number">6</span><span class="token punctuation">)</span>
-    <span class="token function">TRAPHANDLER_NOEC</span><span class="token punctuation">(</span>traphd7<span class="token punctuation">,</span><span class="token number">7</span><span class="token punctuation">)</span>
-    <span class="token function">TRAPHANDLER</span><span class="token punctuation">(</span>traphd8<span class="token punctuation">,</span><span class="token number">8</span><span class="token punctuation">)</span>
-    <span class="token function">TRAPHANDLER_NOEC</span><span class="token punctuation">(</span>traphd9<span class="token punctuation">,</span><span class="token number">9</span><span class="token punctuation">)</span>
-    <span class="token function">TRAPHANDLER</span><span class="token punctuation">(</span>traphd10<span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span>
-    <span class="token function">TRAPHANDLER</span><span class="token punctuation">(</span>traphd11<span class="token punctuation">,</span><span class="token number">11</span><span class="token punctuation">)</span>
-    <span class="token function">TRAPHANDLER</span><span class="token punctuation">(</span>traphd12<span class="token punctuation">,</span><span class="token number">12</span><span class="token punctuation">)</span>
-    <span class="token function">TRAPHANDLER</span><span class="token punctuation">(</span>traphd13<span class="token punctuation">,</span><span class="token number">13</span><span class="token punctuation">)</span>
-    <span class="token function">TRAPHANDLER</span><span class="token punctuation">(</span>traphd14<span class="token punctuation">,</span><span class="token number">14</span><span class="token punctuation">)</span>
-    <span class="token function">TRAPHANDLER_NOEC</span><span class="token punctuation">(</span>traphd16<span class="token punctuation">,</span><span class="token number">16</span><span class="token punctuation">)</span>
-
-<span class="token comment" spellcheck="true">/*
- * Lab 3: Your code here for _alltraps
- */</span>
-<span class="token comment" spellcheck="true">//根据Trapframe结构可以看出,处理器已经把SS,ESP,EFLAGS,CS,EIP压栈了</span>
-<span class="token comment" spellcheck="true">//上面的函数又把error code和trap number压栈了</span>
-<span class="token comment" spellcheck="true">//剩下只有ds es还有pusha对应的没有压了</span>
-<span class="token comment" spellcheck="true">//再根据实验提示,把GD_KD加载进ds和es最后call trap</span>
-_alltraps<span class="token punctuation">:</span>
-    pushl <span class="token operator">%</span>ds
-    pushl <span class="token operator">%</span>es
-    pushal 
-    movl $GD_KD <span class="token operator">%</span>ds
-    movl $GD_KD <span class="token operator">%</span>es
-    pushl <span class="token operator">%</span>esp
-    call trap
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* See COPYRIGHT for copyright information. */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;inc/mmu.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;inc/memlayout.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;inc/trap.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">###################################################################</span><br><span class="line"><span class="meta"># exceptions/interrupts</span></span><br><span class="line">###################################################################</span><br><span class="line"></span><br><span class="line"><span class="comment">/* TRAPHANDLER defines a globally-visible function for handling a trap.  TRAPHANDLER为处理中断/异常定义了一个全局可见的函数</span></span><br><span class="line"><span class="comment"> * It pushes a trap number onto the stack, then jumps to _alltraps.		这个函数把trap number压栈然后跳转到 _alltraps函数</span></span><br><span class="line"><span class="comment"> * Use TRAPHANDLER for traps where the CPU automatically pushes an error code.	TRAPHANDLER用在处理器自动压栈错误码的中断/异常中(即有错误码的中断/异常,没有错误码的用下面的TRAPHANDLER_NOEC函数处理)</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * You shouldn't call a TRAPHANDLER function from C, but you may	不能够在c语言程序中调用TRAPHANDLER</span></span><br><span class="line"><span class="comment"> * need to _declare_ one in C (for instance, to get a function pointer	但是需要在c语言程序中声明TRAPHANDLER定义的函数</span></span><br><span class="line"><span class="comment"> * during IDT setup).  You can declare the function with	以便于在建立idt的时候获得相应函数指针</span></span><br><span class="line"><span class="comment"> *   void NAME();											声明方式是: void name();</span></span><br><span class="line"><span class="comment"> * where NAME is the argument passed to TRAPHANDLER.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TRAPHANDLER(name, num)						\</span></span><br><span class="line">	.globl name;		<span class="comment">/* define global symbol for 'name' */</span>	\</span><br><span class="line">	.type name, @function;	<span class="comment">/* symbol type is function */</span>		\</span><br><span class="line">	.align <span class="number">2</span>;		<span class="comment">/* align function definition */</span>		\</span><br><span class="line">	name:			<span class="comment">/* function starts here */</span>		\</span><br><span class="line">	pushl $(num);							\</span><br><span class="line">	jmp _alltraps</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Use TRAPHANDLER_NOEC for traps where the CPU doesn't push an error code.</span></span><br><span class="line"><span class="comment"> * It pushes a 0 in place of the error code, so the trap frame has the same</span></span><br><span class="line"><span class="comment"> * format in either case.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TRAPHANDLER_NOEC(name, num)					\</span></span><br><span class="line">	.globl name;							\</span><br><span class="line">	.type name, @function;						\</span><br><span class="line">	.align <span class="number">2</span>;							\</span><br><span class="line">	name:								\</span><br><span class="line">	pushl $<span class="number">0</span>;							\</span><br><span class="line">	pushl $(num);							\</span><br><span class="line">	jmp _alltraps</span><br><span class="line"></span><br><span class="line">.<span class="built_in">text</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Lab 3: Your code here for generating entry points for the different traps.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">	TRAPHANDLER_NOEC(traphd0,<span class="number">0</span>)</span><br><span class="line">	TRAPHANDLER_NOEC(traphd1,<span class="number">1</span>)</span><br><span class="line">	TRAPHANDLER_NOEC(traphd2,<span class="number">2</span>)</span><br><span class="line">	TRAPHANDLER_NOEC(traphd3,<span class="number">3</span>)</span><br><span class="line">	TRAPHANDLER_NOEC(traphd4,<span class="number">4</span>)</span><br><span class="line">	TRAPHANDLER_NOEC(traphd5,<span class="number">5</span>)</span><br><span class="line">	TRAPHANDLER_NOEC(traphd6,<span class="number">6</span>)</span><br><span class="line">	TRAPHANDLER_NOEC(traphd7,<span class="number">7</span>)</span><br><span class="line">	TRAPHANDLER(traphd8,<span class="number">8</span>)</span><br><span class="line">	TRAPHANDLER_NOEC(traphd9,<span class="number">9</span>)</span><br><span class="line">	TRAPHANDLER(traphd10,<span class="number">10</span>)</span><br><span class="line">	TRAPHANDLER(traphd11,<span class="number">11</span>)</span><br><span class="line">	TRAPHANDLER(traphd12,<span class="number">12</span>)</span><br><span class="line">	TRAPHANDLER(traphd13,<span class="number">13</span>)</span><br><span class="line">	TRAPHANDLER(traphd14,<span class="number">14</span>)</span><br><span class="line">	TRAPHANDLER_NOEC(traphd16,<span class="number">16</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Lab 3: Your code here for _alltraps</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">//根据Trapframe结构可以看出,处理器已经把SS,ESP,EFLAGS,CS,EIP压栈了</span></span><br><span class="line"><span class="comment">//上面的函数又把error code和trap number压栈了</span></span><br><span class="line"><span class="comment">//剩下只有ds es还有pusha对应的没有压了</span></span><br><span class="line"><span class="comment">//再根据实验提示,把GD_KD加载进ds和es最后call trap</span></span><br><span class="line">_alltraps:</span><br><span class="line">	pushl %ds</span><br><span class="line">	pushl %es</span><br><span class="line">	pushal </span><br><span class="line">	movl $GD_KD %ds</span><br><span class="line">	movl $GD_KD %es</span><br><span class="line">	pushl %esp</span><br><span class="line">	call trap</span><br></pre></td></tr></table></figure>
 <h5 id="the-breakpoint-exception"><a href="#the-breakpoint-exception" class="headerlink" title="the breakpoint exception"></a>the breakpoint exception</h5><p>断点异常被用来允许debugger在一个程序中插入断点,方式是临时把程序中的某个位置的代码用<code>int3</code>代替,<code>int3</code>是一个一字节的汇编代码,因此可以放入几乎所有地方.因此当程序执行到这个地方的时候,就会发生中断,进而运行相应的中断程序,这个时候往往可以看到程序的上下文内容,以此来调试代码.<br>JOS把3号中断向量的处理程序设为<code>monitor()</code>,因此发生断点异常的时候,将会进入<code>monitor()</code>程序.<br>Questions<br>4. The break point test case will either generate a break point exception or a general protection fault depending on how you initialized the break point entry in the IDT (i.e., your call to SETGATE from trap_init). Why? How do you need to set it up in order to get the breakpoint exception to work as specified above and what incorrect setup would cause it to trigger a general protection fault?<br>break point 的dpl应该设为3,因为用户态程序也会用到.否则会因为权限不够而产生一般保护性异常.<br>5. What do you think is the point of these mechanisms, particularly in light of what the user/softint test program does?   </p>
 <h5 id="system-call"><a href="#system-call" class="headerlink" title="system call"></a>system call</h5><p>c<br>对于用户程序来说,执行<code>cprintf()</code>等函数需要调用系统调用.<br>比如一个用户程序执行<code>cprintf()</code>,这是<code>lib/printf.c</code>下的函数,是一个普通函数,但是这个函数需要IO输出,就涉及到kernel的资源调度,因此需要通过系统调用完成,它最终会调用<code>sys_cputs()</code>,这个函数又会调用<code>lib/syscall.c</code>中的<code>syscall()</code>,这个函数先通过汇编将函数参数压入通用寄存器,通过这个方式传递参数给即将产生的<code>int 0x30</code>中断.  </p>
-<pre><code>static inline int32_t
-syscall(int num, int check, uint32_t a1, uint32_t a2, uint32_t a3, uint32_t a4, uint32_t a5)
-{
-    int32_t ret;
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">int32_t</span></span><br><span class="line">syscall(<span class="keyword">int</span> num, <span class="keyword">int</span> check, <span class="keyword">uint32_t</span> a1, <span class="keyword">uint32_t</span> a2, <span class="keyword">uint32_t</span> a3, <span class="keyword">uint32_t</span> a4, <span class="keyword">uint32_t</span> a5)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int32_t</span> ret;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Generic system call: pass system call number in AX,</span></span><br><span class="line">	<span class="comment">// up to five parameters in DX, CX, BX, DI, SI.</span></span><br><span class="line">	<span class="comment">// Interrupt kernel with T_SYSCALL.</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// The "volatile" tells the assembler not to optimize</span></span><br><span class="line">	<span class="comment">// this instruction away just because we don't use the</span></span><br><span class="line">	<span class="comment">// return value.</span></span><br><span class="line">	<span class="comment">//c</span></span><br><span class="line">	<span class="comment">// The last clause tells the assembler that this can</span></span><br><span class="line">	<span class="comment">// potentially change the condition codes and arbitrary</span></span><br><span class="line">	<span class="comment">// memory locations.</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">asm</span> <span class="title">volatile</span><span class="params">(<span class="string">"int %1\n"</span></span></span></span><br><span class="line"><span class="function"><span class="params">		     : <span class="string">"=a"</span> (ret)</span></span></span><br><span class="line"><span class="function"><span class="params">		     : <span class="string">"i"</span> (T_SYSCALL),</span></span></span><br><span class="line"><span class="function"><span class="params">		       <span class="string">"a"</span> (num),</span></span></span><br><span class="line"><span class="function"><span class="params">		       <span class="string">"d"</span> (a1),</span></span></span><br><span class="line"><span class="function"><span class="params">		       <span class="string">"c"</span> (a2),</span></span></span><br><span class="line"><span class="function"><span class="params">		       <span class="string">"b"</span> (a3),</span></span></span><br><span class="line"><span class="function"><span class="params">		       <span class="string">"D"</span> (a4),</span></span></span><br><span class="line"><span class="function"><span class="params">		       <span class="string">"S"</span> (a5)</span></span></span><br><span class="line"><span class="function"><span class="params">		     : <span class="string">"cc"</span>, <span class="string">"memory"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(check &amp;&amp; ret &gt; <span class="number">0</span>)</span><br><span class="line">		panic(<span class="string">"syscall %d returned %d (&gt; 0)"</span>, num, ret);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-    // Generic system call: pass system call number in AX,
-    // up to five parameters in DX, CX, BX, DI, SI.
-    // Interrupt kernel with T_SYSCALL.
-    //
-    // The &quot;volatile&quot; tells the assembler not to optimize
-    // this instruction away just because we don&#39;t use the
-    // return value.
-    //c
-    // The last clause tells the assembler that this can
-    // potentially change the condition codes and arbitrary
-    // memory locations.
-
-    asm volatile(&quot;int %1\n&quot;
-             : &quot;=a&quot; (ret)
-             : &quot;i&quot; (T_SYSCALL),
-               &quot;a&quot; (num),
-               &quot;d&quot; (a1),
-               &quot;c&quot; (a2),
-               &quot;b&quot; (a3),
-               &quot;D&quot; (a4),
-               &quot;S&quot; (a5)
-             : &quot;cc&quot;, &quot;memory&quot;);
-
-    if(check &amp;&amp; ret &gt; 0)
-        panic(&quot;syscall %d returned %d (&gt; 0)&quot;, num, ret);
-
-    return ret;
-}
-
-</code></pre><p>之后交给中断处理程序来处理相应的函数.这里会通过<code>trap_dispatch()</code>传递给<code>kern/syscall.c</code>中的<code>syscall()</code>,该函数根据系统调用调用号调用<code>kern/print.c</code>中的<code>cprintf()</code>函数,该函数最终调用<code>kern/console.c</code>中的<code>cputchar()</code>将字符串打印到控制台.当<code>trap_dispatch()</code>返回后,<code>trap()</code>会调用<code>env_run(curenv)</code>;,该函数会将<code>curenv-&gt;env_tf</code>结构中保存的寄存器快照重新恢复到寄存器中,这样又会回到用户程序系统调用之后的那条指令运行,只是这时候已经执行了系统调用并且寄存器<code>eax</code>中保存着系统调用的返回值.任务完成重新回到用户模式CPL=3.<br>对比一下普通的函数调用和中断以及系统调用参数传递的区别:</p>
+<p>之后交给中断处理程序来处理相应的函数.这里会通过<code>trap_dispatch()</code>传递给<code>kern/syscall.c</code>中的<code>syscall()</code>,该函数根据系统调用调用号调用<code>kern/print.c</code>中的<code>cprintf()</code>函数,该函数最终调用<code>kern/console.c</code>中的<code>cputchar()</code>将字符串打印到控制台.当<code>trap_dispatch()</code>返回后,<code>trap()</code>会调用<code>env_run(curenv)</code>;,该函数会将<code>curenv-&gt;env_tf</code>结构中保存的寄存器快照重新恢复到寄存器中,这样又会回到用户程序系统调用之后的那条指令运行,只是这时候已经执行了系统调用并且寄存器<code>eax</code>中保存着系统调用的返回值.任务完成重新回到用户模式CPL=3.<br>对比一下普通的函数调用和中断以及系统调用参数传递的区别:</p>
 <ul>
 <li>普通函数掉用,如果没有特权级的变化,堆栈不会改变,函数调用过程是:<ul>
 <li>先从右往左先把参数入栈,然后跳转到被调函数的地址</li>
@@ -776,54 +430,15 @@ syscall(int num, int check, uint32_t a1, uint32_t a2, uint32_t a3, uint32_t a4, 
 </ul>
 <h5 id=""><a href="#" class="headerlink" title=""></a></h5><p>中断和异常一般是在程序运行过程中发生的,这个时候cpu执行 INT n指令,</p>
 <h4 id="杂"><a href="#杂" class="headerlink" title="杂"></a>杂</h4><p>bootstack在哪里?<br>kernel的初始化代码<code>entry.S</code>里,由编译器分配<br>并且本质上esp的位置决定了栈的位置,因此只需要把esp置为想要的栈的位置就行了,栈的增长方式和具体细节由编译器提前决定(即设好规则,当什么时候,增长多少)</p>
-<pre><code>mov    $relocated, %eax
-    jmp    *%eax
-relocated:
+<figure class="highlight perl"><table><tr><td class="code"><pre><span class="line">mov	$relocated, %eax</span><br><span class="line">	jmp	*%eax</span><br><span class="line">relocated:</span><br><span class="line"></span><br><span class="line">	<span class="comment"># Clear the frame pointer register (EBP)</span></span><br><span class="line">	<span class="comment"># so that once we get into debugging C code,</span></span><br><span class="line">	<span class="comment"># stack backtraces will be terminated properly.</span></span><br><span class="line">	movl	$0<span class="keyword">x</span><span class="number">0</span>,%ebp			<span class="comment"># nuke frame pointer</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># Set the stack pointer</span></span><br><span class="line">	<span class="comment">#这个位置设置的内核用栈,因为esp决定了栈的位置</span></span><br><span class="line">	movl	$(bootstacktop),%esp</span><br><span class="line"></span><br><span class="line">	<span class="comment"># now to C code</span></span><br><span class="line">	call	i386_init</span><br></pre></td></tr></table></figure>
 
-    # Clear the frame pointer register (EBP)
-    # so that once we get into debugging C code,
-    # stack backtraces will be terminated properly.
-    movl    $0x0,%ebp            # nuke frame pointer
+<figure class="highlight clean"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">.data</span><br><span class="line">###################################################################</span><br><span class="line"># boot stack</span><br><span class="line">###################################################################</span><br><span class="line">	.p2align	PGSHIFT		# force page alignment</span><br><span class="line">	.globl		bootstack</span><br><span class="line">bootstack:</span><br><span class="line">	.space		KSTKSIZE <span class="comment">//32K</span></span><br><span class="line">	.globl		bootstacktop   </span><br><span class="line">bootstacktop:</span><br></pre></td></tr></table></figure>
+<p>用户进程怎么使用用户栈?<br>kernel通过把用户进程的<code>Trapframe</code>的<code>tf_esp</code>设为<code>USTKTOP</code>就行了,而这个栈的物理页会有内核特别申请,映射.<br>用户的内核栈由tf_esp0指定,在JOS中,大家共享一个内核栈,或者说这是不一定的,但是具体实现的时候是指向相同的地方,每个CPU有单独的内核栈.  </p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//通过这一步把用户栈设为USTACKTOP,之后esp就在这个位置往下增长</span></span><br><span class="line">	<span class="comment">//由此可以看出,esp决定了栈的位置</span></span><br><span class="line">	<span class="function"><span class="title">e</span>-&gt;</span>env_tf.tf_esp = USTACKTOP;</span><br><span class="line">	<span class="function"><span class="title">e</span>-&gt;</span>env_tf.tf_cs = GD_UT | <span class="number">3</span>;</span><br><span class="line">	<span class="comment">// You will set e-&gt;env_tf.tf_eip later.</span></span><br></pre></td></tr></table></figure>
 
-    # Set the stack pointer
-    #这个位置设置的内核用栈,因为esp决定了栈的位置
-    movl    $(bootstacktop),%esp
-
-    # now to C code
-    call    i386_init
-
-</code></pre><pre><code>
-.data
-###################################################################
-# boot stack
-###################################################################
-    .p2align    PGSHIFT        # force page alignment
-    .globl        bootstack
-bootstack:
-    .space        KSTKSIZE //32K
-    .globl        bootstacktop   
-bootstacktop:
-</code></pre><p>用户进程怎么使用用户栈?<br>kernel通过把用户进程的<code>Trapframe</code>的<code>tf_esp</code>设为<code>USTKTOP</code>就行了,而这个栈的物理页会有内核特别申请,映射.<br>用户的内核栈由tf_esp0指定,在JOS中,大家共享一个内核栈,或者说这是不一定的,但是具体实现的时候是指向相同的地方,每个CPU有单独的内核栈.  </p>
-<pre><code>
-//通过这一步把用户栈设为USTACKTOP,之后esp就在这个位置往下增长
-    //由此可以看出,esp决定了栈的位置
-    e-&gt;env_tf.tf_esp = USTACKTOP;
-    e-&gt;env_tf.tf_cs = GD_UT | 3;
-    // You will set e-&gt;env_tf.tf_eip later.
-</code></pre><p>在用户进程中,用户是怎么得到<code>envs</code>的地址的?(因为envs是定义在kernel里的,用户不能访问,而kernel把这个地方映射给了<code>UENVS</code>,用户只能访问这个<code>UENVS</code>里的envs,是怎么访问的呢?)<br>在用户的<code>entry.S</code>文件里,有这样一段:  </p>
-<pre><code>
-.data
-// Define the global symbols &#39;envs&#39;, &#39;pages&#39;, &#39;uvpt&#39;, and &#39;uvpd&#39;
-// so that they can be used in C as if they were ordinary global arrays.
-    .globl envs
-    .set envs, UENVS  //这个地方把envs的值设为UENVS,从此,用户进程访问envs就指向UENVS,而不是kernel里原来的envs,下面同理
-    .globl pages
-    .set pages, UPAGES
-    .globl uvpt
-    .set uvpt, UVPT
-    .globl uvpd
-    .set uvpd, (UVPT+(UVPT&gt;&gt;12)*4)
-</code></pre><p>日志:<code>make qemu |tee -a linux.log</code>   </p>
+<p>在用户进程中,用户是怎么得到<code>envs</code>的地址的?(因为envs是定义在kernel里的,用户不能访问,而kernel把这个地方映射给了<code>UENVS</code>,用户只能访问这个<code>UENVS</code>里的envs,是怎么访问的呢?)<br>在用户的<code>entry.S</code>文件里,有这样一段:  </p>
+<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">.data</span><br><span class="line"><span class="comment">// Define the global symbols 'envs', 'pages', 'uvpt', and 'uvpd'</span></span><br><span class="line"><span class="comment">// so that they can be used in C as if they were ordinary global arrays.</span></span><br><span class="line">	.globl envs</span><br><span class="line">	.<span class="keyword">set</span> envs, UENVS  //这个地方把<span class="comment">envs</span>的值设为<span class="comment">UENVS,</span>从此<span class="comment">,</span>用户进程访问<span class="comment">envs</span>就指向<span class="comment">UENVS,</span>而不是<span class="comment">kernel</span>里原来的<span class="comment">envs,</span>下面同理</span><br><span class="line">	.globl <span class="comment">pages</span></span><br><span class="line">	.<span class="keyword">set</span> <span class="comment">pages, UPAGES</span></span><br><span class="line">	.globl <span class="comment">uvpt</span></span><br><span class="line">	.<span class="keyword">set</span> <span class="comment">uvpt, UVPT</span></span><br><span class="line">	.globl <span class="comment">uvpd</span></span><br><span class="line">	.<span class="keyword">set</span> <span class="comment">uvpd, (UVPT+(UVPT&gt;&gt;12)*4)</span></span><br></pre></td></tr></table></figure>
+<p>日志:<code>make qemu |tee -a linux.log</code>   </p>
 <ul>
 <li>类似于将水流发送到两个方向的三通管,<code>tee</code>命令将输出发送到终端以及文件(或作为另一个命令的输入).你可以像这样使用它:<code>command | tee file.txt</code>如果该文件不存在,它将自动创建.还可以使用 tee 命令 -a 选项进入附加模式.    </li>
 <li>管道是一种通信机制,通常用于进程间的通信(也可通过socket进行网络通信),它表现出来的形式将前面每一个进程的输出(stdout)直接作为下一个进程的输入(stdin)<br><code>trap()</code>中incoming Trapframe的地址:<br>此时,这个是内核栈中的Trapframe,因此是内核栈中的地址:0xefffffbc 内核栈顶是:0xf0000000 相差4+4*16=68= sizeof(struct Trapframe)<br>如果用户的内核栈和内核用的栈相同,而用户的内核栈每次使用时都默认里面没有内容,从栈底开始,那么就破坏了内核的内容,该怎么办?<br>这个时候已经返回内核了,在JOS中,会继续在内核栈中执行,知道最后销毁进程,销毁之后进入<code>monitor()</code>,实际上这对内核没有什么影响,因为进入了monitor,但是之后不知道会不会有影响,我猜应该把内核用的栈和内核栈分开,当程序销毁后,再切换到内核用的栈.<br>进程从用户态进入内核态的三种方式:</li>
@@ -1021,7 +636,7 @@ bootstacktop:
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#mit6-828-lab3-user-environments"><span class="nav-number">1.</span> <span class="nav-text">mit6.828-lab3:user environments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#partA-user-environments-and-exception-handling"><span class="nav-number">1.1.</span> <span class="nav-text">partA:user environments and exception handling</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#exercise2"><span class="nav-number">1.1.1.</span> <span class="nav-text">exercise2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#the-task-state-segment"><span class="nav-number">1.1.2.</span> <span class="nav-text">the task state segment</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nested-exceptions-and-interrupt"><span class="nav-number">1.1.3.</span> <span class="nav-text">nested exceptions and interrupt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#setting-up-the-idt"><span class="nav-number">1.1.4.</span> <span class="nav-text">setting up the idt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#exercise-4"><span class="nav-number">1.1.5.</span> <span class="nav-text">exercise 4</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#the-breakpoint-exception"><span class="nav-number">1.1.5.1.</span> <span class="nav-text">the breakpoint exception</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#system-call"><span class="nav-number">1.1.5.2.</span> <span class="nav-text">system call</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#"><span class="nav-number">1.1.5.3.</span> <span class="nav-text"></span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#杂"><span class="nav-number">1.1.6.</span> <span class="nav-text">杂</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#mit6-828-lab3-user-environments"><span class="nav-number">1.</span> <span class="nav-text">mit6.828-lab3:user environments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#partA-user-environments-and-exception-handling"><span class="nav-number">1.1.</span> <span class="nav-text">partA:user environments and exception handling</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#the-task-state-segment"><span class="nav-number">1.1.1.</span> <span class="nav-text">the task state segment</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nested-exceptions-and-interrupt"><span class="nav-number">1.1.2.</span> <span class="nav-text">nested exceptions and interrupt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#setting-up-the-idt"><span class="nav-number">1.1.3.</span> <span class="nav-text">setting up the idt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#exercise-4"><span class="nav-number">1.1.4.</span> <span class="nav-text">exercise 4</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#the-breakpoint-exception"><span class="nav-number">1.1.4.1.</span> <span class="nav-text">the breakpoint exception</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#system-call"><span class="nav-number">1.1.4.2.</span> <span class="nav-text">system call</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#"><span class="nav-number">1.1.4.3.</span> <span class="nav-text"></span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#杂"><span class="nav-number">1.1.5.</span> <span class="nav-text">杂</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

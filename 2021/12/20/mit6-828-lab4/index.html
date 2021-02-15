@@ -365,101 +365,23 @@
 <li>实现协作轮询调度以允许用户进程可以资源放弃cpu,让内核切换进程<h4 id="multiprocessor-support"><a href="#multiprocessor-support" class="headerlink" title="multiprocessor support"></a>multiprocessor support</h4>让JOS支持symmetric multiprocessor(SMP,对称多处理器,即地位相同).  </li>
 </ul>
 <p><strong>excercise 1</strong><br>参照<code>boot_map_region()</code>就行,值得注意的是<code>pa</code>和<code>size</code>分别都要取整,<code>pa</code>想下取整,即从<code>pa</code>开始的那个页首开始映射,<code>size</code>向上取整,即每次映射<code>PGSIZE</code>整数倍的大小.<br>而返回值根据调用它的函数</p>
-<pre><code>// lapicaddr is the physical address of the LAPIC&#39;s 4K MMIO
-    // region.  Map it in to virtual memory so we can access it.
-    lapic = mmio_map_region(lapicaddr, 4096);</code></pre><p>可以看出,返回的是映射的首地址.  </p>
-<pre><code>//
-// Reserve size bytes in the MMIO region and map [pa,pa+size) at this
-// location.  Return the base of the reserved region.  size does *not*
-// have to be multiple of PGSIZE.
-//
-void *
-mmio_map_region(physaddr_t pa, size_t size)
-{
-    // Where to start the next region.  Initially, this is the
-    // beginning of the MMIO region.  Because this is static, its
-    // value will be preserved between calls to mmio_map_region
-    // (just like nextfree in boot_alloc).
-    static uintptr_t base = MMIOBASE;
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line"><span class="comment">// lapicaddr is the physical address of the LAPIC's 4K MMIO</span></span><br><span class="line">	<span class="comment">// region.  Map it in to virtual memory so we can access it.</span></span><br><span class="line">	lapic = mmio<span class="constructor">_map_region(<span class="params">lapicaddr</span>, 4096)</span>;</span><br></pre></td></tr></table></figure>
+<p>可以看出,返回的是映射的首地址.  </p>
+<figure class="highlight arduino"><table><tr><td class="code"><pre><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Reserve size bytes in the MMIO region and map [pa,pa+size) at this</span></span><br><span class="line"><span class="comment">// location.  Return the base of the reserved region.  size does *not*</span></span><br><span class="line"><span class="comment">// have to be multiple of PGSIZE.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="keyword">void</span> *</span><br><span class="line">mmio_map_region(<span class="keyword">physaddr_t</span> pa, <span class="keyword">size_t</span> <span class="built_in">size</span>)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// Where to start the next region.  Initially, this is the</span></span><br><span class="line">	<span class="comment">// beginning of the MMIO region.  Because this is static, its</span></span><br><span class="line">	<span class="comment">// value will be preserved between calls to mmio_map_region</span></span><br><span class="line">	<span class="comment">// (just like nextfree in boot_alloc).</span></span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">uintptr_t</span> base = MMIOBASE;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Reserve size bytes of virtual memory starting at base and</span></span><br><span class="line">	<span class="comment">// map physical pages [pa,pa+size) to virtual addresses</span></span><br><span class="line">	<span class="comment">// [base,base+size).  Since this is device memory and not</span></span><br><span class="line">	<span class="comment">// regular DRAM, you'll have to tell the CPU that it isn't</span></span><br><span class="line">	<span class="comment">// safe to cache access to this memory.  Luckily, the page</span></span><br><span class="line">	<span class="comment">// tables provide bits for this purpose; simply create the</span></span><br><span class="line">	<span class="comment">// mapping with PTE_PCD|PTE_PWT (cache-disable and</span></span><br><span class="line">	<span class="comment">// write-through) in addition to PTE_W.  (If you're interested</span></span><br><span class="line">	<span class="comment">// in more details on this, see section 10.5 of IA32 volume</span></span><br><span class="line">	<span class="comment">// 3A.)</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// Be sure to round size up to a multiple of PGSIZE and to</span></span><br><span class="line">	<span class="comment">// handle if this reservation would overflow MMIOLIM (it's</span></span><br><span class="line">	<span class="comment">// okay to simply panic if this happens).</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// Hint: The staff solution uses boot_map_region.</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">// Your code here:</span></span><br><span class="line">	<span class="built_in">size</span> = ROUNDUP(<span class="built_in">size</span>, PGSIZE);</span><br><span class="line">	pa = ROUNDDOWN(pa, PGSIZE);</span><br><span class="line">	<span class="keyword">if</span> (base + <span class="built_in">size</span> &gt;= MMIOLIM)</span><br><span class="line">	&#123;</span><br><span class="line">		panic(<span class="string">"mmio_map_region overflow MMIOLIM!\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	boot_map_region(kern_pgdir, base, <span class="built_in">size</span>, pa, PTE_PCD | PTE_PWT | PTE_W);</span><br><span class="line">	base += <span class="built_in">size</span>;</span><br><span class="line">	<span class="comment">//panic("mmio_map_region not implemented");</span></span><br><span class="line">	<span class="comment">//返回此次映射的base</span></span><br><span class="line">	<span class="keyword">return</span> (<span class="keyword">void</span> *)(base - <span class="built_in">size</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>exercise 2</strong><br>在<code>page_init()</code>里面再加个条件就行.   </p>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="params">(<span class="attr">i</span> == 0 || <span class="attr">i</span> == (MPENTRY_PADDR / PGSIZE)</span>) </span><br><span class="line">	&#123;</span><br><span class="line">		pages[i]<span class="string">.pp_ref</span> = 1;</span><br><span class="line">		pages[i]<span class="string">.pp_link</span> = NULL;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
 
-    // Reserve size bytes of virtual memory starting at base and
-    // map physical pages [pa,pa+size) to virtual addresses
-    // [base,base+size).  Since this is device memory and not
-    // regular DRAM, you&#39;ll have to tell the CPU that it isn&#39;t
-    // safe to cache access to this memory.  Luckily, the page
-    // tables provide bits for this purpose; simply create the
-    // mapping with PTE_PCD|PTE_PWT (cache-disable and
-    // write-through) in addition to PTE_W.  (If you&#39;re interested
-    // in more details on this, see section 10.5 of IA32 volume
-    // 3A.)
-    //
-    // Be sure to round size up to a multiple of PGSIZE and to
-    // handle if this reservation would overflow MMIOLIM (it&#39;s
-    // okay to simply panic if this happens).
-    //
-    // Hint: The staff solution uses boot_map_region.
-    //
-    // Your code here:
-    size = ROUNDUP(size, PGSIZE);
-    pa = ROUNDDOWN(pa, PGSIZE);
-    if (base + size &gt;= MMIOLIM)
-    {
-        panic(&quot;mmio_map_region overflow MMIOLIM!\n&quot;);
-    }
-    boot_map_region(kern_pgdir, base, size, pa, PTE_PCD | PTE_PWT | PTE_W);
-    base += size;
-    //panic(&quot;mmio_map_region not implemented&quot;);
-    //返回此次映射的base
-    return (void *)(base - size);
-}</code></pre><p><strong>exercise 2</strong><br>在<code>page_init()</code>里面再加个条件就行.   </p>
-<pre><code>    if (i == 0 || i == (MPENTRY_PADDR / PGSIZE)) 
-        {
-            pages[i].pp_ref = 1;
-            pages[i].pp_link = NULL;
-        }</code></pre><pre><code>Question 
-
-1.Compare kern/mpentry.S side by side with boot/boot.S. Bearing in mind that kern/mpentry.S is compiled and linked to run above KERNBASE just like everything else in the kernel, what is the purpose of macro MPBOOTPHYS? Why is it necessary in kern/mpentry.S but not in boot/boot.S? In other words, what could go wrong if it were omitted in kern/mpentry.S?
-Hint: recall the differences between the link address and the load address that we have discussed in Lab 1.</code></pre><p>答:因为对于<code>boot/boot.S</code>来说,它是运行在实模式下的,对它的寻址就是对实模式下物理地址中的寻址,因此它的寻址是对的.而对于<code>kern/mpentry.S</code>来说,这个文件的二进制代码也是和其他文件一起加载进物理内存的,并且<code>kern/mpentry.S</code>运行时,BSP开启了分页,且有了页表,此时对<code>kern/mpentry.S</code>文件里的对象寻址,得到的是<code>KERNBASE</code>上面的一个虚拟地址,而它实际上是被加载进0x7000的,如果按照原来的linker设置的地址寻址,会出问题.</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">Question </span><br><span class="line"></span><br><span class="line">1.Compare kern/mpentry.S side by side with boot/boot.S. Bearing <span class="keyword">in</span> mind that kern/mpentry.S is compiled <span class="keyword">and</span> linked <span class="keyword">to</span> <span class="builtin-name">run</span> above KERNBASE just like everything <span class="keyword">else</span> <span class="keyword">in</span> the kernel, what is the purpose of macro MPBOOTPHYS? Why is it necessary <span class="keyword">in</span> kern/mpentry.S but <span class="keyword">not</span> <span class="keyword">in</span> boot/boot.S? <span class="keyword">In</span> other words, what could go wrong <span class="keyword">if</span> it were omitted <span class="keyword">in</span> kern/mpentry.S?</span><br><span class="line">Hint: recall the differences between the link<span class="built_in"> address </span><span class="keyword">and</span> the load<span class="built_in"> address </span>that we have discussed <span class="keyword">in</span> Lab 1.</span><br></pre></td></tr></table></figure>
+<p>答:因为对于<code>boot/boot.S</code>来说,它是运行在实模式下的,对它的寻址就是对实模式下物理地址中的寻址,因此它的寻址是对的.而对于<code>kern/mpentry.S</code>来说,这个文件的二进制代码也是和其他文件一起加载进物理内存的,并且<code>kern/mpentry.S</code>运行时,BSP开启了分页,且有了页表,此时对<code>kern/mpentry.S</code>文件里的对象寻址,得到的是<code>KERNBASE</code>上面的一个虚拟地址,而它实际上是被加载进0x7000的,如果按照原来的linker设置的地址寻址,会出问题.</p>
 <h4 id="Locking"><a href="#Locking" class="headerlink" title="Locking"></a>Locking</h4><p>现在我们的代码会在<code>mp_main()</code>里初始化AP后自旋/无限循环(一个for循环).在进行下一步之前,我们需要强调一下当多处理器同时运行内核代码时的竞争条件(race conditions).实现这个的最简单方式是用一个大内核锁.大内核锁是一个单独的全局锁,当有进程进入内核态时就拥有这把锁,然后在返回用户态时释放锁.在这个模型中,在用户态的进程能在多cpu上并发,但是只有一个进程能运行在内核态;任何其他想要进入内核态的进程将被强制阻塞(等待).<br>这个锁使得同时只有一个cpu处于内核态,而其他cpu想要进入内核态只能等待其他cpu退出内核态.<br>问题:为什么只能允许一个进程进入内核态?<br>如果同时有多个cpu处于内核态,它们可能会修改相关的数据和数据结构,使得cpu之间出现混乱.<br><code>kern/spinlock.h</code>声明了一个大内核锁:<code>extern struct spinlock kernel_lock;</code><br>定义在<code>kern/spinlock.c</code>:</p>
-<pre><code>// The big kernel lock
-struct spinlock kernel_lock = {
-#ifdef DEBUG_SPINLOCK
-    .name = &quot;kernel_lock&quot;
-#endif
-};</code></pre><p>这个锁的结构:</p>
-<pre><code>// Mutual exclusion lock.
-//互斥锁
-struct spinlock {
-    //如果锁被获取,locked=1,反之lock=0
-    unsigned locked;       // Is the lock held?
-    //为了debug时能发现是谁拥有锁
-#ifdef DEBUG_SPINLOCK
-    // For debugging:
-    char *name;            // Name of lock.
-    struct CpuInfo *cpu;   // The CPU holding the lock.
-    uintptr_t pcs[10];     // The call stack (an array of program counters)
-                           // that locked the lock.
-#endif
-};</code></pre><p>并且提供了<code>lock_kernel()</code>和<code>unlock_kernel()</code>函数来获取和释放锁.<br>对于锁的实现需要用到一些原子指令,一个不用原子指令的获取锁的实现是:<br>Logically, xv6 should acquire a lock by executing code like</p>
-<pre><code>21 void
-22 acquire(struct spinlock *lk)
-23 {
-24 for(;;) {
-25 if(!lk-&gt;locked) {
-26 lk-&gt;locked = 1;
-27 break;
-28 }
-29 }
-30 }</code></pre><p>Unfortunately, this implementation does not guarantee mutual exclusion on a multiprocessor. It could happen that two CPUs simultaneously reach line 25, see that lk-&gt;locked is zero, and then both grab the lock by executing line 26. At this point, two<br>different CPUs hold the lock, which violates the mutual exclusion property. Rather<br>than helping us avoid race conditions, this implementation of acquire has its own<br>race condition. The problem here is that lines 25 and 26 executed as separate actions.<br>In order for the routine above to be correct, lines 25 and 26 must execute in one<br>atomic (i.e., indivisible) step.<br>为了把25,26行变为一行,可以使用<code>xchgl</code>汇编指令,它原子地交换两个寄存器或者内存寄存器的内容.<br><code>xchgl</code>的原理是:x86提供了一个指令前缀<code>lock</code>(0xf0),当检测到这个前缀时,就”锁定”内存总线,知道这条指令执行完成为止.因此在执行<code>xchgl</code>时,其他处理器不能访问这个内存单元.(参考深入理解linux内核-内核同步-原子操作)<br>其他的解释:<a href="https://zhuanlan.zhihu.com/p/33445834" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/33445834</a><br>JOS的实现中<code>xchg()</code>封装了<code>xchgl</code>指令:</p>
-<pre><code>void
-spin_lock(struct spinlock *lk)
-{
-    // The xchg is atomic.
-    // It also serializes, so that reads after acquire are not
-    // reordered before it. 
-    while (xchg(&amp;lk-&gt;locked, 1) != 0)
-        asm volatile (&quot;pause&quot;);
-}</code></pre><p><code>asm volatile (&quot;pause&quot;);</code>的作用是提高性能,参见<a href="https://c9x.me/x86/html/file_module_x86_id_232.html" target="_blank" rel="noopener">https://c9x.me/x86/html/file_module_x86_id_232.html</a><br><a href="https://kb.cnblogs.com/page/105657/" target="_blank" rel="noopener">https://kb.cnblogs.com/page/105657/</a><br><a href="http://web.cecs.pdx.edu/~alaa/courses/ece587/spring2012/notes/memory-ordering.pdf" target="_blank" rel="noopener">http://web.cecs.pdx.edu/~alaa/courses/ece587/spring2012/notes/memory-ordering.pdf</a><br>在这四个地方应该应用这个大内核锁:</p>
+<figure class="highlight gauss"><table><tr><td class="code"><pre><span class="line"><span class="comment">// The big kernel lock</span></span><br><span class="line"><span class="keyword">struct</span> <span class="type">spinlock</span> kernel_lock = &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> DEBUG_SPINLOCK</span></span><br><span class="line">	.name = <span class="string">"kernel_lock"</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这个锁的结构:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Mutual exclusion lock.</span></span><br><span class="line"><span class="comment">//互斥锁</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">spinlock</span> &#123;</span></span><br><span class="line">    <span class="comment">//如果锁被获取,locked=1,反之lock=0</span></span><br><span class="line">	<span class="keyword">unsigned</span> locked;       <span class="comment">// Is the lock held?</span></span><br><span class="line">    <span class="comment">//为了debug时能发现是谁拥有锁</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> DEBUG_SPINLOCK</span></span><br><span class="line">	<span class="comment">// For debugging:</span></span><br><span class="line">	<span class="keyword">char</span> *name;            <span class="comment">// Name of lock.</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">CpuInfo</span> *<span class="title">cpu</span>;</span>   <span class="comment">// The CPU holding the lock.</span></span><br><span class="line">	<span class="keyword">uintptr_t</span> pcs[<span class="number">10</span>];     <span class="comment">// The call stack (an array of program counters)</span></span><br><span class="line">	                       <span class="comment">// that locked the lock.</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>并且提供了<code>lock_kernel()</code>和<code>unlock_kernel()</code>函数来获取和释放锁.<br>对于锁的实现需要用到一些原子指令,一个不用原子指令的获取锁的实现是:<br>Logically, xv6 should acquire a lock by executing code like</p>
+<figure class="highlight basic"><table><tr><td class="code"><pre><span class="line"><span class="symbol">21 </span>void</span><br><span class="line"><span class="symbol">22 </span>acquire(struct spinlock *lk)</span><br><span class="line"><span class="symbol">23 </span>&#123;</span><br><span class="line"><span class="symbol">24 </span><span class="keyword">for</span>(;;) &#123;</span><br><span class="line"><span class="symbol">25 </span><span class="keyword">if</span>(!lk-&gt;locked) &#123;</span><br><span class="line"><span class="symbol">26 </span>lk-&gt;locked = <span class="number">1</span>;</span><br><span class="line"><span class="symbol">27 </span>break;</span><br><span class="line"><span class="symbol">28 </span>&#125;</span><br><span class="line"><span class="symbol">29 </span>&#125;</span><br><span class="line"><span class="symbol">30 </span>&#125;</span><br></pre></td></tr></table></figure>
+<p>Unfortunately, this implementation does not guarantee mutual exclusion on a multiprocessor. It could happen that two CPUs simultaneously reach line 25, see that lk-&gt;locked is zero, and then both grab the lock by executing line 26. At this point, two<br>different CPUs hold the lock, which violates the mutual exclusion property. Rather<br>than helping us avoid race conditions, this implementation of acquire has its own<br>race condition. The problem here is that lines 25 and 26 executed as separate actions.<br>In order for the routine above to be correct, lines 25 and 26 must execute in one<br>atomic (i.e., indivisible) step.<br>为了把25,26行变为一行,可以使用<code>xchgl</code>汇编指令,它原子地交换两个寄存器或者内存寄存器的内容.<br><code>xchgl</code>的原理是:x86提供了一个指令前缀<code>lock</code>(0xf0),当检测到这个前缀时,就”锁定”内存总线,知道这条指令执行完成为止.因此在执行<code>xchgl</code>时,其他处理器不能访问这个内存单元.(参考深入理解linux内核-内核同步-原子操作)<br>其他的解释:<a href="https://zhuanlan.zhihu.com/p/33445834" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/33445834</a><br>JOS的实现中<code>xchg()</code>封装了<code>xchgl</code>指令:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span></span><br><span class="line">spin_lock(struct spinlock *lk)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// The xchg is atomic.</span></span><br><span class="line">	<span class="comment">// It also serializes, so that reads after acquire are not</span></span><br><span class="line">	<span class="comment">// reordered before it. </span></span><br><span class="line">	<span class="keyword">while</span> (xchg(&amp;lk-&gt;locked, <span class="number">1</span>) != <span class="number">0</span>)</span><br><span class="line">		<span class="function"><span class="keyword">asm</span> <span class="title">volatile</span> <span class="params">(<span class="string">"pause"</span>)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>asm volatile (&quot;pause&quot;);</code>的作用是提高性能,参见<a href="https://c9x.me/x86/html/file_module_x86_id_232.html" target="_blank" rel="noopener">https://c9x.me/x86/html/file_module_x86_id_232.html</a><br><a href="https://kb.cnblogs.com/page/105657/" target="_blank" rel="noopener">https://kb.cnblogs.com/page/105657/</a><br><a href="http://web.cecs.pdx.edu/~alaa/courses/ece587/spring2012/notes/memory-ordering.pdf" target="_blank" rel="noopener">http://web.cecs.pdx.edu/~alaa/courses/ece587/spring2012/notes/memory-ordering.pdf</a><br>在这四个地方应该应用这个大内核锁:</p>
 <blockquote>
 <p>In i386_init(), acquire the lock before the BSP wakes up the other CPUs.</p>
 <p>In mp_main(), acquire the lock after initializing the AP, and then call sched_yield() to start running environments on this AP.</p>
@@ -469,8 +391,8 @@ spin_lock(struct spinlock *lk)
 <p>Exercise 5. Apply the big kernel lock as described above, by calling lock_kernel() and unlock_kernel() at the proper locations.   </p>
 </blockquote>
 <p>在对应位置加入<code>lock_kernel();</code>或者<code>unlock_kernel();</code>就行.      </p>
-<pre><code>Question 2
-It seems that using the big kernel lock guarantees that only one CPU can run the kernel code at a time. Why do we still need separate kernel stacks for each CPU? Describe a scenario in which using a shared kernel stack will go wrong, even with the protection of the big kernel lock.</code></pre><p>因为在<code>_alltraps</code>到<code>lock_kernel()</code>的过程中(即引发中断进入内核态时和内核上锁之间),进程已经切换到了内核态,但并没有上内核锁,此时如果有其他CPU进入内核,如果用同一个内核栈,则<code>_alltraps</code>中保存的上下文信息会被破坏(因为切换中断时,指针会重置,被压栈的数据会被覆盖(或者两个cpu使用的段可能不同)),所以即使有大内核栈,CPU也不能用用同一个内核栈.同样的,解锁也是在内核态内解锁,在解锁到真正返回用户态这段过程中,也存在上述这种情况.   </p>
+<figure class="highlight livecodeserver"><table><tr><td class="code"><pre><span class="line">Question <span class="number">2</span></span><br><span class="line">It seems that <span class="keyword">using</span> <span class="keyword">the</span> big kernel lock guarantees that only <span class="literal">one</span> CPU can run <span class="keyword">the</span> kernel code <span class="keyword">at</span> <span class="keyword">a</span> <span class="built_in">time</span>. Why <span class="built_in">do</span> we still need separate kernel stacks <span class="keyword">for</span> <span class="keyword">each</span> CPU? Describe <span class="keyword">a</span> scenario <span class="keyword">in</span> which <span class="keyword">using</span> <span class="keyword">a</span> shared kernel stack will go wrong, even <span class="keyword">with</span> <span class="keyword">the</span> protection <span class="keyword">of</span> <span class="keyword">the</span> big kernel lock.</span><br></pre></td></tr></table></figure>
+<p>因为在<code>_alltraps</code>到<code>lock_kernel()</code>的过程中(即引发中断进入内核态时和内核上锁之间),进程已经切换到了内核态,但并没有上内核锁,此时如果有其他CPU进入内核,如果用同一个内核栈,则<code>_alltraps</code>中保存的上下文信息会被破坏(因为切换中断时,指针会重置,被压栈的数据会被覆盖(或者两个cpu使用的段可能不同)),所以即使有大内核栈,CPU也不能用用同一个内核栈.同样的,解锁也是在内核态内解锁,在解锁到真正返回用户态这段过程中,也存在上述这种情况.   </p>
 <h4 id="round-robin-scheduling-轮询调度"><a href="#round-robin-scheduling-轮询调度" class="headerlink" title="round-robin scheduling(轮询调度)"></a>round-robin scheduling(轮询调度)</h4><p>轮询调度算法的原理是每一次把来自用户的请求轮流分配给内部中的处理器,从1开始,直到N(内部处理个数),然后重新开始循环.<br>算法的优点是其简洁性,它无需记录当前所有连接的状态,所以它是一种无状态调度.<br>JOS的round-robin:</p>
 <ul>
 <li><code>kern/schec.c</code>里的<code>sched_yield()</code>函数负责挑选一个新的进程运行,因此它可以用来让出cpu.它循环线性搜索<code>envs[]</code>里的进程,对遇到的第一个<code>ENV_RUNNABLE</code>进程调用<code>env_run()</code>.</li>
@@ -482,29 +404,7 @@ It seems that using the big kernel lock guarantees that only one CPU can run the
 <h1 id="Call-mp-main-Exercise-for-the-reader-why-the-indirect-call"><a href="#Call-mp-main-Exercise-for-the-reader-why-the-indirect-call" class="headerlink" title="Call mp_main().  (Exercise for the reader: why the indirect call?)"></a>Call mp_main().  (Exercise for the reader: why the indirect call?)</h1><pre><code>#无页表?
 movl    $mp_main, %eax
 call    *%eax</code></pre><p>分页开启前是怎么寻址的?</p>
-<pre><code>//复习实模式寻址:
-# Each non-boot CPU (&quot;AP&quot;) is started up in response to a STARTUP
-# IPI from the boot CPU.  Section B.4.2 of the Multi-Processor
-# Specification says that the AP will start in real mode with CS:IP
-# set to XY00:0000, where XY is an 8-bit value sent with the
-# STARTUP. Thus this code must start at a 4096-byte boundary.
-#
-//为什么?
-# Because this code sets DS to zero, it must run from an address in
-# the low 2^16 bytes of physical memory.
-#
-# boot_aps() (in init.c) copies this code to MPENTRY_PADDR (which
-# satisfies the above restrictions).  Then, for each AP, it stores the
-# address of the pre-allocated per-core stack in mpentry_kstack, sends
-# the STARTUP IPI, and waits for this code to acknowledge that it has
-# started (which happens in mp_main in init.c).
-#
-# This code is similar to boot/boot.S except that
-#    - it does not need to enable A20
-//为什么?
-#    - it uses MPBOOTPHYS to calculate absolute addresses of its
-#      symbols, rather than relying on the linker to fill them
-</code></pre>
+<figure class="highlight vala"><table><tr><td class="code"><pre><span class="line"><span class="comment">//复习实模式寻址:</span></span><br><span class="line"><span class="meta"># Each non-boot CPU ("AP") is started up in response to a STARTUP</span></span><br><span class="line"><span class="meta"># IPI from the boot CPU.  Section B.4.2 of the Multi-Processor</span></span><br><span class="line"><span class="meta"># Specification says that the AP will start in real mode with CS:IP</span></span><br><span class="line"><span class="meta"># set to XY00:0000, where XY is an 8-bit value sent with the</span></span><br><span class="line"><span class="meta"># STARTUP. Thus this code must start at a 4096-byte boundary.</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="comment">//为什么?</span></span><br><span class="line"><span class="meta"># Because this code sets DS to zero, it must run from an address in</span></span><br><span class="line"><span class="meta"># the low 2^16 bytes of physical memory.</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta"># boot_aps() (in init.c) copies this code to MPENTRY_PADDR (which</span></span><br><span class="line"><span class="meta"># satisfies the above restrictions).  Then, for each AP, it stores the</span></span><br><span class="line"><span class="meta"># address of the pre-allocated per-core stack in mpentry_kstack, sends</span></span><br><span class="line"><span class="meta"># the STARTUP IPI, and waits for this code to acknowledge that it has</span></span><br><span class="line"><span class="meta"># started (which happens in mp_main in init.c).</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta"># This code is similar to boot/boot.S except that</span></span><br><span class="line"><span class="meta">#    - it does not need to enable A20</span></span><br><span class="line"><span class="comment">//为什么?</span></span><br><span class="line"><span class="meta">#    - it uses MPBOOTPHYS to calculate absolute addresses of its</span></span><br><span class="line"><span class="meta">#      symbols, rather than relying on the linker to fill them</span></span><br></pre></td></tr></table></figure>
       
     </div>
     

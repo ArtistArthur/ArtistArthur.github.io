@@ -474,25 +474,13 @@
 
       
         
-          <h2 id="mit6-828-lab3-user-environments"><a href="#mit6-828-lab3-user-environments" class="headerlink" title="mit6.828-lab3:user environments"></a>mit6.828-lab3:user environments</h2><p>在这个lab里你将:</p>
-<ul>
-<li>完成基本的用户进程相关设施和数据结构(envs struct等). </li>
-<li>加载一个程序镜像到内存并运行它.</li>
-<li>完成中断/异常,系统调用的相关设施,让kernel有能力处理中断/异常和系统调用.  </li>
-</ul>
-<h3 id="partA-user-environments-and-exception-handling"><a href="#partA-user-environments-and-exception-handling" class="headerlink" title="partA:user environments and exception handling"></a>partA:user environments and exception handling</h3><p>首先是用户相关的数据结构<code>Env</code>:</p>
-<pre><code>struct Env {
-    struct Trapframe env_tf;    // Saved registers
-    struct Env *env_link;        // Next free Env
-    envid_t env_id;            // Unique environment identifier
-    envid_t env_parent_id;        // env_id of this env&#39;s parent
-    enum EnvType env_type;        // Indicates special system environments
-    unsigned env_status;        // Status of the environment
-    uint32_t env_runs;        // Number of times environment has run
-    // Address space
-    pde_t *env_pgdir;        // Kernel virtual address of page dir
-};
-</code></pre>
+          
+          mit6.828-lab3:user environments在这个lab里你将:
+
+完成基本的用户进程相关设施和数据结构(envs struct等). 
+加载一个程序镜像到内存并运行它.
+完成中断/
+          ...
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/ArtistArthur.github.io/2020/12/02/mit6-828-lab3/#more" rel="contents">

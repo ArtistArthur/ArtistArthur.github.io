@@ -366,37 +366,9 @@
 <li>主要了解几种常见汇编指令   <h3 id="b-qemu的使用"><a href="#b-qemu的使用" class="headerlink" title="b.qemu的使用"></a>b.qemu的使用</h3></li>
 <li>配置好qemu后，直接在lab下 make qemu,可以编译运行kernel  <h3 id="c-PC的物理地址空间"><a href="#c-PC的物理地址空间" class="headerlink" title="c. PC的物理地址空间"></a>c. PC的物理地址空间</h3></li>
 </ul>
-<pre><code>
-+------------------+  &lt;- 0xFFFFFFFF (4GB)   
-|      32-bit      |   
-|  memory mapped   |   
-|     devices      |   
-|                  |   
-/\/\/\/\/\/\/\/\/\/\  
+<figure class="highlight mercury"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>xFFFFFFFF (<span class="number">4</span>GB)   </span><br><span class="line">|      <span class="number">32</span>-bit      |   </span><br><span class="line">|  memory mapped   |   </span><br><span class="line">|     devices      |   </span><br><span class="line">|                  |   </span><br><span class="line"><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span>  </span><br><span class="line">  </span><br><span class="line"><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span>   </span><br><span class="line">|                  |   </span><br><span class="line">|      Unused      |   </span><br><span class="line">|                  |   </span><br><span class="line">+------------------+  &lt;- depends on amount of RAM   </span><br><span class="line">|                  |   </span><br><span class="line">|                  |   </span><br><span class="line">| Extended Memory  |     </span><br><span class="line">|                  |   </span><br><span class="line">|                  |   </span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>x00100000 (<span class="number">1</span>MB)   </span><br><span class="line">|     BIOS ROM     |   </span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>x000F0000 (<span class="number">960</span>KB)  </span><br><span class="line">|  <span class="number">16</span>-bit devices, |   </span><br><span class="line">|  expansion ROMs  |   </span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>x000C0000 (<span class="number">768</span>KB)   </span><br><span class="line">|   VGA Display    |    </span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>x000A0000 (<span class="number">640</span>KB)   </span><br><span class="line">|                  |   </span><br><span class="line">|    Low Memory    |   </span><br><span class="line">|                  |   </span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>x00000000</span><br></pre></td></tr></table></figure>
 
-/\/\/\/\/\/\/\/\/\/\   
-|                  |   
-|      Unused      |   
-|                  |   
-+------------------+  &lt;- depends on amount of RAM   
-|                  |   
-|                  |   
-| Extended Memory  |     
-|                  |   
-|                  |   
-+------------------+  &lt;- 0x00100000 (1MB)   
-|     BIOS ROM     |   
-+------------------+  &lt;- 0x000F0000 (960KB)  
-|  16-bit devices, |   
-|  expansion ROMs  |   
-+------------------+  &lt;- 0x000C0000 (768KB)   
-|   VGA Display    |    
-+------------------+  &lt;- 0x000A0000 (640KB)   
-|                  |   
-|    Low Memory    |   
-|                  |   
-+------------------+  &lt;- 0x00000000 
-</code></pre><ul>
+<ul>
 <li>16位的Intel 8088/86 有20位地址总线，可以寻址1MB的内存，但是由于数据总线只有16位，所以单个程序段最大只有64KB,为了可以寻址1MB，Intel引入了分段：<ul>
 <li>逻辑段的开始地址必须是16的倍数，因为段寄存器长为16位；</li>
 <li>逻辑段的最大长度为64K，因为指针寄存器长为16位。 </li>
@@ -424,131 +396,9 @@
 <li>JOS的bootloader由一个汇编文件:boot/boot.S和C源文件：boot/main.c组成，里面的内容分析：</li>
 <li>boot/boot.S</li>
 </ul>
-<pre><code>
-#include &lt;inc/mmu.h&gt;
-# Start the CPU: switch to 32-bit protected mode, jump into C.
-# The BIOS loads this code from the first sector of the hard disk into
-# memory at physical address 0x7c00 and starts executing in real mode
-# with %cs=0 %ip=7c00.
+<figure class="highlight perl"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">#include &lt;inc/mmu.h&gt;</span></span><br><span class="line"><span class="comment"># Start the CPU: switch to 32-bit protected mode, jump into C.</span></span><br><span class="line"><span class="comment"># The BIOS loads this code from the first sector of the hard disk into</span></span><br><span class="line"><span class="comment"># memory at physical address 0x7c00 and starts executing in real mode</span></span><br><span class="line"><span class="comment"># with %cs=0 %ip=7c00.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#.set symbol, expression 汇编意义：设置symbol为expression</span></span><br><span class="line"></span><br><span class="line">.set PROT_MODE_CSEG, <span class="number">0x8</span>         <span class="comment"># kernel code segment selector   </span></span><br><span class="line"><span class="comment">#段选择符的格式:13位索引+1位TI表指示标志（代表是不是全局描述符）+2位RPL</span></span><br><span class="line"><span class="comment">#因此 0x8  0000000000001 0 00</span></span><br><span class="line"><span class="comment">#此处预设代码段选择符,这个选择符代表，索引是1，TI为0表示全局描述符，RPL权限设为最高</span></span><br><span class="line"></span><br><span class="line">.set PROT_MODE_DSEG, <span class="number">0x10</span>        <span class="comment"># kernel data segment selector</span></span><br><span class="line"><span class="comment">#     0x10 0000000000010 0 00</span></span><br><span class="line"><span class="comment">#此处预设数据段选择符,代表索引是2，全局描述符，权限0最高</span></span><br><span class="line"></span><br><span class="line">.set CR0_PE_ON,      <span class="number">0x1</span>         <span class="comment"># protected mode enable flag</span></span><br><span class="line"><span class="comment">#保护模式的设置由CR0管理，这里的标识符代表开启保护模式时CR0对应的位的值:最低位置位</span></span><br><span class="line"></span><br><span class="line">.globl start  </span><br><span class="line">start:                 <span class="comment">#函数的开始，相当于main</span></span><br><span class="line">  .code16                     <span class="comment"># Assemble for 16-bit mode    </span></span><br><span class="line">  <span class="comment">#让汇编器按照16位代码汇编</span></span><br><span class="line"></span><br><span class="line">  cli                         <span class="comment"># Disable interrupts</span></span><br><span class="line">  cld                         <span class="comment"># String operations increment</span></span><br><span class="line"><span class="comment">#关闭中断，设置字符串操作是递增方向</span></span><br><span class="line"><span class="comment">#cld的作用是将direct flag标志位清零</span></span><br><span class="line"><span class="comment">#it means that instructions that autoincrement the source index and destination index (like MOVS) will increase both of them</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># Set up the important data segment registers (DS, ES, SS).</span></span><br><span class="line"></span><br><span class="line">  xorw    %ax,%ax             <span class="comment"># Segment number zero</span></span><br><span class="line">  movw    %ax,%ds             <span class="comment"># -&gt; Data Segment</span></span><br><span class="line">  movw    %ax,%es             <span class="comment"># -&gt; Extra Segment</span></span><br><span class="line">  movw    %ax,%ss             <span class="comment"># -&gt; Stack Segment</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># Enable A20:</span></span><br><span class="line">  <span class="comment">#   For backwards compatibility with the earliest PCs, physical</span></span><br><span class="line">  <span class="comment">#   address line 20 is tied low, so that addresses higher than</span></span><br><span class="line">  <span class="comment">#   1MB wrap around to zero by default.  This code undoes this.</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">#激活A20地址位,由于需要兼容早期pc，物理地址的第20位绑定为0，所以高于1MB的地址又回到了0x00000</span></span><br><span class="line">  <span class="comment">#激活A20后，就可以访问所有4G内存，就可以使用保护模式</span></span><br><span class="line">  <span class="comment">#激活方式：由于历史原因A20地址位由键盘控制器芯片8042管理。所以要给8042发命令激活A20</span></span><br><span class="line">  <span class="comment">#8042有两个IO端口：0x60和0x64,激活流程为： 先发送0xd1命令到0x64端口 --&gt; 再发送0xdf到0x60</span></span><br><span class="line"></span><br><span class="line">seta2<span class="number">0</span>.<span class="number">1</span>:</span><br><span class="line">  inb     $0x64,%al               <span class="comment"># Wait for not busy</span></span><br><span class="line">  <span class="comment">#汇编语言有专门的读取端口信息的指令，in out后面的b代表一个字节</span></span><br><span class="line"></span><br><span class="line">  testb   $0x2,%al</span><br><span class="line">  <span class="comment">#测试（两操作数作与运算,仅修改标志位，不回送结果）。</span></span><br><span class="line"></span><br><span class="line">  jnz     seta2<span class="number">0</span>.<span class="number">1</span></span><br><span class="line"><span class="comment">#发送命令之前，要等待键盘输入缓冲区为空，这通过8042的状态寄存器的第2bit来观察，而状态寄存器的值可以读0x64端口得到。</span></span><br><span class="line"><span class="comment">#上面的指令的意思就是，如果状态寄存器的第2位为1，就跳到seta20.1符号处执行，知道第2位为0，代表缓冲区为空</span></span><br><span class="line"></span><br><span class="line">  movb    $0xd1,%al               <span class="comment"># 0xd1 -&gt; port 0x64</span></span><br><span class="line">  outb    %al,$0x64</span><br><span class="line"><span class="comment">#发送0xd1到0x64端口</span></span><br><span class="line"></span><br><span class="line">seta2<span class="number">0</span>.<span class="number">2</span>:</span><br><span class="line">  inb     $0x64,%al               <span class="comment"># Wait for not busy</span></span><br><span class="line">  testb   $0x2,%al</span><br><span class="line">  jnz     seta2<span class="number">0</span>.<span class="number">2</span></span><br><span class="line"></span><br><span class="line">  movb    $0xdf,%al               <span class="comment"># 0xdf -&gt; port 0x60</span></span><br><span class="line">  outb    %al,$0x6<span class="number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># Switch from real to protected mode, using a bootstrap GDT</span></span><br><span class="line">  <span class="comment"># and segment translation that makes virtual addresses </span></span><br><span class="line">  <span class="comment"># identical to their physical addresses, so that the </span></span><br><span class="line">  <span class="comment"># effective memory map does not change during the switch.</span></span><br><span class="line">  <span class="comment">#转入保护模式，这里需要指定一个临时的GDT，来翻译逻辑地址。</span></span><br><span class="line">  <span class="comment">#这里使用的GDT通过gdtdesc段定义，它翻译得到的物理地址和虚拟地址相同（段描述符里的段基址为0）</span></span><br><span class="line">  <span class="comment">#所以转换过程中内存映射不会改变</span></span><br><span class="line"></span><br><span class="line">  lgdt    gdtdesc   </span><br><span class="line">  <span class="comment">#lgdt指令把gdtdesc的地址加载进gdtr寄存器，代表全局段描述符表</span></span><br><span class="line"></span><br><span class="line">  movl    %cr0, %eax</span><br><span class="line">  orl     $CR0_PE_ON, %eax</span><br><span class="line">  movl    %eax, %cr0</span><br><span class="line">  <span class="comment">#开启保护模式</span></span><br><span class="line">  <span class="comment"># Jump to next instruction, but in 32-bit code segment.</span></span><br><span class="line">  <span class="comment"># Switches processor into 32-bit mode.</span></span><br><span class="line">  <span class="comment">#由于进入保护模式，所有地址都应该是：cs:eip</span></span><br><span class="line"></span><br><span class="line">  ljmp    $PROT_MODE_CSEG, $protcseg         <span class="comment">#ljmp cs esp</span></span><br><span class="line">  <span class="comment">#Long jump, use 0xfebc for the CS register and 0x12345678 for the EIP register:</span></span><br><span class="line">  <span class="comment">#ljmp $0xfebc, $0x12345678</span></span><br><span class="line"></span><br><span class="line">  .code32                     <span class="comment"># Assemble for 32-bit mode</span></span><br><span class="line">protcseg:</span><br><span class="line">  <span class="comment"># Set up the protected-mode data segment registers</span></span><br><span class="line">  movw    $PROT_MODE_DSEG, %ax    <span class="comment"># Our data segment selector</span></span><br><span class="line">  movw    %ax, %ds                <span class="comment"># -&gt; DS: Data Segment</span></span><br><span class="line">  movw    %ax, %es                <span class="comment"># -&gt; ES: Extra Segment</span></span><br><span class="line">  movw    %ax, %fs                <span class="comment"># -&gt; FS</span></span><br><span class="line">  movw    %ax, %gs                <span class="comment"># -&gt; GS</span></span><br><span class="line">  movw    %ax, %ss                <span class="comment"># -&gt; SS: Stack Segment</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment"># Set up the stack pointer and call into C.</span></span><br><span class="line">  movl    $start, %esp</span><br><span class="line">  call bootmain</span><br><span class="line"></span><br><span class="line">  <span class="comment"># If bootmain returns (it shouldn't), loop.</span></span><br><span class="line">spin:</span><br><span class="line">  jmp spin</span><br><span class="line"></span><br><span class="line"><span class="comment"># Bootstrap GDT</span></span><br><span class="line">.p2align <span class="number">2</span>                                <span class="comment"># force 4 byte alignment</span></span><br><span class="line">gdt:</span><br><span class="line">  SEG_NULL				<span class="comment"># null seg</span></span><br><span class="line">  SEG(STA_X|STA_R, <span class="number">0x0</span>, <span class="number">0xffffffff</span>)	<span class="comment"># code seg</span></span><br><span class="line">  SEG(STA_W, <span class="number">0x0</span>, <span class="number">0xffffffff</span>)	        <span class="comment"># data seg</span></span><br><span class="line"></span><br><span class="line">gdtdesc:</span><br><span class="line">  .word   <span class="number">0x17</span>                            <span class="comment"># sizeof(gdt) - 1</span></span><br><span class="line">  .long   gdt                             <span class="comment"># address gdt</span></span><br></pre></td></tr></table></figure>
 
-#.set symbol, expression 汇编意义：设置symbol为expression
-
-.set PROT_MODE_CSEG, 0x8         # kernel code segment selector   
-#段选择符的格式:13位索引+1位TI表指示标志（代表是不是全局描述符）+2位RPL
-#因此 0x8  0000000000001 0 00
-#此处预设代码段选择符,这个选择符代表，索引是1，TI为0表示全局描述符，RPL权限设为最高
-
-.set PROT_MODE_DSEG, 0x10        # kernel data segment selector
-#     0x10 0000000000010 0 00
-#此处预设数据段选择符,代表索引是2，全局描述符，权限0最高
-
-.set CR0_PE_ON,      0x1         # protected mode enable flag
-#保护模式的设置由CR0管理，这里的标识符代表开启保护模式时CR0对应的位的值:最低位置位
-
-.globl start  
-start:                 #函数的开始，相当于main
-  .code16                     # Assemble for 16-bit mode    
-  #让汇编器按照16位代码汇编
-
-  cli                         # Disable interrupts
-  cld                         # String operations increment
-#关闭中断，设置字符串操作是递增方向
-#cld的作用是将direct flag标志位清零
-#it means that instructions that autoincrement the source index and destination index (like MOVS) will increase both of them
-
-  # Set up the important data segment registers (DS, ES, SS).
-
-  xorw    %ax,%ax             # Segment number zero
-  movw    %ax,%ds             # -&gt; Data Segment
-  movw    %ax,%es             # -&gt; Extra Segment
-  movw    %ax,%ss             # -&gt; Stack Segment
-
-  # Enable A20:
-  #   For backwards compatibility with the earliest PCs, physical
-  #   address line 20 is tied low, so that addresses higher than
-  #   1MB wrap around to zero by default.  This code undoes this.
-
-  #激活A20地址位,由于需要兼容早期pc，物理地址的第20位绑定为0，所以高于1MB的地址又回到了0x00000
-  #激活A20后，就可以访问所有4G内存，就可以使用保护模式
-  #激活方式：由于历史原因A20地址位由键盘控制器芯片8042管理。所以要给8042发命令激活A20
-  #8042有两个IO端口：0x60和0x64,激活流程为： 先发送0xd1命令到0x64端口 --&gt; 再发送0xdf到0x60
-
-seta20.1:
-  inb     $0x64,%al               # Wait for not busy
-  #汇编语言有专门的读取端口信息的指令，in out后面的b代表一个字节
-
-  testb   $0x2,%al
-  #测试（两操作数作与运算,仅修改标志位，不回送结果）。
-
-  jnz     seta20.1
-#发送命令之前，要等待键盘输入缓冲区为空，这通过8042的状态寄存器的第2bit来观察，而状态寄存器的值可以读0x64端口得到。
-#上面的指令的意思就是，如果状态寄存器的第2位为1，就跳到seta20.1符号处执行，知道第2位为0，代表缓冲区为空
-
-  movb    $0xd1,%al               # 0xd1 -&gt; port 0x64
-  outb    %al,$0x64
-#发送0xd1到0x64端口
-
-seta20.2:
-  inb     $0x64,%al               # Wait for not busy
-  testb   $0x2,%al
-  jnz     seta20.2
-
-  movb    $0xdf,%al               # 0xdf -&gt; port 0x60
-  outb    %al,$0x60
-
-  # Switch from real to protected mode, using a bootstrap GDT
-  # and segment translation that makes virtual addresses 
-  # identical to their physical addresses, so that the 
-  # effective memory map does not change during the switch.
-  #转入保护模式，这里需要指定一个临时的GDT，来翻译逻辑地址。
-  #这里使用的GDT通过gdtdesc段定义，它翻译得到的物理地址和虚拟地址相同（段描述符里的段基址为0）
-  #所以转换过程中内存映射不会改变
-
-  lgdt    gdtdesc   
-  #lgdt指令把gdtdesc的地址加载进gdtr寄存器，代表全局段描述符表
-
-  movl    %cr0, %eax
-  orl     $CR0_PE_ON, %eax
-  movl    %eax, %cr0
-  #开启保护模式
-  # Jump to next instruction, but in 32-bit code segment.
-  # Switches processor into 32-bit mode.
-  #由于进入保护模式，所有地址都应该是：cs:eip
-
-  ljmp    $PROT_MODE_CSEG, $protcseg         #ljmp cs esp
-  #Long jump, use 0xfebc for the CS register and 0x12345678 for the EIP register:
-  #ljmp $0xfebc, $0x12345678
-
-  .code32                     # Assemble for 32-bit mode
-protcseg:
-  # Set up the protected-mode data segment registers
-  movw    $PROT_MODE_DSEG, %ax    # Our data segment selector
-  movw    %ax, %ds                # -&gt; DS: Data Segment
-  movw    %ax, %es                # -&gt; ES: Extra Segment
-  movw    %ax, %fs                # -&gt; FS
-  movw    %ax, %gs                # -&gt; GS
-  movw    %ax, %ss                # -&gt; SS: Stack Segment
-
-  # Set up the stack pointer and call into C.
-  movl    $start, %esp
-  call bootmain
-
-  # If bootmain returns (it shouldn&#39;t), loop.
-spin:
-  jmp spin
-
-# Bootstrap GDT
-.p2align 2                                # force 4 byte alignment
-gdt:
-  SEG_NULL                # null seg
-  SEG(STA_X|STA_R, 0x0, 0xffffffff)    # code seg
-  SEG(STA_W, 0x0, 0xffffffff)            # data seg
-
-gdtdesc:
-  .word   0x17                            # sizeof(gdt) - 1
-  .long   gdt                             # address gdt
-
-</code></pre><ul>
+<ul>
 <li>boot/boot.S的功能有一个：<ul>
 <li>从实模式进入32位保护模式，方法是把CR0最低位置位，即开启了保护模式，然后激活A20使得cpu可以寻址1MB以上的空间，之后设置一个段表，最后调用bootmain，进入main.c</li>
 </ul>

@@ -401,60 +401,60 @@
 <ul>
 <li>很显然的单调栈  </li>
 </ul>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">include</span><span class="token string">&lt;vector></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span><span class="token string">&lt;stack></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span><span class="token string">&lt;iostream></span></span>
-<span class="token keyword">using</span> <span class="token keyword">namespace</span> std<span class="token punctuation">;</span>
-<span class="token keyword">class</span> <span class="token class-name">Solution</span>
-<span class="token punctuation">{</span>
-<span class="token keyword">public</span><span class="token operator">:</span>
-    vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> <span class="token function">dailyTemperatures</span><span class="token punctuation">(</span>vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> <span class="token operator">&amp;</span>T<span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-        stack<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> small_stk<span class="token punctuation">;</span>
-        vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span> <span class="token function">ret</span><span class="token punctuation">(</span>T<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>i<span class="token operator">&lt;</span>T<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span>
-        <span class="token punctuation">{</span>
-            <span class="token keyword">if</span><span class="token punctuation">(</span>small_stk<span class="token punctuation">.</span><span class="token function">empty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-            <span class="token punctuation">{</span>
-                small_stk<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">continue</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>           
-            <span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>T<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">&lt;=</span>T<span class="token punctuation">[</span>small_stk<span class="token punctuation">.</span><span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-            <span class="token punctuation">{</span>
-                small_stk<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">continue</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-            <span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>T<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">></span>T<span class="token punctuation">[</span>small_stk<span class="token punctuation">.</span><span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-            <span class="token punctuation">{</span>
-                ret<span class="token punctuation">[</span>small_stk<span class="token punctuation">.</span><span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> i <span class="token operator">-</span> small_stk<span class="token punctuation">.</span><span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                small_stk<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token operator">!</span>small_stk<span class="token punctuation">.</span><span class="token function">empty</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>T<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">></span>T<span class="token punctuation">[</span>small_stk<span class="token punctuation">.</span><span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-                <span class="token punctuation">{</span>
-                    ret<span class="token punctuation">[</span>small_stk<span class="token punctuation">.</span><span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> i <span class="token operator">-</span> small_stk<span class="token punctuation">.</span><span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre class="line-numbers language-cpp"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string"><code class="language-cpp"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string"><vector></span></span>
+<span class="meta">#<span class="meta-keyword">include</span><span class="meta-string"><stack></span></span>
+<span class="meta">#<span class="meta-keyword">include</span><span class="meta-string"><iostream></span></span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;
+<span class="class"><span class="keyword">class</span> <span class="title">Solution</span></span>
+<span class="class">{</span>
+<span class="keyword">public</span>:
+    <span class="function"><span class="built_in">vector</span><<span class="keyword">int</span>> <span class="title">dailyTemperatures</span><span class="params">(<span class="built_in">vector</span><<span class="keyword">int</span>> &T)</span></span>
+<span class="function">    </span>{
+        <span class="built_in">stack</span><<span class="keyword">int</span>> small_stk;
+        <span class="function"><span class="built_in">vector</span><<span class="keyword">int</span>> <span class="title">ret</span><span class="params">(T.size(),<span class="number">1</span>)</span></span>;
+        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i<T.size();i++)
+        {
+            <span class="keyword">if</span>(small_stk.empty())
+            {
+                small_stk.push(i);
+                <span class="keyword">continue</span>;
+            }           
+            <span class="keyword">else</span> <span class="keyword">if</span>(T[i]<=T[small_stk.top()])
+            {
+                small_stk.push(i);
+                <span class="keyword">continue</span>;
+            }
+            <span class="keyword">else</span> <span class="keyword">if</span>(T[i]>T[small_stk.top()])
+            {
+                ret[small_stk.top()] = i - small_stk.top();
+                small_stk.pop();
+                <span class="keyword">while</span>(!small_stk.empty() &&T[i]>T[small_stk.top()])
+                {
+                    ret[small_stk.top()] = i - small_stk.top();
 
-                    small_stk<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-                small_stk<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">continue</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">!</span>small_stk<span class="token punctuation">.</span><span class="token function">empty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-        <span class="token punctuation">{</span>
-            ret<span class="token punctuation">[</span>small_stk<span class="token punctuation">.</span><span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-            small_stk<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> ret<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-    vector<span class="token operator">&lt;</span><span class="token keyword">int</span> <span class="token operator">></span>T<span class="token operator">=</span><span class="token punctuation">{</span><span class="token number">73</span><span class="token punctuation">,</span> <span class="token number">74</span><span class="token punctuation">,</span> <span class="token number">75</span><span class="token punctuation">,</span> <span class="token number">71</span><span class="token punctuation">,</span> <span class="token number">69</span><span class="token punctuation">,</span> <span class="token number">72</span><span class="token punctuation">,</span> <span class="token number">76</span><span class="token punctuation">,</span> <span class="token number">73</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
-    Solution A<span class="token punctuation">;</span>
-    vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">></span>x<span class="token operator">=</span>A<span class="token punctuation">.</span><span class="token function">dailyTemperatures</span><span class="token punctuation">(</span>T<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> x<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span>
-        std<span class="token operator">::</span>cout <span class="token operator">&lt;&lt;</span> x<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">&lt;&lt;</span> std<span class="token operator">::</span>endl<span class="token punctuation">;</span>
+                    small_stk.pop();
+                }
+                small_stk.push(i);
+                <span class="keyword">continue</span>;
+            }
+        }
+        <span class="keyword">while</span> (!small_stk.empty())
+        {
+            ret[small_stk.top()] = <span class="number">0</span>;
+            small_stk.pop();
+        }
+        <span class="keyword">return</span> ret;
+    }
+};
+<span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>
+<span class="function"></span>{
+    <span class="built_in">vector</span><<span class="keyword">int</span> >T={<span class="number">73</span>, <span class="number">74</span>, <span class="number">75</span>, <span class="number">71</span>, <span class="number">69</span>, <span class="number">72</span>, <span class="number">76</span>, <span class="number">73</span> };
+    Solution A;
+    <span class="built_in">vector</span><<span class="keyword">int</span>>x=A.dailyTemperatures(T);
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < x.size();i++)
+        <span class="built_in">std</span>::<span class="built_in">cout</span> << x[i] << <span class="built_in">std</span>::<span class="built_in">endl</span>;
 
-<span class="token punctuation">}</span>  
+}  
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>$\beta.$ $84.Largest\:Rectangle\:in\:Histogram$ <a href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank" rel="noopener">https://leetcode.com/problems/largest-rectangle-in-histogram/</a>  </p>
 <ul>

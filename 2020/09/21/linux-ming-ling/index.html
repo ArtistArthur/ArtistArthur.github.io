@@ -358,27 +358,11 @@
 <p>~:用户根目录</p>
 <p>#是管理员 $是用户<br>了解了<br>yum : yellow dogUpdater， Modified<br>sudo : superuser do<br>rm -rf: rm remove -r delete files recrusively -f force  delete without warning<br><code>ps -ef | grep tomcat</code>ps命令用于报告当前系统进程状态,-e参数表示显示所有用户所有进程,-f参数表示全格式显示<br>grep全称是Globally search a Regular Expression and Print,能使用特定模式匹配(包括正则表达式)搜索文本,并默认输出匹配行,所以用管道连接后,这个命令就表示显示所有进程,并且格式化输出,然后用“tomcat”字符串来过滤每一行,得到最终的输出结果</p>
 <h2 id="vim语法"><a href="#vim语法" class="headerlink" title="vim语法"></a>vim语法</h2><p>1.在命令模式下输入v进入自由选取模式,选择需要剪切的文字，按下d可以剪切.<br>2.其他命令模式下剪切命令:   </p>
-<pre><code>dd:剪切当前行    
-ndd:n表示大于1的数字，剪切n行  
-dw:从光标处剪切至一个单词的末尾，包括空格  
-de:从光标处剪切至一个单词的末尾，不包括空格  
-d$:从当前光标剪切到行末  
-d0:从当前光标位置（不包括光标位置）剪切之行首  
-d3l:从光标位置（包括光标位置）向右剪切3个字符  
-d5G:将当前行（包括当前行）至第5行（不包括它）剪切  
-d3B:从当前光标位置（不包括光标位置）反向剪切3个单词  
-dH:剪切从当前行至所显示屏幕顶行的全部行  
-dM:剪切从当前行至命令M所指定行的全部行  
-dL:剪切从当前行至所显示屏幕底的全部行   </code></pre><p>3.复制</p>
-<pre><code>yy：复制当前行
-nyy：n表示大于1的数字，复制n行
-yw：从光标处复制至一个单词的末尾，包括空格
-ye：从光标处复制至一个单词的末尾，不包括空格
-y$：从当前光标复制到行末
-y0：从当前光标位置（不包括光标位置）复制之行首
-y3l：从光标位置（包括光标位置）向右复制3个字符
-y5G：将当前行（包括当前行）至第5行（不包括它）复制
-y3B：从当前光标位置（不包括光标位置）反向复制3个单词</code></pre><h2 id="杂乱的知识"><a href="#杂乱的知识" class="headerlink" title="杂乱的知识"></a>杂乱的知识</h2><p>大端:数据低字节在内存高位 可以优先看到符号位快速判断正负和大小<br>小端:数据高字节在内存低位 可以优先进行计算最后考虑符号位<br>现在intel的80x86用小端<br>ARM芯片默认用小端，可切换到大端<br>MIPS芯片采用大端，可切换<br>网络序为大端<br>XCHG的原理</p>
+<figure class="highlight avrasm"><table><tr><td class="code"><pre><span class="line"><span class="symbol">dd:</span>剪切当前行    </span><br><span class="line"><span class="symbol">ndd:</span>n表示大于<span class="number">1</span>的数字，剪切n行  </span><br><span class="line"><span class="symbol">dw:</span>从光标处剪切至一个单词的末尾，包括空格  </span><br><span class="line"><span class="symbol">de:</span>从光标处剪切至一个单词的末尾，不包括空格  </span><br><span class="line"><span class="symbol">d$:</span>从当前光标剪切到行末  </span><br><span class="line"><span class="symbol">d0:</span>从当前光标位置（不包括光标位置）剪切之行首  </span><br><span class="line"><span class="symbol">d3l:</span>从光标位置（包括光标位置）向右剪切<span class="number">3</span>个字符  </span><br><span class="line"><span class="symbol">d5G:</span>将当前行（包括当前行）至第<span class="number">5</span>行（不包括它）剪切  </span><br><span class="line"><span class="symbol">d3B:</span>从当前光标位置（不包括光标位置）反向剪切<span class="number">3</span>个单词  </span><br><span class="line"><span class="symbol">dH:</span>剪切从当前行至所显示屏幕顶行的全部行  </span><br><span class="line"><span class="symbol">dM:</span>剪切从当前行至命令M所指定行的全部行  </span><br><span class="line"><span class="symbol">dL:</span>剪切从当前行至所显示屏幕底的全部行</span><br></pre></td></tr></table></figure>
+<p>3.复制</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">yy：复制当前行</span><br><span class="line">nyy：n表示大于<span class="number">1</span>的数字，复制n行</span><br><span class="line">yw：从光标处复制至一个单词的末尾，包括空格</span><br><span class="line">ye：从光标处复制至一个单词的末尾，不包括空格</span><br><span class="line">y$：从当前光标复制到行末</span><br><span class="line">y0：从当前光标位置（不包括光标位置）复制之行首</span><br><span class="line">y3l：从光标位置（包括光标位置）向右复制<span class="number">3</span>个字符</span><br><span class="line">y5G：将当前行（包括当前行）至第<span class="number">5</span>行（不包括它）复制</span><br><span class="line">y3B：从当前光标位置（不包括光标位置）反向复制<span class="number">3</span>个单词</span><br></pre></td></tr></table></figure>
+
+<h2 id="杂乱的知识"><a href="#杂乱的知识" class="headerlink" title="杂乱的知识"></a>杂乱的知识</h2><p>大端:数据低字节在内存高位 可以优先看到符号位快速判断正负和大小<br>小端:数据高字节在内存低位 可以优先进行计算最后考虑符号位<br>现在intel的80x86用小端<br>ARM芯片默认用小端，可切换到大端<br>MIPS芯片采用大端，可切换<br>网络序为大端<br>XCHG的原理</p>
 <h2 id="简写来源"><a href="#简写来源" class="headerlink" title="简写来源"></a>简写来源</h2><ul>
 <li>寄存器的ax,bx,cx,dx一般叫做通用寄存器，但也有说法是:Accumulator Base Counter Data    </li>
 <li>BX —— based register——基地址寄存器</li>
