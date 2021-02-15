@@ -474,73 +474,13 @@
 
       
         
-          <h2 id="mit6-828-lab3-user-environments"><a href="#mit6-828-lab3-user-environments" class="headerlink" title="mit6.828-lab3:user environments"></a>mit6.828-lab3:user environments</h2><p>在这个lab里你将:</p>
-<ul>
-<li>完成基本的用户进程相关设施和数据结构(envs struct等). </li>
-<li>加载一个程序镜像到内存并运行它.</li>
-<li>完成中断/异常,系统调用的相关设施,让kernel有能力处理中断/异常和系统调用.  <h3 id="partA-user-environments-and-exception-handling"><a href="#partA-user-environments-and-exception-handling" class="headerlink" title="partA:user environments and exception handling"></a>partA:user environments and exception handling</h3>首先是用户相关的数据结构<code>Env</code>:<pre><code>struct Env {
-  struct Trapframe env_tf;    // Saved registers
-  struct Env *env_link;        // Next free Env
-  envid_t env_id;            // Unique environment identifier
-  envid_t env_parent_id;        // env_id of this env&#39;s parent
-  enum EnvType env_type;        // Indicates special system environments
-  unsigned env_status;        // Status of the environment
-  uint32_t env_runs;        // Number of times environment has run
-  // Address space
-  pde_t *env_pgdir;        // Kernel virtual address of page dir
-</code></pre></li>
-</ul>
-<p>};</p>
-<pre><code>&lt;!--more--&gt;
-进程上下文切换的相关结构:</code></pre><p>struct PushRegs {<br>    /<em> registers as pushed by pusha </em>/<br>    uint32_t reg_edi;<br>    uint32_t reg_esi;<br>    uint32_t reg_ebp;<br>    uint32_t reg_oesp;        /<em> Useless </em>/<br>    uint32_t reg_ebx;<br>    uint32_t reg_edx;<br>    uint32_t reg_ecx;<br>    uint32_t reg_eax;<br>} <strong>attribute</strong>((packed));<br>struct Trapframe {<br>    struct PushRegs tf_regs;<br>    uint16_t tf_es;<br>    uint16_t tf_padding1;<br>    uint16_t tf_ds;<br>    uint16_t tf_padding2;<br>    uint32_t tf_trapno;<br>    /<em> below here defined by x86 hardware </em>/<br>    uint32_t tf_err;<br>    uintptr_t tf_eip;<br>    uint16_t tf_cs;<br>    uint16_t tf_padding3;<br>    uint32_t tf_eflags;<br>    /<em> below here only when crossing rings, such as from user to kernel </em>/<br>    uintptr_t tf_esp;<br>    uint16_t tf_ss;<br>    uint16_t tf_padding4;<br>} <strong>attribute</strong>((packed));</p>
-<pre><code>
-```c
-void
-env_pop_tf(struct Trapframe *tf)
-{
-    asm volatile(
-        &quot;\tmovl %0,%%esp\n&quot;
-        &quot;\tpopal\n&quot;
-        &quot;\tpopl %%es\n&quot;
-        &quot;\tpopl %%ds\n&quot;
-        &quot;\taddl $0x8,%%esp\n&quot; /* skip tf_trapno and tf_errcode */
-        &quot;\tiret\n&quot;
-        : : &quot;g&quot; (tf) : &quot;memory&quot;);
-    panic(&quot;iret failed&quot;);  /* mostly to placate the compiler */
-}
-</code></pre><p><code>%0</code>表示<code>tf</code>代表的寄存器,<code>movl %0,%%esp</code>把<code>tf</code>的地址存入<code>esp</code>寄存器中,<code>popal</code>是<code>popa</code>的长指令(pop all).<br><code>pusha</code>作用是:把八个通用寄存器全部<code>push</code>入<code>esp</code>中,顺序为<code>eax ecx edx ebx oldesp ebp esi edi</code>而<code>popa</code>的作用相反:从<code>esp</code>中把这八个值弹出到相应的寄存器,但是并不弹出<code>old_esp</code>,会跳过它,方式是<code>esp</code>+4.<br>IRET是一个汇编指令,这个指令会做很多事情:<br>the IRET instruction pops the return instruction pointer, return code segment selector, and EFLAGS image from the stack to the EIP, CS, and EFLAGS registers, respectively, and then resumes execution of the interrupted program or procedure. If the return is to another privilege level, the IRET instruction also pops the stack pointer and SS from the stack, before resuming program execution.  </p>
-<pre><code>
-Operation
-IF OperandSize = 32 (* instruction = POPAD *)
-THEN
-EDI ← Pop();
-ESI ← Pop();
-EBP ← Pop();
-increment ESP by 4 (* skip next 4 bytes of stack *)
-EBX ← Pop();
-EDX ← Pop();
-ECX ← Pop();
-EAX ← Pop();
-ELSE (* OperandSize = 16, instruction = POPA *)
-DI ← Pop();
-SI ← Pop();
-BP ← Pop();
-increment ESP by 2 (* skip next 2 bytes of stack *)
-BX ← Pop();
-DX ← Pop();
-CX ← Pop();
-AX ← Pop();
-参考资料:https://www.cs.cmu.edu/~410/doc/intel-isr.pdf</code></pre><p>参考:<a href="https://www.cnblogs.com/whutzhou/articles/2638498.html" target="_blank" rel="noopener">https://www.cnblogs.com/whutzhou/articles/2638498.html</a><br><code>env_pop_tf()</code>的作用是:转到<code>tf</code>代表的用户程序,先把<code>esp</code>设为这个<code>Trapframe</code>的地址,然后<code>popa</code>,即从<code>tf</code>中的<code>struct PushRegs tf_regs</code>弹出值到相应的寄存器,实现上下文的切换.然后再从<code>tf</code>中弹出<code>es</code>和<code>ds</code>的值,再跳过<code>tf_trapno and tf_errcode</code>,最后<code>iret</code>.<br>值得注意的是:栈是从上往下增长的,<code>tf</code>陷阱门是从下网上长的,因此把<code>esp</code>设为<code>tf</code>,<code>pop</code>弹出值的时候,<code>esp</code>回退(即往上),对应着<code>tf</code>往上依次读取成员.</p>
-<h4 id="exercise2"><a href="#exercise2" class="headerlink" title="exercise2"></a>exercise2</h4><p>完成几个函数:</p>
-<ul>
-<li><code>env_init()</code>:初始化所有的在<code>envs</code>数组中的<code>Enc</code>结构体,并把他们添加到<code>env_free_list</code>指针后面,之后调用<code>env_init_per_cpu</code>以设置段管理的相关硬件,它们分别是特权级0(kernel)和特权级3(user)的段.</li>
-<li><code>env_setup_vm()</code>:为新的<code>environment</code>分配一个页目录表,并且初始化新的地址空间中的内核部分(通过复制).</li>
-<li><code>region_alloc()</code>:为新的<code>environment</code>分配并映射物理地址.</li>
-<li><code>load_icode()</code>:需要自己实现解析ELF二进制文件的功能(就和<code>bootloader</code>里面做的一样),并把二进制文件的内容加载到新的<code>environment</code>的用户地址空间中.</li>
-<li><code>env_create</code>:通过<code>env_alloc()</code>分配一个<code>environment</code>,并且调用<code>load_icode()</code>把ELF二进制文件加载进去.</li>
-<li><code>env_run</code>:在用户模式下启动一个给定的<code>environment</code>.<br>代码解析:  </li>
-<li><code>env_init()</code>:  </li>
-</ul>
+          
+          mit6.828-lab3:user environments在这个lab里你将:
+
+完成基本的用户进程相关设施和数据结构(envs struct等). 
+加载一个程序镜像到内存并运行它.
+完成中断/
+          ...
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/ArtistArthur.github.io/2020/12/02/mit6-828-lab3/#more" rel="contents">
@@ -2669,10 +2609,10 @@ AX ← Pop();
 
   
 
-<script>
+<script src="/ArtistArthur.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/ArtistArthur.github.io/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script><script>
             window.imageLazyLoadSetting = {
                 isSPA: false,
                 processImages: null,
             };
-        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=i;var e=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function i(){e&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,a=0;a<r.length;a++)0<=(t=(t=r[a]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(n.innerHeight+240||document.documentElement.clientHeight+240)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}i(),n.addEventListener("scroll",function(){var t,e;t=i,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script><script src="/ArtistArthur.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/ArtistArthur.github.io/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=i;var e=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function i(){e&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,a=0;a<r.length;a++)0<=(t=(t=r[a]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(n.innerHeight+240||document.documentElement.clientHeight+240)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}i(),n.addEventListener("scroll",function(){var t,e;t=i,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script></body>
 </html>
