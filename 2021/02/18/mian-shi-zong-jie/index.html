@@ -87,7 +87,7 @@
 <meta property="og:description" content="什么是进程什么是线程？进程是资源分配的基本单位。线程是资源调度的基本单位。一个进程包含一个或者多个线程。cpu上运行的是一个个线程。进程拥有自己的地址空间、栈、堆、寄存器等。线程拥有线程栈、寄存器、程序计数器等，一个进程中的线程共享进程的地址空间、全局变量、静态变量、堆等。   进程间通信的方式？管道、命名管道：在信号：信号量：一个信号量代表了一种有限的资源，共享内存：可以通过页表映射完成消息队列">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-02-18T09:28:42.000Z">
-<meta property="article:modified_time" content="2021-02-18T10:14:45.191Z">
+<meta property="article:modified_time" content="2021-02-18T11:27:14.195Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="math">
 <meta name="twitter:card" content="summary">
@@ -368,7 +368,18 @@
 <li>不可剥夺：正在是使用的资源不可剥夺，只能由占有资源的进程自动释放，不能被其他进程强行占用。</li>
 <li>环路等待：存在进程的循环等待链，前一进程占有的资源正是后一进程所请求的资源，结果就形成了循环等待的僵持局面。 </li>
 </ol>
-<h2 id="死锁的解决"><a href="#死锁的解决" class="headerlink" title="死锁的解决"></a>死锁的解决</h2><p>预防死锁：</p>
+<h2 id="死锁的解决"><a href="#死锁的解决" class="headerlink" title="死锁的解决"></a>死锁的解决</h2><ul>
+<li>打破互斥条件：将独占性资源改造成虚拟资源，但是大部分资源不可改造</li>
+<li>打破不可抢占条件：当一进程占有一独有资源后又申请一独占资源而无法被满足则释放原独占的资源</li>
+<li>打破请求和保持条件：采用资源预先分配策略，即进程运行前就申请全部资源，不能被满足就不运行</li>
+<li>打破环路等待条件：实现资源有序分配策略，</li>
+</ul>
+<p>相关算法：</p>
+<ul>
+<li>有序资源分配算法</li>
+<li>银行家算法</li>
+</ul>
+<p>预防死锁：</p>
 <ol>
 <li>请求和等待条件：</li>
 </ol>
@@ -408,8 +419,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/ArtistArthur.github.io/2021/12/20/mit6-828-lab4/" rel="prev" title="mit6.828 lab4">
-                mit6.828 lab4 <i class="fa fa-chevron-right"></i>
+              <a href="/ArtistArthur.github.io/2021/02/18/mit6-828-hui-zong/" rel="prev" title="mit6.828汇总">
+                mit6.828汇总 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -487,7 +498,7 @@
               
                 <a href="/ArtistArthur.github.io/archives">
               
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

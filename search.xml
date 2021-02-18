@@ -1239,12 +1239,29 @@ call    *%eax</code></pre><p>分页开启前是怎么寻址的?</p>
 <li>不可剥夺：正在是使用的资源不可剥夺，只能由占有资源的进程自动释放，不能被其他进程强行占用。</li>
 <li>环路等待：存在进程的循环等待链，前一进程占有的资源正是后一进程所请求的资源，结果就形成了循环等待的僵持局面。 </li>
 </ol>
-<h2 id="死锁的解决"><a href="#死锁的解决" class="headerlink" title="死锁的解决"></a>死锁的解决</h2><p>预防死锁：</p>
+<h2 id="死锁的解决"><a href="#死锁的解决" class="headerlink" title="死锁的解决"></a>死锁的解决</h2><ul>
+<li>打破互斥条件：将独占性资源改造成虚拟资源，但是大部分资源不可改造</li>
+<li>打破不可抢占条件：当一进程占有一独有资源后又申请一独占资源而无法被满足则释放原独占的资源</li>
+<li>打破请求和保持条件：采用资源预先分配策略，即进程运行前就申请全部资源，不能被满足就不运行</li>
+<li>打破环路等待条件：实现资源有序分配策略，</li>
+</ul>
+<p>相关算法：</p>
+<ul>
+<li>有序资源分配算法</li>
+<li>银行家算法</li>
+</ul>
+<p>预防死锁：</p>
 <ol>
 <li>请求和等待条件：</li>
 </ol>
 <p>发现死锁：</p>
 <p>解除死锁：</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>mit6.828汇总</title>
+    <url>/ArtistArthur.github.io/2021/02/18/mit6-828-hui-zong/</url>
+    <content><![CDATA[<p>mit6.828的六个实验：<br><a href="https://artistarthur.github.io/ArtistArthur.github.io/2020/10/21/mit6-828-lab1/#more" target="_blank" rel="noopener">Lab 1: C, Assembly, Tools, and Bootstrapping</a><br><a href="https://artistarthur.github.io/ArtistArthur.github.io/2020/11/30/mit6-828-lab2/#more" target="_blank" rel="noopener">Lab 2: Memory management</a><br><a href="https://artistarthur.github.io/ArtistArthur.github.io/2020/12/02/mit6-828-lab3/#more" target="_blank" rel="noopener">Lab 3: User-Level Environments</a><br><a href="https://artistarthur.github.io/ArtistArthur.github.io/2021/12/20/mit6-828-lab4/" target="_blank" rel="noopener"> Lab 4: Preemptive Multitasking</a><br><a href="">Lab 5: File system, spawn, and sh</a><br><a href="">Lab 6: Networking</a>  </p>
 ]]></content>
   </entry>
 </search>
