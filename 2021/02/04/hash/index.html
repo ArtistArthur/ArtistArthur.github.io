@@ -79,15 +79,15 @@
 
 
 
-<meta name="description" content="字符串hash算法time33time33是一种字符串hash算法,其中使用了magic number 5381(001 010 100 000 101)原因是: Magic Constant 5381:1. odd number2. prime number3. deficient number 这些特性使得它hash后的结果分布更好. #include&lt;stdio.h&gt;unsign">
+<meta name="description" content="字符串hash算法time33time33是一种字符串hash算法,其中使用了magic number 5381(001 010 100 000 101)原因是: Magic Constant 5381:1. odd number2. prime number3. deficient number 这些特性使得它hash后的结果分布更好.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="time33">
 <meta property="og:url" content="https://github.com/ArtistArthur/ArtistArthur.github.io/2021/02/04/hash/index.html">
 <meta property="og:site_name" content="Arthur">
-<meta property="og:description" content="字符串hash算法time33time33是一种字符串hash算法,其中使用了magic number 5381(001 010 100 000 101)原因是: Magic Constant 5381:1. odd number2. prime number3. deficient number 这些特性使得它hash后的结果分布更好. #include&lt;stdio.h&gt;unsign">
+<meta property="og:description" content="字符串hash算法time33time33是一种字符串hash算法,其中使用了magic number 5381(001 010 100 000 101)原因是: Magic Constant 5381:1. odd number2. prime number3. deficient number 这些特性使得它hash后的结果分布更好.">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-02-04T08:40:14.000Z">
-<meta property="article:modified_time" content="2021-02-04T18:12:28.102Z">
+<meta property="article:modified_time" content="2021-02-18T11:43:36.700Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="math">
 <meta name="twitter:card" content="summary">
@@ -353,6 +353,7 @@
         <h3 id="字符串hash算法time33"><a href="#字符串hash算法time33" class="headerlink" title="字符串hash算法time33"></a>字符串hash算法time33</h3><p>time33是一种字符串hash算法,其中使用了magic number 5381(001 010 100 000 101)原因是:</p>
 <figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">Magic Constant <span class="number">5381</span>:</span><br><span class="line"><span class="number">1.</span> odd number</span><br><span class="line"><span class="number">2.</span> prime number</span><br><span class="line"><span class="number">3.</span> deficient number</span><br></pre></td></tr></table></figure>
 <p>这些特性使得它hash后的结果分布更好.</p>
+<a id="more"></a>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">time33</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>*)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> str[]=<span class="string">"hash_func"</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> res=time33(str);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%ud"</span>,res);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">time33</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* strx)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> hash=<span class="number">5381</span>;</span><br><span class="line">    <span class="keyword">while</span>(*strx)</span><br><span class="line">    &#123;</span><br><span class="line">        hash=hash*<span class="number">33</span>+(<span class="keyword">unsigned</span> <span class="keyword">int</span>)*strx;<span class="comment">//或者用位运算</span></span><br><span class="line">        strx++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> hash;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><a href="https://www.cnblogs.com/napoleon_liu/articles/1911571.html" target="_blank" rel="noopener">https://www.cnblogs.com/napoleon_liu/articles/1911571.html</a>   </p>
@@ -472,7 +473,7 @@
               
                 <a href="/ArtistArthur.github.io/archives">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

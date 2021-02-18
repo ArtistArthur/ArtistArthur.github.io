@@ -79,15 +79,15 @@
 
 
 
-<meta name="description" content="introduce这个实验将完成多处理器中的进程调度.在partA中将:  给JOS添加多处理器的支持 完成轮询调度 添加基本的进程管理系统调用(产生和销毁新进程,分配和映射内存)在partB中: 实现一个和unix类似的fork()函数以允许用户进程产生一个自己的拷贝在partC中: 实现进程间通讯以允许不同的用户进程进行交流和同步 实现时钟中断和优先权  partA: multiprocess">
+<meta name="description" content="introduce这个实验将完成多处理器中的进程调度.在partA中将:  给JOS添加多处理器的支持 完成轮询调度 添加基本的进程管理系统调用(产生和销毁新进程,分配和映射内存)在partB中: 实现一个和unix类似的fork()函数以允许用户进程产生一个自己的拷贝在partC中: 实现进程间通讯以允许不同的用户进程进行交流和同步 实现时钟中断和优先权">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mit6.828 lab4">
 <meta property="og:url" content="https://github.com/ArtistArthur/ArtistArthur.github.io/2020/12/20/mit6-828-lab4/index.html">
 <meta property="og:site_name" content="Arthur">
-<meta property="og:description" content="introduce这个实验将完成多处理器中的进程调度.在partA中将:  给JOS添加多处理器的支持 完成轮询调度 添加基本的进程管理系统调用(产生和销毁新进程,分配和映射内存)在partB中: 实现一个和unix类似的fork()函数以允许用户进程产生一个自己的拷贝在partC中: 实现进程间通讯以允许不同的用户进程进行交流和同步 实现时钟中断和优先权  partA: multiprocess">
+<meta property="og:description" content="introduce这个实验将完成多处理器中的进程调度.在partA中将:  给JOS添加多处理器的支持 完成轮询调度 添加基本的进程管理系统调用(产生和销毁新进程,分配和映射内存)在partB中: 实现一个和unix类似的fork()函数以允许用户进程产生一个自己的拷贝在partC中: 实现进程间通讯以允许不同的用户进程进行交流和同步 实现时钟中断和优先权">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-12-19T21:02:19.000Z">
-<meta property="article:modified_time" content="2021-02-18T11:39:52.052Z">
+<meta property="article:modified_time" content="2021-02-18T11:44:32.371Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="math">
 <meta name="twitter:card" content="summary">
@@ -357,7 +357,9 @@
 <li>添加基本的进程管理系统调用(产生和销毁新进程,分配和映射内存)<br>在partB中:</li>
 <li>实现一个和unix类似的<code>fork()</code>函数以允许用户进程产生一个自己的拷贝<br>在partC中:</li>
 <li>实现进程间通讯以允许不同的用户进程进行交流和同步</li>
-<li>实现时钟中断和优先权</li>
+<li>实现时钟中断和优先权<a id="more"></a>
+
+</li>
 </ul>
 <h3 id="partA-multiprocessor-support-and-cooperative-multitasking-多处理器支持和协作任务"><a href="#partA-multiprocessor-support-and-cooperative-multitasking-多处理器支持和协作任务" class="headerlink" title="partA: multiprocessor support and cooperative multitasking(多处理器支持和协作任务)"></a>partA: multiprocessor support and cooperative multitasking(多处理器支持和协作任务)</h3><ul>
 <li>让系统可以跑在多处理器环境中</li>
@@ -517,7 +519,7 @@ call    *%eax</code></pre><p>分页开启前是怎么寻址的?</p>
               
                 <a href="/ArtistArthur.github.io/archives">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="以前不理解malloc()实际上是被两样不同的东西迷惑了:用户层面的内存分配和内核层面的内存分配.在看资料的时候两个方面的内容交叉看,导致了混乱.以下内容取自csapp(深入理解计算机系统)第十章第九节.最好去看这本书的内容,网上的许多讲解都是copy这本书上的内容但是又漏了或者错了一些地方.下面是我读了之后对malloc()的理解.   用户层面的堆上内存分配malloc()层面,或者说成编译器">
+<meta name="description" content="以前不理解malloc()实际上是被两样不同的东西迷惑了:用户层面的内存分配和内核层面的内存分配.在看资料的时候两个方面的内容交叉看,导致了混乱.以下内容取自csapp(深入理解计算机系统)第十章第九节.最好去看这本书的内容,网上的许多讲解都是copy这本书上的内容但是又漏了或者错了一些地方.下面是我读了之后对malloc()的理解.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="malloc原理">
 <meta property="og:url" content="https://github.com/ArtistArthur/ArtistArthur.github.io/2021/02/16/malloc-yuan-li/index.html">
 <meta property="og:site_name" content="Arthur">
-<meta property="og:description" content="以前不理解malloc()实际上是被两样不同的东西迷惑了:用户层面的内存分配和内核层面的内存分配.在看资料的时候两个方面的内容交叉看,导致了混乱.以下内容取自csapp(深入理解计算机系统)第十章第九节.最好去看这本书的内容,网上的许多讲解都是copy这本书上的内容但是又漏了或者错了一些地方.下面是我读了之后对malloc()的理解.   用户层面的堆上内存分配malloc()层面,或者说成编译器">
+<meta property="og:description" content="以前不理解malloc()实际上是被两样不同的东西迷惑了:用户层面的内存分配和内核层面的内存分配.在看资料的时候两个方面的内容交叉看,导致了混乱.以下内容取自csapp(深入理解计算机系统)第十章第九节.最好去看这本书的内容,网上的许多讲解都是copy这本书上的内容但是又漏了或者错了一些地方.下面是我读了之后对malloc()的理解.">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://github.com/images/loading.gif">
 <meta property="og:image" content="https://github.com/images/loading.gif">
 <meta property="article:published_time" content="2021-02-16T05:28:04.000Z">
-<meta property="article:modified_time" content="2021-02-16T16:42:26.340Z">
+<meta property="article:modified_time" content="2021-02-18T11:44:11.083Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="math">
 <meta name="twitter:card" content="summary">
@@ -354,6 +354,7 @@
 
       
         <p>以前不理解<code>malloc()</code>实际上是被两样不同的东西迷惑了:用户层面的内存分配和内核层面的内存分配.在看资料的时候两个方面的内容交叉看,导致了混乱.<br>以下内容取自csapp(深入理解计算机系统)第十章第九节.最好去看这本书的内容,网上的许多讲解都是copy这本书上的内容但是又漏了或者错了一些地方.下面是我读了之后对<code>malloc()</code>的理解.  </p>
+<a id="more"></a>
 <h1 id="用户层面的堆上内存分配"><a href="#用户层面的堆上内存分配" class="headerlink" title="用户层面的堆上内存分配"></a>用户层面的堆上内存分配</h1><p><code>malloc()</code>层面,或者说成编译器层面,本身维护一个内存池.一开始时,用户已经拥有了一定大小的堆,当申请的内存大小能在这个内存池中被满足时,就从这个内存池里分配出去.<br>此时的内存分配策略有:</p>
 <ul>
 <li>首次适应(first fit):空闲块按照地址递增的次序链接在一起,每次分配从头依次遍历,选择第一个满足要求的块</li>
@@ -512,7 +513,7 @@
               
                 <a href="/ArtistArthur.github.io/archives">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

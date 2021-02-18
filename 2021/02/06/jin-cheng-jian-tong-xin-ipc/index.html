@@ -79,16 +79,16 @@
 
 
 
-<meta name="description" content="进程间通信IPC通过 &lt; Unix Network Program volume 2: Interprocess Communications&gt;学习.   IntroductionIPC的意思是进程间通信.传统上这个术语描述的是运行在同一操作系统上的不同进程之间传递信息的方式.这本书也会描述几种同步(synchronization)的形式.因为更新形式的通信比如共享内存,需要某些形式的">
+<meta name="description" content="进程间通信IPC通过&lt;Unix Network Program volume 2: Interprocess Communications&gt;学习.   IntroductionIPC的意思是进程间通信.传统上这个术语描述的是运行在同一操作系统上的不同进程之间传递信息的方式.这本书也会描述几种同步(synchronization)的形式.因为更新形式的通信比如共享内存,需要某些形式的同步">
 <meta property="og:type" content="article">
 <meta property="og:title" content="进程间通信IPC">
 <meta property="og:url" content="https://github.com/ArtistArthur/ArtistArthur.github.io/2021/02/06/jin-cheng-jian-tong-xin-ipc/index.html">
 <meta property="og:site_name" content="Arthur">
-<meta property="og:description" content="进程间通信IPC通过 &lt; Unix Network Program volume 2: Interprocess Communications&gt;学习.   IntroductionIPC的意思是进程间通信.传统上这个术语描述的是运行在同一操作系统上的不同进程之间传递信息的方式.这本书也会描述几种同步(synchronization)的形式.因为更新形式的通信比如共享内存,需要某些形式的">
+<meta property="og:description" content="进程间通信IPC通过&lt;Unix Network Program volume 2: Interprocess Communications&gt;学习.   IntroductionIPC的意思是进程间通信.传统上这个术语描述的是运行在同一操作系统上的不同进程之间传递信息的方式.这本书也会描述几种同步(synchronization)的形式.因为更新形式的通信比如共享内存,需要某些形式的同步">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://github.com/images/loading.gif">
 <meta property="article:published_time" content="2021-02-06T12:15:49.000Z">
-<meta property="article:modified_time" content="2021-02-06T14:41:12.010Z">
+<meta property="article:modified_time" content="2021-02-18T11:45:37.805Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="math">
 <meta name="twitter:card" content="summary">
@@ -352,8 +352,10 @@
       
 
       
-        <h2 id="进程间通信IPC"><a href="#进程间通信IPC" class="headerlink" title="进程间通信IPC"></a>进程间通信IPC</h2><p>通过 &lt; Unix Network Program volume 2: Interprocess Communications&gt;学习.  </p>
-<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>IPC的意思是进程间通信.传统上这个术语描述的是运行在同一操作系统上的不同进程之间传递信息的方式.这本书也会描述几种同步(synchronization)的形式.因为更新形式的通信比如共享内存,需要某些形式的同步来实现.<br>pipe是最开始广泛被运用的IPC,不仅可以在进程间,也可以在进程和shell间,但是它只能在有共同祖先的进程间起作用(父子之间也行).而命名管道弥补了这个不足.<br>消息队列(message queue)在1980年代首先被使用在System V中,现在在Unix中基本都可以使用这一方式.消息队列可以在一指定的host上不关联进程间使用.<br>Remote Procedure Calls(RPCs,远程过程调用)在1980中期出现.它可以用在服务器和客户端之间,客户端上的一个进程可以调用服务器上的一个函数,以返回结果,这在网络编程中使用.鉴于客户端和服务端可以在同一个主机上,那么RPCs也可以用在进程通信上.<br>Unix提供给的几种形式的synchronization:<br>早期的程序需要某些形式的同步(synchronization)以阻止多进程同时修改同一文件.  </p>
+        <h2 id="进程间通信IPC"><a href="#进程间通信IPC" class="headerlink" title="进程间通信IPC"></a>进程间通信IPC</h2><p>通过&lt;Unix Network Program volume 2: Interprocess Communications&gt;学习.  </p>
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>IPC的意思是进程间通信.传统上这个术语描述的是运行在同一操作系统上的不同进程之间传递信息的方式.这本书也会描述几种同步(synchronization)的形式.因为更新形式的通信比如共享内存,需要某些形式的同步来实现.<br>pipe是最开始广泛被运用的IPC,不仅可以在进程间,也可以在进程和shell间,但是它只能在有共同祖先的进程间起作用(父子之间也行).而命名管道弥补了这个不足.  </p>
+<a id="more"></a>
+<p>消息队列(message queue)在1980年代首先被使用在System V中,现在在Unix中基本都可以使用这一方式.消息队列可以在一指定的host上不关联进程间使用.<br>Remote Procedure Calls(RPCs,远程过程调用)在1980中期出现.它可以用在服务器和客户端之间,客户端上的一个进程可以调用服务器上的一个函数,以返回结果,这在网络编程中使用.鉴于客户端和服务端可以在同一个主机上,那么RPCs也可以用在进程通信上.<br>Unix提供给的几种形式的synchronization:<br>早期的程序需要某些形式的同步(synchronization)以阻止多进程同时修改同一文件.  </p>
 <ul>
 <li>Record locking</li>
 <li>semaphores (信号量)</li>
@@ -399,8 +401,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/ArtistArthur.github.io/2021/02/06/interview/" rel="prev" title="interview">
-                interview <i class="fa fa-chevron-right"></i>
+              <a href="/ArtistArthur.github.io/2021/02/15/c-unordered-map/" rel="prev" title="C++ unordered_map">
+                C++ unordered_map <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -478,7 +480,7 @@
               
                 <a href="/ArtistArthur.github.io/archives">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
