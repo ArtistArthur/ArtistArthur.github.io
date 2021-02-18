@@ -87,7 +87,7 @@
 <meta property="og:description" content="Introductionlab1的内容或者目的：  熟悉x86的汇编语言，搭建环境：下载make qemu等，熟悉PC的开机流程 examine the boot loader for 6.828 kernel initial template for 6.828 kernel ,named JOS">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-10-21T15:00:33.000Z">
-<meta property="article:modified_time" content="2020-12-12T17:19:26.084Z">
+<meta property="article:modified_time" content="2021-02-18T11:36:50.196Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="OS">
 <meta name="twitter:card" content="summary">
@@ -361,12 +361,18 @@
 <h3 id="a-搭建环境：git-clone-qemu"><a href="#a-搭建环境：git-clone-qemu" class="headerlink" title="a. 搭建环境：git clone qemu"></a>a. 搭建环境：git clone qemu</h3><ul>
 <li>完全参照 <a href="https://www.cnblogs.com/gatsby123/p/9746193.html" target="_blank" rel="noopener">https://www.cnblogs.com/gatsby123/p/9746193.html</a><br>之前用的其他的博客但是没搞好，这个博客解决了  </li>
 <li>还遇到一个头文件缺失的问题: <a href="https://github.com/Ebiroll/qemu_esp32/issues/12">https://github.com/Ebiroll/qemu_esp32/issues/12</a> 通过添加头文件通过了<br>学到的东西：  </li>
-<li>知道了qemu是个跑在linux上的模拟器，可以模拟出各种硬件状态。在这个实验中，qemu的作用是模拟出i386的环境，因为这个实验写出的操作系统是跑在i386上的。<h3 id="b-提交作业"><a href="#b-提交作业" class="headerlink" title="b. 提交作业"></a>b. 提交作业</h3>当完成代码后，可以在lab下 make grade,获得评分。  <h2 id="Part1：Bootstrap"><a href="#Part1：Bootstrap" class="headerlink" title="Part1：Bootstrap"></a>Part1：Bootstrap</h2>这个部分不写代码，主要是了解和学习汇编相关知识和开机引导流程<h3 id="a-汇编"><a href="#a-汇编" class="headerlink" title="a.汇编"></a>a.汇编</h3></li>
-<li>汇编有两种语法，一个是Intel的一个是AT&amp;T。x86一般用Intel语法，NASM（Netwide Assembly)是使用Intel语法的汇编器，GNU使用AT&amp;T语法</li>
-<li>主要了解几种常见汇编指令   <h3 id="b-qemu的使用"><a href="#b-qemu的使用" class="headerlink" title="b.qemu的使用"></a>b.qemu的使用</h3></li>
-<li>配置好qemu后，直接在lab下 make qemu,可以编译运行kernel  <h3 id="c-PC的物理地址空间"><a href="#c-PC的物理地址空间" class="headerlink" title="c. PC的物理地址空间"></a>c. PC的物理地址空间</h3></li>
+<li>知道了qemu是个跑在linux上的模拟器，可以模拟出各种硬件状态。在这个实验中，qemu的作用是模拟出i386的环境，因为这个实验写出的操作系统是跑在i386上的。</li>
 </ul>
-<figure class="highlight mercury"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>xFFFFFFFF (<span class="number">4</span>GB)   </span><br><span class="line">|      <span class="number">32</span>-bit      |   </span><br><span class="line">|  memory mapped   |   </span><br><span class="line">|     devices      |   </span><br><span class="line">|                  |   </span><br><span class="line"><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span>  </span><br><span class="line">  </span><br><span class="line"><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span>   </span><br><span class="line">|                  |   </span><br><span class="line">|      Unused      |   </span><br><span class="line">|                  |   </span><br><span class="line">+------------------+  &lt;- depends on amount of RAM   </span><br><span class="line">|                  |   </span><br><span class="line">|                  |   </span><br><span class="line">| Extended Memory  |     </span><br><span class="line">|                  |   </span><br><span class="line">|                  |   </span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>x00100000 (<span class="number">1</span>MB)   </span><br><span class="line">|     BIOS ROM     |   </span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>x000F0000 (<span class="number">960</span>KB)  </span><br><span class="line">|  <span class="number">16</span>-bit devices, |   </span><br><span class="line">|  expansion ROMs  |   </span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>x000C0000 (<span class="number">768</span>KB)   </span><br><span class="line">|   VGA Display    |    </span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>x000A0000 (<span class="number">640</span>KB)   </span><br><span class="line">|                  |   </span><br><span class="line">|    Low Memory    |   </span><br><span class="line">|                  |   </span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>x00000000</span><br></pre></td></tr></table></figure>
+<h3 id="b-提交作业"><a href="#b-提交作业" class="headerlink" title="b. 提交作业"></a>b. 提交作业</h3><p>当完成代码后，可以在lab下 make grade,获得评分。  </p>
+<h2 id="Part1：Bootstrap"><a href="#Part1：Bootstrap" class="headerlink" title="Part1：Bootstrap"></a>Part1：Bootstrap</h2><p>这个部分不写代码，主要是了解和学习汇编相关知识和开机引导流程</p>
+<h3 id="a-汇编"><a href="#a-汇编" class="headerlink" title="a.汇编"></a>a.汇编</h3><ul>
+<li>汇编有两种语法，一个是Intel的一个是AT&amp;T。x86一般用Intel语法，NASM（Netwide Assembly)是使用Intel语法的汇编器，GNU使用AT&amp;T语法</li>
+<li>主要了解几种常见汇编指令   </li>
+</ul>
+<h3 id="b-qemu的使用"><a href="#b-qemu的使用" class="headerlink" title="b.qemu的使用"></a>b.qemu的使用</h3><ul>
+<li>配置好qemu后，直接在lab下 make qemu,可以编译运行kernel  </li>
+</ul>
+<h3 id="c-PC的物理地址空间"><a href="#c-PC的物理地址空间" class="headerlink" title="c. PC的物理地址空间"></a>c. PC的物理地址空间</h3><figure class="highlight mercury"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>xFFFFFFFF (<span class="number">4</span>GB)   </span><br><span class="line">|      <span class="number">32</span>-bit      |   </span><br><span class="line">|  memory mapped   |   </span><br><span class="line">|     devices      |   </span><br><span class="line">|                  |   </span><br><span class="line"><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span>  </span><br><span class="line">  </span><br><span class="line"><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span><span class="built_in">/\</span>   </span><br><span class="line">|                  |   </span><br><span class="line">|      Unused      |   </span><br><span class="line">|                  |   </span><br><span class="line">+------------------+  &lt;- depends on amount of RAM   </span><br><span class="line">|                  |   </span><br><span class="line">|                  |   </span><br><span class="line">| Extended Memory  |     </span><br><span class="line">|                  |   </span><br><span class="line">|                  |   </span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>x00100000 (<span class="number">1</span>MB)   </span><br><span class="line">|     BIOS ROM     |   </span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>x000F0000 (<span class="number">960</span>KB)  </span><br><span class="line">|  <span class="number">16</span>-bit devices, |   </span><br><span class="line">|  expansion ROMs  |   </span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>x000C0000 (<span class="number">768</span>KB)   </span><br><span class="line">|   VGA Display    |    </span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>x000A0000 (<span class="number">640</span>KB)   </span><br><span class="line">|                  |   </span><br><span class="line">|    Low Memory    |   </span><br><span class="line">|                  |   </span><br><span class="line">+------------------+  &lt;- <span class="number">0</span>x00000000</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>16位的Intel 8088/86 有20位地址总线，可以寻址1MB的内存，但是由于数据总线只有16位，所以单个程序段最大只有64KB,为了可以寻址1MB，Intel引入了分段：<ul>
@@ -384,14 +390,18 @@
 <li>从80286和80386开始Intel支持16MB和4GB内存，但是低1MB的基本功能布局没有变化（为了兼容）</li>
 <li>现代PC在640KB到1MB之间有个hole，把内存分为了低640KB的Low Memory和1MB以上的extended memory</li>
 <li>并且在32位机器上，4GB的内存顶部也保留了一部分区域给32位的PCI接口设备，因此在64位机器普及后，内存又出现了第二个hole</li>
-<li>这个课程的操作系统只使用低256MB内存<h3 id="d-The-ROM-BIOS"><a href="#d-The-ROM-BIOS" class="headerlink" title="d.The ROM BIOS"></a>d.The ROM BIOS</h3></li>
+<li>这个课程的操作系统只使用低256MB内存</li>
+</ul>
+<h3 id="d-The-ROM-BIOS"><a href="#d-The-ROM-BIOS" class="headerlink" title="d.The ROM BIOS"></a>d.The ROM BIOS</h3><ul>
 <li>学习IA-32兼容的计算机是怎么开机的</li>
 <li>打开两个终端，先后分别输入 make qemu-gdb make gdb,在输入make gdb的终端里可以使用相关gdb命令进行调试<ul>
 <li>si代表执行下一个语句并停下来，显示出来的是即将执行的语句，但是还未执行</li>
 </ul>
 </li>
 <li>BIOS加载进内存后，将从CS=0xf00 IP=0xfff0出执行，这个语句是个jmp语句，跳到CS=0Xf000 IP=0xe05b，原因是0xffff0处于BIOS末端（因为之前的语句是把BIOS加载进来，然后就到了末尾），要执行BIOS，则要跳转到BIOS的入口出</li>
-<li>BIOS的功能是设置中断表、初始化设备，然后寻找一个可引导开机的设备（硬盘软盘等），然后读取开机引导设备的第一个扇区（里面的程序是bootloader）到内存0x7c00处（这个地址是随意的，但是是写死的，也就是说这个地址没什么特殊意义，只是刚好选了它，但它仍要满足一些条件，内存对齐、位置等），再跳转到bootloader的入口，控制权就转移到了bootloader  <h2 id="Part2-The-Boot-Loader"><a href="#Part2-The-Boot-Loader" class="headerlink" title="Part2: The Boot Loader"></a>Part2: The Boot Loader</h2></li>
+<li>BIOS的功能是设置中断表、初始化设备，然后寻找一个可引导开机的设备（硬盘软盘等），然后读取开机引导设备的第一个扇区（里面的程序是bootloader）到内存0x7c00处（这个地址是随意的，但是是写死的，也就是说这个地址没什么特殊意义，只是刚好选了它，但它仍要满足一些条件，内存对齐、位置等），再跳转到bootloader的入口，控制权就转移到了bootloader  </li>
+</ul>
+<h2 id="Part2-The-Boot-Loader"><a href="#Part2-The-Boot-Loader" class="headerlink" title="Part2: The Boot Loader"></a>Part2: The Boot Loader</h2><ul>
 <li>一般情况下，或者说老一代的PC其开机设备的第一个扇区存了bootloader，负责开机引导等，现代的PCbootloader会有更复杂的功能和大小</li>
 <li>JOS的bootloader由一个汇编文件:boot/boot.S和C源文件：boot/main.c组成，里面的内容分析：</li>
 <li>boot/boot.S</li>
