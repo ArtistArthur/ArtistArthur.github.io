@@ -426,7 +426,7 @@
   </entry>
   <entry>
     <title>mit6.828 lab4</title>
-    <url>/ArtistArthur.github.io/2021/12/20/mit6-828-lab4/</url>
+    <url>/ArtistArthur.github.io/2020/12/20/mit6-828-lab4/</url>
     <content><![CDATA[<h2 id="introduce"><a href="#introduce" class="headerlink" title="introduce"></a>introduce</h2><p>这个实验将完成多处理器中的进程调度.<br>在partA中将:</p>
 <ul>
 <li>给JOS添加多处理器的支持</li>
