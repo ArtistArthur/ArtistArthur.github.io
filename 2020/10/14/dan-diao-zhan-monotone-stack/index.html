@@ -87,7 +87,7 @@
 <meta property="og:description" content="monostone 单调栈顾名思义就是一个储存元素单调排列的栈，可以是单调递增也可以是单调递减的 单调栈可以解决的问题是：对于于一个数列，可以在线性时间内找到每一个数的下一个比自己大的或者小的数">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-10-14T14:44:05.000Z">
-<meta property="article:modified_time" content="2020-12-22T19:17:10.406Z">
+<meta property="article:modified_time" content="2021-02-25T05:01:57.353Z">
 <meta property="article:author" content="Arthur Luo">
 <meta property="article:tag" content="algorithms">
 <meta name="twitter:card" content="summary">
@@ -401,61 +401,9 @@
 <ul>
 <li>很显然的单调栈  </li>
 </ul>
-<pre class="line-numbers language-cpp"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string"><code class="language-cpp"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string"><vector></span></span>
-<span class="meta">#<span class="meta-keyword">include</span><span class="meta-string"><stack></span></span>
-<span class="meta">#<span class="meta-keyword">include</span><span class="meta-string"><iostream></span></span>
-<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;
-<span class="class"><span class="keyword">class</span> <span class="title">Solution</span></span>
-<span class="class">{</span>
-<span class="keyword">public</span>:
-    <span class="function"><span class="built_in">vector</span><<span class="keyword">int</span>> <span class="title">dailyTemperatures</span><span class="params">(<span class="built_in">vector</span><<span class="keyword">int</span>> &T)</span></span>
-<span class="function">    </span>{
-        <span class="built_in">stack</span><<span class="keyword">int</span>> small_stk;
-        <span class="function"><span class="built_in">vector</span><<span class="keyword">int</span>> <span class="title">ret</span><span class="params">(T.size(),<span class="number">1</span>)</span></span>;
-        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i<T.size();i++)
-        {
-            <span class="keyword">if</span>(small_stk.empty())
-            {
-                small_stk.push(i);
-                <span class="keyword">continue</span>;
-            }           
-            <span class="keyword">else</span> <span class="keyword">if</span>(T[i]<=T[small_stk.top()])
-            {
-                small_stk.push(i);
-                <span class="keyword">continue</span>;
-            }
-            <span class="keyword">else</span> <span class="keyword">if</span>(T[i]>T[small_stk.top()])
-            {
-                ret[small_stk.top()] = i - small_stk.top();
-                small_stk.pop();
-                <span class="keyword">while</span>(!small_stk.empty() &&T[i]>T[small_stk.top()])
-                {
-                    ret[small_stk.top()] = i - small_stk.top();
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">dailyTemperatures</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;T)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; small_stk;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">ret</span><span class="params">(T.size(),<span class="number">1</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;T.size();i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(small_stk.empty())</span><br><span class="line">            &#123;</span><br><span class="line">                small_stk.push(i);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;           </span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(T[i]&lt;=T[small_stk.top()])</span><br><span class="line">            &#123;</span><br><span class="line">                small_stk.push(i);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(T[i]&gt;T[small_stk.top()])</span><br><span class="line">            &#123;</span><br><span class="line">                ret[small_stk.top()] = i - small_stk.top();</span><br><span class="line">                small_stk.pop();</span><br><span class="line">                <span class="keyword">while</span>(!small_stk.empty() &amp;&amp;T[i]&gt;T[small_stk.top()])</span><br><span class="line">                &#123;</span><br><span class="line">                    ret[small_stk.top()] = i - small_stk.top();</span><br><span class="line">                  </span><br><span class="line">                    small_stk.pop();</span><br><span class="line">                &#125;</span><br><span class="line">                small_stk.push(i);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (!small_stk.empty())</span><br><span class="line">        &#123;</span><br><span class="line">            ret[small_stk.top()] = <span class="number">0</span>;</span><br><span class="line">            small_stk.pop();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span> &gt;T=&#123;<span class="number">73</span>, <span class="number">74</span>, <span class="number">75</span>, <span class="number">71</span>, <span class="number">69</span>, <span class="number">72</span>, <span class="number">76</span>, <span class="number">73</span> &#125;;</span><br><span class="line">    Solution A;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;x=A.dailyTemperatures(T);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; x.size();i++)</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; x[i] &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-                    small_stk.pop();
-                }
-                small_stk.push(i);
-                <span class="keyword">continue</span>;
-            }
-        }
-        <span class="keyword">while</span> (!small_stk.empty())
-        {
-            ret[small_stk.top()] = <span class="number">0</span>;
-            small_stk.pop();
-        }
-        <span class="keyword">return</span> ret;
-    }
-};
-<span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>
-<span class="function"></span>{
-    <span class="built_in">vector</span><<span class="keyword">int</span> >T={<span class="number">73</span>, <span class="number">74</span>, <span class="number">75</span>, <span class="number">71</span>, <span class="number">69</span>, <span class="number">72</span>, <span class="number">76</span>, <span class="number">73</span> };
-    Solution A;
-    <span class="built_in">vector</span><<span class="keyword">int</span>>x=A.dailyTemperatures(T);
-    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < x.size();i++)
-        <span class="built_in">std</span>::<span class="built_in">cout</span> << x[i] << <span class="built_in">std</span>::<span class="built_in">endl</span>;
 
-}  
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>$\beta.$ $84.Largest\:Rectangle\:in\:Histogram$ <a href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank" rel="noopener">https://leetcode.com/problems/largest-rectangle-in-histogram/</a>  </p>
 <ul>
 <li>还有几道题明天写</li>
@@ -1221,10 +1169,10 @@
 
   
 
-<script src="/ArtistArthur.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/ArtistArthur.github.io/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script><script>
+<script>
             window.imageLazyLoadSetting = {
                 isSPA: false,
                 processImages: null,
             };
-        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=i;var e=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function i(){e&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,a=0;a<r.length;a++)0<=(t=(t=r[a]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(n.innerHeight+240||document.documentElement.clientHeight+240)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}i(),n.addEventListener("scroll",function(){var t,e;t=i,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script></body>
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=i;var e=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function i(){e&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,a=0;a<r.length;a++)0<=(t=(t=r[a]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(n.innerHeight+240||document.documentElement.clientHeight+240)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}i(),n.addEventListener("scroll",function(){var t,e;t=i,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script><script src="/ArtistArthur.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/ArtistArthur.github.io/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
 </html>

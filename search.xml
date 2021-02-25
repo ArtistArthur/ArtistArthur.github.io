@@ -167,7 +167,8 @@ As we show in all the examples in this section, there are normally two distinct 
 <ul>
 <li>iterator 此容器类型的迭代器类型</li>
 <li>const_iterator 可以读取元素,但是不能修改元素,是一个迭代器类型</li>
-<li>size_type 无符号整数类型,足够保存此种容器类型最大可能大小<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2></li>
+<li>size_type 无符号整数类型,足够保存此种容器类型最大可能大小<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2>迭代器类似与指针，提供了对对象的间接访问，并可以通过<code>++</code>和<code>--</code>从一个元素移动到另一个元素，通过解引用<code>*</code>来获取元素。<br>有迭代器的类型同时拥有返回迭代器的成员，这些类型都有名为<code>begin</code>和<code>end</code>的成员。<br><code>begin</code>成员负责返回指向第一个元素的迭代器，<code>end</code>负责返回指向容器“尾元素的下一个位置”的迭代器，也就是说该迭代器指向的是容器的一个本不存在的“尾后”元素。<br>尾后迭代器没有什么实际含义，仅仅是个标记，对尾后迭代器解引用会出现未定义的行为。<br>如果容器为空，<code>begin</code>和<code>end</code>返回的都是尾后迭代器。  <h3 id="迭代器的运算符"><a href="#迭代器的运算符" class="headerlink" title="迭代器的运算符"></a>迭代器的运算符</h3><code>*iter</code>返回迭代器iter指向元素的引用（不可对尾后迭代器解引用）<br><code>iter-&gt;mem</code>解引用iter并获取该元素名为mem的成员，等价于<code>(*iter).mem</code><br><code>++</code>、<code>--</code>指向容器中的上一个（下一个）元素，<code>forward_list</code>不支持递减<br><code>==</code>、<code>!=</code>判断两个迭代器是否相等（指向同一个元素）。  <h3 id="迭代器类型"><a href="#迭代器类型" class="headerlink" title="迭代器类型"></a>迭代器类型</h3>我们并不需要知道迭代器的准确类型（即返回的类型，int<em> char</em>等)，而可以直接通过<code>类名::iterator</code>来获取：<br><code>vector&lt;int&gt;::iterator it;</code><br><code>string::iterator it2;</code><br><code>vector&lt;int&gt;::const_iterator it3</code><br><code>string::const_iterator it4;</code><br>const_iterator和常量指针类似，能读取但是不能修改元素。<br><code>cbegin</code>和<code>cend</code>来返回<code>const_iterator</code>。  <h3 id="迭代器失效"><a href="#迭代器失效" class="headerlink" title="迭代器失效"></a>迭代器失效</h3>某些对vector对象的操作会使迭代器失效，当vector容量变化时，迭代器都有可能失效。<br>任何能引起vector容量变化的操作，比如<code>push_back</code>都可能使迭代器失效。  </li>
+<li><em>谨记*</em>：任何使用迭代器的循环体，都不要向迭代器所属的容器中添加元素，这有可能会导致迭代器失效。（因为迭代器和容器元素指针有关，容器扩容时可能会改变元素地址）<br>向容器中添加元素和从容器中删除元素的操作可能会使指向容器元素的指针引用或迭代器失效，一个失效的指针、引用或迭代器将不再表示任何元素，使用它们会引起和未初始化指针一样的问题。  </li>
 </ul>
 <h2 id="vector"><a href="#vector" class="headerlink" title="vector"></a>vector</h2><p>vector:可变大小数组,支持快速随机访问,在尾部之外的位置插入或者删除元素可能很慢.<br>vector的实现:</p>
 <h2 id="deque"><a href="#deque" class="headerlink" title="deque"></a>deque</h2><p>双端队列.支持快速随机访问,在头尾插入/删除速度很快</p>
@@ -1075,61 +1076,9 @@ call    *%eax</code></pre><p>分页开启前是怎么寻址的?</p>
 <ul>
 <li>很显然的单调栈  </li>
 </ul>
-<pre class="line-numbers language-cpp"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string"><code class="language-cpp"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string"><vector></span></span>
-<span class="meta">#<span class="meta-keyword">include</span><span class="meta-string"><stack></span></span>
-<span class="meta">#<span class="meta-keyword">include</span><span class="meta-string"><iostream></span></span>
-<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;
-<span class="class"><span class="keyword">class</span> <span class="title">Solution</span></span>
-<span class="class">{</span>
-<span class="keyword">public</span>:
-    <span class="function"><span class="built_in">vector</span><<span class="keyword">int</span>> <span class="title">dailyTemperatures</span><span class="params">(<span class="built_in">vector</span><<span class="keyword">int</span>> &T)</span></span>
-<span class="function">    </span>{
-        <span class="built_in">stack</span><<span class="keyword">int</span>> small_stk;
-        <span class="function"><span class="built_in">vector</span><<span class="keyword">int</span>> <span class="title">ret</span><span class="params">(T.size(),<span class="number">1</span>)</span></span>;
-        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i<T.size();i++)
-        {
-            <span class="keyword">if</span>(small_stk.empty())
-            {
-                small_stk.push(i);
-                <span class="keyword">continue</span>;
-            }           
-            <span class="keyword">else</span> <span class="keyword">if</span>(T[i]<=T[small_stk.top()])
-            {
-                small_stk.push(i);
-                <span class="keyword">continue</span>;
-            }
-            <span class="keyword">else</span> <span class="keyword">if</span>(T[i]>T[small_stk.top()])
-            {
-                ret[small_stk.top()] = i - small_stk.top();
-                small_stk.pop();
-                <span class="keyword">while</span>(!small_stk.empty() &&T[i]>T[small_stk.top()])
-                {
-                    ret[small_stk.top()] = i - small_stk.top();
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">dailyTemperatures</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;T)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; small_stk;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">ret</span><span class="params">(T.size(),<span class="number">1</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;T.size();i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(small_stk.empty())</span><br><span class="line">            &#123;</span><br><span class="line">                small_stk.push(i);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;           </span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(T[i]&lt;=T[small_stk.top()])</span><br><span class="line">            &#123;</span><br><span class="line">                small_stk.push(i);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(T[i]&gt;T[small_stk.top()])</span><br><span class="line">            &#123;</span><br><span class="line">                ret[small_stk.top()] = i - small_stk.top();</span><br><span class="line">                small_stk.pop();</span><br><span class="line">                <span class="keyword">while</span>(!small_stk.empty() &amp;&amp;T[i]&gt;T[small_stk.top()])</span><br><span class="line">                &#123;</span><br><span class="line">                    ret[small_stk.top()] = i - small_stk.top();</span><br><span class="line">                  </span><br><span class="line">                    small_stk.pop();</span><br><span class="line">                &#125;</span><br><span class="line">                small_stk.push(i);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (!small_stk.empty())</span><br><span class="line">        &#123;</span><br><span class="line">            ret[small_stk.top()] = <span class="number">0</span>;</span><br><span class="line">            small_stk.pop();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span> &gt;T=&#123;<span class="number">73</span>, <span class="number">74</span>, <span class="number">75</span>, <span class="number">71</span>, <span class="number">69</span>, <span class="number">72</span>, <span class="number">76</span>, <span class="number">73</span> &#125;;</span><br><span class="line">    Solution A;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;x=A.dailyTemperatures(T);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; x.size();i++)</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; x[i] &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-                    small_stk.pop();
-                }
-                small_stk.push(i);
-                <span class="keyword">continue</span>;
-            }
-        }
-        <span class="keyword">while</span> (!small_stk.empty())
-        {
-            ret[small_stk.top()] = <span class="number">0</span>;
-            small_stk.pop();
-        }
-        <span class="keyword">return</span> ret;
-    }
-};
-<span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>
-<span class="function"></span>{
-    <span class="built_in">vector</span><<span class="keyword">int</span> >T={<span class="number">73</span>, <span class="number">74</span>, <span class="number">75</span>, <span class="number">71</span>, <span class="number">69</span>, <span class="number">72</span>, <span class="number">76</span>, <span class="number">73</span> };
-    Solution A;
-    <span class="built_in">vector</span><<span class="keyword">int</span>>x=A.dailyTemperatures(T);
-    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < x.size();i++)
-        <span class="built_in">std</span>::<span class="built_in">cout</span> << x[i] << <span class="built_in">std</span>::<span class="built_in">endl</span>;
 
-}  
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>$\beta.$ $84.Largest\:Rectangle\:in\:Histogram$ <a href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank" rel="noopener">https://leetcode.com/problems/largest-rectangle-in-histogram/</a>  </p>
 <ul>
 <li>还有几道题明天写</li>
@@ -1173,42 +1122,60 @@ call    *%eax</code></pre><p>分页开启前是怎么寻址的?</p>
   <entry>
     <title>面试总结</title>
     <url>/ArtistArthur.github.io/2021/02/18/mian-shi-zong-jie/</url>
-    <content><![CDATA[<h1 id="什么是进程什么是线程？"><a href="#什么是进程什么是线程？" class="headerlink" title="什么是进程什么是线程？"></a>什么是进程什么是线程？</h1><p>进程是资源分配的基本单位。<br>线程是资源调度的基本单位。<br>一个进程包含一个或者多个线程。cpu上运行的是一个个线程。<br>进程拥有自己的地址空间、栈、堆、寄存器等。<br>线程拥有线程栈、寄存器、程序计数器等，一个进程中的线程共享进程的地址空间、全局变量、静态变量、堆等。  </p>
+    <content><![CDATA[<h2 id="什么是进程什么是线程？"><a href="#什么是进程什么是线程？" class="headerlink" title="什么是进程什么是线程？"></a>什么是进程什么是线程？</h2><p>进程是资源分配的基本单位。<br>线程是资源调度的基本单位。<br>一个进程包含一个或者多个线程。cpu上运行的是一个个线程。<br>进程拥有自己的地址空间、栈、堆、寄存器等。<br>线程拥有线程栈、寄存器、程序计数器等，一个进程中的线程共享进程的地址空间、全局变量、静态变量、堆等。  </p>
 <a id="more"></a>
-<h1 id="进程间通信的方式？"><a href="#进程间通信的方式？" class="headerlink" title="进程间通信的方式？"></a>进程间通信的方式？</h1><p>管道、命名管道：在<br>信号：<br>信号量：一个信号量代表了一种有限的资源，<br>共享内存：可以通过页表映射完成<br>消息队列：<br>socket：<br>客户端：<code>socket()</code> <code>connect()</code><br>服务器端：  </p>
-<h1 id="线程间通信的方式？"><a href="#线程间通信的方式？" class="headerlink" title="线程间通信的方式？"></a>线程间通信的方式？</h1><p>锁：</p>
+<h2 id="进程间通信的方式？"><a href="#进程间通信的方式？" class="headerlink" title="进程间通信的方式？"></a>进程间通信的方式？</h2><p>管道、命名管道：在<br>信号：<br>信号量：一个信号量代表了一种有限的资源，<br>共享内存：可以通过页表映射完成<br>消息队列：<br>socket：<br>客户端：<code>socket()</code> <code>connect()</code><br>服务器端：  </p>
+<h2 id="线程间通信的方式？"><a href="#线程间通信的方式？" class="headerlink" title="线程间通信的方式？"></a>线程间通信的方式？</h2><ol>
+<li>锁：</li>
+</ol>
 <ul>
 <li>互斥锁</li>
 <li>自旋锁</li>
 <li>读写锁</li>
-<li>条件变量？？？？？？？？？</li>
+<li>条件变量</li>
 </ul>
-<p>信号<br>信号量<br>屏障？？？？？？？？<br>线程间通信的目的主要是为了线程同步，所以线程中没有像进程中用于数据交换的通信机制。  </p>
-<h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><h2 id="什么是死锁？"><a href="#什么是死锁？" class="headerlink" title="什么是死锁？"></a>什么是死锁？</h2><p>死锁是两个或者多个进程在竞争资源时产生的一种阻塞现象。<br>两个或多个进程中，一个进程请求另一个进程所拥有的资源，这种占有和请求的关系形成了一条环，导致这些进程都被阻塞无法推进。  </p>
-<h2 id="死锁产生的原因"><a href="#死锁产生的原因" class="headerlink" title="死锁产生的原因"></a>死锁产生的原因</h2><p>系统提供的资源不能满足进程的要求。（资源的有限性）<br>进程推进顺序的不合理。  </p>
-<h2 id="死锁产生的必要条件"><a href="#死锁产生的必要条件" class="headerlink" title="死锁产生的必要条件"></a>死锁产生的必要条件</h2><ol>
+<ol start="2">
+<li>信号  </li>
+<li>信号量  </li>
+<li>屏障？？？？？？？？ </li>
+</ol>
+<p>线程间通信的目的主要是为了线程同步，所以线程中没有像进程中用于数据交换的通信机制。  </p>
+<h2 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h2><h3 id="什么是死锁？"><a href="#什么是死锁？" class="headerlink" title="什么是死锁？"></a>什么是死锁？</h3><p>死锁是两个或者多个进程在竞争资源时产生的一种阻塞现象。<br>两个或多个进程中，一个进程请求另一个进程所拥有的资源，这种占有和请求的关系形成了一条环，导致这些进程都被阻塞无法推进。  </p>
+<h3 id="死锁产生的原因"><a href="#死锁产生的原因" class="headerlink" title="死锁产生的原因"></a>死锁产生的原因</h3><p>系统提供的资源不能满足进程的要求。（资源的有限性）<br>进程推进顺序的不合理。  </p>
+<h3 id="死锁产生的必要条件"><a href="#死锁产生的必要条件" class="headerlink" title="死锁产生的必要条件"></a>死锁产生的必要条件</h3><ol>
 <li>请求和保持：进程因未分配到新的资源而受阻，但对已占有的资源又不释放。  </li>
 <li>互斥：进程占有资源后排斥其他进程使用该资源。</li>
 <li>不可剥夺：正在是使用的资源不可剥夺，只能由占有资源的进程自动释放，不能被其他进程强行占用。</li>
 <li>环路等待：存在进程的循环等待链，前一进程占有的资源正是后一进程所请求的资源，结果就形成了循环等待的僵持局面。 </li>
 </ol>
-<h2 id="死锁的解决"><a href="#死锁的解决" class="headerlink" title="死锁的解决"></a>死锁的解决</h2><ul>
+<h3 id="死锁的解决"><a href="#死锁的解决" class="headerlink" title="死锁的解决"></a>死锁的解决</h3><p>预防死锁、发现死锁、解除死锁，具体来说：  </p>
+<ul>
 <li>打破互斥条件：将独占性资源改造成虚拟资源，但是大部分资源不可改造</li>
 <li>打破不可抢占条件：当一进程占有一独有资源后又申请一独占资源而无法被满足则释放原独占的资源</li>
-<li>打破请求和保持条件：采用资源预先分配策略，即进程运行前就申请全部资源，不能被满足就不运行</li>
-<li>打破环路等待条件：实现资源有序分配策略，</li>
+<li>打破请求和保持条件：采用资源预先分配策略，即进程运行前就申请全部资源，不能被满足就不运行。优点是易于实现，缺点是资源利用率不高</li>
+<li>打破环路等待条件：实现资源有序分配策略，将每种资源按序排列，进程只能按序递增申请资源，按序递减释放资源，只有低编号的资源得到满足才能申请高编号的资源，高编号资源被释放才能释放低编号资源，这样就打破了循环等待链。</li>
 </ul>
 <p>相关算法：</p>
 <ul>
-<li>有序资源分配算法</li>
-<li>银行家算法</li>
+<li>有序资源分配算法：编号。</li>
+<li>银行家算法：计数、替换。  </li>
 </ul>
-<p>预防死锁：</p>
+<h2 id="socket编程"><a href="#socket编程" class="headerlink" title="socket编程"></a>socket编程</h2><p>Socket通信的数据传输方式，常用的有两种：</p>
 <ol>
-<li>请求和等待条件：</li>
+<li>SOCK_STREAM：表示面向连接的数据传输方式。数据可以准确无误地到达另一台计算机，如果损坏或丢失，可以重新发送，但效率相对较慢。常见的 http 协议就使用 SOCK_STREAM 传输数据，因为要确保数据的正确性，否则网页不能正常解析。</li>
+<li>SOCK_DGRAM：表示无连接的数据传输方式。计算机只管传输数据，不作数据校验，如果数据在传输中损坏，或者没有到达另一台计算机，是没有办法补救的。也就是说，数据错了就错了，无法重传。因为 SOCK_DGRAM 所做的校验工作少，所以效率比 SOCK_STREAM 高。</li>
 </ol>
-<p>发现死锁：</p>
-<p>解除死锁：</p>
+<h3 id="创建socket"><a href="#创建socket" class="headerlink" title="创建socket"></a>创建socket</h3><p><code>#include&lt;sys/socket.h&gt;</code><br><code>int socket(int af, int type, int protocol);</code><br><code>af</code>是一个地址描述符，仅支持<code>AF_INET</code>格式，也就是<code>ARPA Internet</code>地址格式<br><code>type</code>指定socket类型，支持的类型有：<code>SOCKET_STREAM</code>(TCP协议)、<code>SOCKET_DGRAM</code>(UDP协议)<br><code>protocol</code>指定协议，如果调用者不想指定，则传入0。<br>若无错误发生，<code>socket()</code>返回引用新套接口的描述字。否则的话，返回<code>INVALID_SOCKET</code>错误，应用程序可通过<code>WSAGetLastError()</code>获取相应错误代码。  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**********************************************************</span></span><br><span class="line"><span class="comment"> * create an IPv4/TCP socket, not yet bound to any address</span></span><br><span class="line"><span class="comment"> *********************************************************/</span></span><br><span class="line"><span class="keyword">int</span> fd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line"><span class="keyword">if</span> (fd == <span class="number">-1</span>) &#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"socket: %s\n"</span>, strerror(errno));</span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="socket的绑定"><a href="#socket的绑定" class="headerlink" title="socket的绑定"></a>socket的绑定</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**********************************************************</span></span><br><span class="line"><span class="comment"> * internet socket address structure, for the remote side</span></span><br><span class="line"><span class="comment"> *********************************************************/</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">sin</span>;</span></span><br><span class="line"><span class="built_in">sin</span>.sin_family = AF_INET;</span><br><span class="line"><span class="built_in">sin</span>.sin_addr.s_addr = inet_addr(server);</span><br><span class="line"><span class="built_in">sin</span>.sin_port = htons(port);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">sin</span>.sin_addr.s_addr == INADDR_NONE) &#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"invalid remote IP %s\n"</span>, server);</span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>创建了一个socket后，把这个socket绑定到相应的ip和端口。  </p>
+<h2 id="cpp的四种cast"><a href="#cpp的四种cast" class="headerlink" title="cpp的四种cast"></a>cpp的四种cast</h2><p>有时我们希望显式地将对象强制转换成另一种类型。<br><code>cast-name&lt;type&gt;(expression);</code><br><code>cast-name</code>有<code>static_cast</code> <code>dynamic_cast</code> <code>const_cast</code>和<code>reinterpret_cast</code>  </p>
+<h3 id="stacit-cast"><a href="#stacit-cast" class="headerlink" title="stacit_cast"></a><code>stacit_cast</code></h3><p>任何具有明确定义的类型转换，只要不包含底层const（指针本身是const叫做顶层const，指针指向的对象是const叫底层const）都可以使用<code>static_cast</code>。<br>当需要把一个较大的算术类型赋值给较小的类型时，它非常有用。  </p>
+<p>id to struct </p>
+<p>ps<br>generation = (e-&gt;env_id + (1 &lt;&lt; ENVGENSHIFT)) &amp; ~(NENV - 1);//0x000fff 0xfff000<br>    if (generation &lt;= 0)    // Don’t create a negative env_id.<br>        generation = 1 &lt;&lt; ENVGENSHIFT;<br>    e-&gt;env_id = generation | (e - envs);<br>hash<br>  数目小<br>  空间浪费 </p>
+<p>STL的实现string等<br>找项目<br>程序员的自我修养—链接、装载与库<br>锁<a href="https://www.jianshu.com/p/5725db8f07dc" target="_blank" rel="noopener">https://www.jianshu.com/p/5725db8f07dc</a><br>linux用户抢占和内核抢占详解(概念, 实现和触发时机)–Linux进程的管理与调度(二十）<a href="https://cloud.tencent.com/developer/article/1368153" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1368153</a><br><a href="https://github.com/gatsbyd/melon">https://github.com/gatsbyd/melon</a><br>Linux内核同步机制之（四）：spin lock<a href="http://www.wowotech.net/kernel_synchronization/spinlock.html" target="_blank" rel="noopener">http://www.wowotech.net/kernel_synchronization/spinlock.html</a><br>系统调用的三种方式<a href="https://blog.csdn.net/QFFQFF/article/details/76762232" target="_blank" rel="noopener">https://blog.csdn.net/QFFQFF/article/details/76762232</a><br>简单的聊天室实现（上）：通信-SOCKET<a href="https://zhuanlan.zhihu.com/p/24475299" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/24475299</a><br>Example: Nonblocking I/O and select() <a href="https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_72/rzab6/xnonblock.htm" target="_blank" rel="noopener">https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_72/rzab6/xnonblock.htm</a><br>MIT 6.828 JOS/XV6 LAB4-partA<a href="https://www.cnblogs.com/bdhmwz/p/5105325.html" target="_blank" rel="noopener">https://www.cnblogs.com/bdhmwz/p/5105325.html</a><br>TLB<br>unordered_map<br>deque<br>迭代器失效</p>
+<p>csapp</p>
+<p>管道<br>共享内存<br>rpc<br>linux文件系统<br>内核空间是怎么同步的<br>僵尸进程<br>孤儿进程<br>http tcp实现，客户端发送请求，服务器发送应答，三次握手，<br>请求格式：请求行：请求url、请求协议版本、请求方法（get获取页面、put提交数据、head）；<br>请求头：键值对（通信具体细节：close（短连接）、keepalive（长连接）、）；<br>请求数据（body） 空行请求结束<br>服务器收到后:根据url决定；<br>响应：响应行（协议版本、状态码（1xx等待，过程中、2xx成功、3xx几重定向、4xx客户端失败、5xx服务器端失败）、状态描述）；<br>响应头部：键值对、内容长度；<br>响应数据：html、css文件 空行结束<br>短链接：每次tcp三次握手只发生一次请求和响应，然后断开<br>长连接：保持tcp连接<br>一次点击请求多次<br>响应头里可以设置超时时间   KeyAlive<br>多路复用：http2支持，多个请求用一个tcp连接；不管请求的顺序是怎么样，可以随意次序回应<br>url</p>
 ]]></content>
   </entry>
   <entry>
