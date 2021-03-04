@@ -23,6 +23,7 @@ lab1的内容或者目的：
 * 还遇到一个头文件缺失的问题: https://github.com/Ebiroll/qemu_esp32/issues/12 通过添加头文件通过了
 学到的东西：  
 * 知道了qemu是个跑在linux上的模拟器，可以模拟出各种硬件状态。在这个实验中，qemu的作用是模拟出i386的环境，因为这个实验写出的操作系统是跑在i386上的。
+
 ### b. 提交作业
 当完成代码后，可以在lab下 make grade,获得评分。  
 ## Part1：Bootstrap
@@ -30,8 +31,10 @@ lab1的内容或者目的：
 ### a.汇编
 * 汇编有两种语法，一个是Intel的一个是AT&T。x86一般用Intel语法，NASM（Netwide Assembly)是使用Intel语法的汇编器，GNU使用AT&T语法
 * 主要了解几种常见汇编指令   
+
 ### b.qemu的使用  
 * 配置好qemu后，直接在lab下 make qemu,可以编译运行kernel  
+
 ### c. PC的物理地址空间
 
 ```
@@ -82,12 +85,14 @@ lab1的内容或者目的：
 * 现代PC在640KB到1MB之间有个hole，把内存分为了低640KB的Low Memory和1MB以上的extended memory
 * 并且在32位机器上，4GB的内存顶部也保留了一部分区域给32位的PCI接口设备，因此在64位机器普及后，内存又出现了第二个hole
 * 这个课程的操作系统只使用低256MB内存
+
 ### d.The ROM BIOS
 * 学习IA-32兼容的计算机是怎么开机的
 * 打开两个终端，先后分别输入 make qemu-gdb make gdb,在输入make gdb的终端里可以使用相关gdb命令进行调试
   * si代表执行下一个语句并停下来，显示出来的是即将执行的语句，但是还未执行
 * BIOS加载进内存后，将从CS=0xf00 IP=0xfff0出执行，这个语句是个jmp语句，跳到CS=0Xf000 IP=0xe05b，原因是0xffff0处于BIOS末端（因为之前的语句是把BIOS加载进来，然后就到了末尾），要执行BIOS，则要跳转到BIOS的入口出
 * BIOS的功能是设置中断表、初始化设备，然后寻找一个可引导开机的设备（硬盘软盘等），然后读取开机引导设备的第一个扇区（里面的程序是bootloader）到内存0x7c00处（这个地址是随意的，但是是写死的，也就是说这个地址没什么特殊意义，只是刚好选了它，但它仍要满足一些条件，内存对齐、位置等），再跳转到bootloader的入口，控制权就转移到了bootloader  
+
 ## Part2: The Boot Loader
 * 一般情况下，或者说老一代的PC其开机设备的第一个扇区存了bootloader，负责开机引导等，现代的PCbootloader会有更复杂的功能和大小
 * JOS的bootloader由一个汇编文件:boot/boot.S和C源文件：boot/main.c组成，里面的内容分析：

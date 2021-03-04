@@ -11,7 +11,7 @@ tags: algorithms
 categories: algorithms
 ---
 
-#  单调栈（monostone）
+#  monostone
 * 单调栈顾名思义就是一个储存元素单调排列的栈，可以是单调递增也可以是单调递减的
 * 单调栈可以解决的问题是：对于于一个数列，可以在线性时间内找到每一个数的下一个比自己大的或者小的数  
 <!--more-->
@@ -90,7 +90,7 @@ int main()
 
 }  
 
-~~~    
+~~~
 
 
 $\beta.$ $84.Largest\:Rectangle\:in\:Histogram$ <https://leetcode.com/problems/largest-rectangle-in-histogram/>  

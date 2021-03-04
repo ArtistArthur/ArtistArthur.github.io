@@ -11,10 +11,10 @@ tags:
 categories:
 ---
 # 计算机网络细节
-<!--more-->
 ## ICMP
 ICMP是IP协议的附属协议，IP层用它来与其他主机或者路由器交换错误报文和其他重要信息。尽管ICMP主要被IP使用，但应用程序也有可能访问它，比如Ping和Traceroute。
 
+<!--more-->  
 ## IGMP
 
 IGMP是Internet组管理协议(internet group management protocol)。它用来把一个UDP数据报多播到多个主机。

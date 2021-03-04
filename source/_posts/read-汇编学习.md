@@ -133,4 +133,8 @@ gdtdesc:
 
 https://www.cnblogs.com/maruixin/p/3175894.html  
 https://blog.csdn.net/suz_cheney/article/details/24198003?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param  
-https://docs.oracle.com/cd/E19455-01/806-3773/instructionset-73/index.html
+https://docs.oracle.com/cd/E19455-01/806-3773/instructionset-73/index.html    
+* 寻址方式(找数据的方式):立即数 直接寻址 间接寻址
+  * 立即数寻址:数据在指令中,立即可以得到数据
+  * 寄存器寻址:数据在寄存器中,直接写寄存器的名字
+  * 存储器寻址:数据在存储器中,表示出数据在存储器中的地址

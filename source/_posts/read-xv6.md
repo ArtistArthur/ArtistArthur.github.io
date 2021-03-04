@@ -14,12 +14,12 @@ categories: OS
 # xv6 a simple, Unix-like teaching operating system  
 简介：xv6是一个Unix version6的重新实现，v6的结构和风格、ANSI 的标准、基于x86的多进程。
 ## chapter 0  
-<!--more-->
 ### Operating system interfaces  
 * 操作系统的工作是在多个程序之间分享计算机的资源，并提供比仅仅只有硬件更有用的服务。  
 * 操作系统管理并抽象低层次的硬件，因此，一个字符处理器就不需要关心自己需要使用的是什么类型的储存介质。
 * 操作系统也把硬件资源分享给多个程序使用，以便让他们（看起来）同时运行
 * 操作系统还提供一些控制方法，以便不同的程序之间互动：分享数据、协同工作
+<!--more-->
 #### interface
 * 操作系统通过接口（interface）为用户程序提供服务
 * 接口应该简洁、简单（narrow），但同时也应该能够支持复杂的功能特性
