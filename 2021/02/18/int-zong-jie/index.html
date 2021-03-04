@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/ArtistArthur.github.io/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/ArtistArthur.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/ArtistArthur.github.io/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/ArtistArthur.github.io/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/ArtistArthur.github.io/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/ArtistArthur.github.io/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/ArtistArthur.github.io/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什么是进程什么是线程？进程是资源分配的基本单位。线程是资源调度的基本单位。一个进程包含一个或者多个线程。cpu上运行的是一个个线程。进程拥有自己的地址空间、栈、堆、寄存器等。线程拥有线程栈、寄存器、程序计数器等，一个进程中的线程共享进程的地址空间、全局变量、静态变量、堆等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面试总结">
+<meta property="og:url" content="https://github.com/ArtistArthur/ArtistArthur.github.io/2021/02/18/int-zong-jie/index.html">
+<meta property="og:site_name" content="Arthur">
+<meta property="og:description" content="什么是进程什么是线程？进程是资源分配的基本单位。线程是资源调度的基本单位。一个进程包含一个或者多个线程。cpu上运行的是一个个线程。进程拥有自己的地址空间、栈、堆、寄存器等。线程拥有线程栈、寄存器、程序计数器等，一个进程中的线程共享进程的地址空间、全局变量、静态变量、堆等。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-02-18T09:28:42.000Z">
+<meta property="article:modified_time" content="2021-03-04T05:50:10.716Z">
+<meta property="article:author" content="Arthur Luo">
+<meta property="article:tag" content="math">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/ArtistArthur.github.io/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://github.com/ArtistArthur/ArtistArthur.github.io/2021/02/18/int-zong-jie/"/>
+
+
+
+
+
+  <title>面试总结 | Arthur</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/ArtistArthur.github.io/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/ArtistArthur.github.io/css/prism-line-numbers.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/ArtistArthur.github.io/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arthur</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">ArtistArthur</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/ArtistArthur.github.io/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/ArtistArthur.github.io/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/ArtistArthur.github.io/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="Searching..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/ArtistArthur/ArtistArthur.github.io/ArtistArthur.github.io/2021/02/18/int-zong-jie/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arthur Luo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/ArtistArthur.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arthur">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">面试总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-02-18T17:28:42+08:00">
+                2021-02-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>  阅读数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="什么是进程什么是线程？"><a href="#什么是进程什么是线程？" class="headerlink" title="什么是进程什么是线程？"></a>什么是进程什么是线程？</h2><p>进程是资源分配的基本单位。<br>线程是资源调度的基本单位。<br>一个进程包含一个或者多个线程。cpu上运行的是一个个线程。<br>进程拥有自己的地址空间、栈、堆、寄存器等。<br>线程拥有线程栈、寄存器、程序计数器等，一个进程中的线程共享进程的地址空间、全局变量、静态变量、堆等。  </p>
+<a id="more"></a>
+<h2 id="进程间通信的方式？"><a href="#进程间通信的方式？" class="headerlink" title="进程间通信的方式？"></a>进程间通信的方式？</h2><p>管道、命名管道：在<br>信号：<br>信号量：一个信号量代表了一种有限的资源，<br>共享内存：可以通过页表映射完成<br>消息队列：<br>socket：<br>客户端：<code>socket()</code> <code>connect()</code><br>服务器端：  </p>
+<h2 id="线程间通信的方式？"><a href="#线程间通信的方式？" class="headerlink" title="线程间通信的方式？"></a>线程间通信的方式？</h2><ol>
+<li>锁：</li>
+</ol>
+<ul>
+<li>互斥锁</li>
+<li>自旋锁</li>
+<li>读写锁</li>
+<li>条件变量</li>
+</ul>
+<ol start="2">
+<li>信号  </li>
+<li>信号量  </li>
+<li>屏障？？？？？？？？ </li>
+</ol>
+<p>线程间通信的目的主要是为了线程同步，所以线程中没有像进程中用于数据交换的通信机制。  </p>
+<h2 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h2><h3 id="什么是死锁？"><a href="#什么是死锁？" class="headerlink" title="什么是死锁？"></a>什么是死锁？</h3><p>死锁是两个或者多个进程在竞争资源时产生的一种阻塞现象。<br>两个或多个进程中，一个进程请求另一个进程所拥有的资源，这种占有和请求的关系形成了一条环，导致这些进程都被阻塞无法推进。  </p>
+<h3 id="死锁产生的原因"><a href="#死锁产生的原因" class="headerlink" title="死锁产生的原因"></a>死锁产生的原因</h3><p>系统提供的资源不能满足进程的要求。（资源的有限性）<br>进程推进顺序的不合理。  </p>
+<h3 id="死锁产生的必要条件"><a href="#死锁产生的必要条件" class="headerlink" title="死锁产生的必要条件"></a>死锁产生的必要条件</h3><ol>
+<li>请求和保持：进程因未分配到新的资源而受阻，但对已占有的资源又不释放。  </li>
+<li>互斥：进程占有资源后排斥其他进程使用该资源。</li>
+<li>不可剥夺：正在是使用的资源不可剥夺，只能由占有资源的进程自动释放，不能被其他进程强行占用。</li>
+<li>环路等待：存在进程的循环等待链，前一进程占有的资源正是后一进程所请求的资源，结果就形成了循环等待的僵持局面。 </li>
+</ol>
+<h3 id="死锁的解决"><a href="#死锁的解决" class="headerlink" title="死锁的解决"></a>死锁的解决</h3><p>预防死锁、发现死锁、解除死锁，具体来说：  </p>
+<ul>
+<li>打破互斥条件：将独占性资源改造成虚拟资源，但是大部分资源不可改造</li>
+<li>打破不可抢占条件：当一进程占有一独有资源后又申请一独占资源而无法被满足则释放原独占的资源</li>
+<li>打破请求和保持条件：采用资源预先分配策略，即进程运行前就申请全部资源，不能被满足就不运行。优点是易于实现，缺点是资源利用率不高</li>
+<li>打破环路等待条件：实现资源有序分配策略，将每种资源按序排列，进程只能按序递增申请资源，按序递减释放资源，只有低编号的资源得到满足才能申请高编号的资源，高编号资源被释放才能释放低编号资源，这样就打破了循环等待链。</li>
+</ul>
+<p>相关算法：</p>
+<ul>
+<li>有序资源分配算法：编号。</li>
+<li>银行家算法：计数、替换。  </li>
+</ul>
+<h2 id="socket编程"><a href="#socket编程" class="headerlink" title="socket编程"></a>socket编程</h2><p>Socket通信的数据传输方式，常用的有两种：</p>
+<ol>
+<li>SOCK_STREAM：表示面向连接的数据传输方式。数据可以准确无误地到达另一台计算机，如果损坏或丢失，可以重新发送，但效率相对较慢。常见的 http 协议就使用 SOCK_STREAM 传输数据，因为要确保数据的正确性，否则网页不能正常解析。</li>
+<li>SOCK_DGRAM：表示无连接的数据传输方式。计算机只管传输数据，不作数据校验，如果数据在传输中损坏，或者没有到达另一台计算机，是没有办法补救的。也就是说，数据错了就错了，无法重传。因为 SOCK_DGRAM 所做的校验工作少，所以效率比 SOCK_STREAM 高。</li>
+</ol>
+<h3 id="创建socket"><a href="#创建socket" class="headerlink" title="创建socket"></a>创建socket</h3><p><code>#include&lt;sys/socket.h&gt;</code><br><code>int socket(int af, int type, int protocol);</code><br><code>af</code>是一个地址描述符，仅支持<code>AF_INET</code>格式，也就是<code>ARPA Internet</code>地址格式<br><code>type</code>指定socket类型，支持的类型有：<code>SOCKET_STREAM</code>(TCP协议)、<code>SOCKET_DGRAM</code>(UDP协议)<br><code>protocol</code>指定协议，如果调用者不想指定，则传入0。<br>若无错误发生，<code>socket()</code>返回引用新套接口的描述字。否则的话，返回<code>INVALID_SOCKET</code>错误，应用程序可通过<code>WSAGetLastError()</code>获取相应错误代码。  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**********************************************************</span></span><br><span class="line"><span class="comment"> * create an IPv4/TCP socket, not yet bound to any address</span></span><br><span class="line"><span class="comment"> *********************************************************/</span></span><br><span class="line"><span class="keyword">int</span> fd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line"><span class="keyword">if</span> (fd == <span class="number">-1</span>) &#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"socket: %s\n"</span>, strerror(errno));</span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="socket的绑定"><a href="#socket的绑定" class="headerlink" title="socket的绑定"></a>socket的绑定</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**********************************************************</span></span><br><span class="line"><span class="comment"> * internet socket address structure, for the remote side</span></span><br><span class="line"><span class="comment"> *********************************************************/</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">sin</span>;</span></span><br><span class="line"><span class="built_in">sin</span>.sin_family = AF_INET;</span><br><span class="line"><span class="built_in">sin</span>.sin_addr.s_addr = inet_addr(server);</span><br><span class="line"><span class="built_in">sin</span>.sin_port = htons(port);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">sin</span>.sin_addr.s_addr == INADDR_NONE) &#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"invalid remote IP %s\n"</span>, server);</span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>创建了一个socket后，把这个socket绑定到相应的ip和端口。  </p>
+<h2 id="cpp的四种cast"><a href="#cpp的四种cast" class="headerlink" title="cpp的四种cast"></a>cpp的四种cast</h2><p>有时我们希望显式地将对象强制转换成另一种类型。<br><code>cast-name&lt;type&gt;(expression);</code><br><code>cast-name</code>有<code>static_cast</code> <code>dynamic_cast</code> <code>const_cast</code>和<code>reinterpret_cast</code>  </p>
+<h3 id="stacit-cast"><a href="#stacit-cast" class="headerlink" title="stacit_cast"></a><code>stacit_cast</code></h3><p>任何具有明确定义的类型转换，只要不包含底层const（指针本身是const叫做顶层const，指针指向的对象是const叫底层const）都可以使用<code>static_cast</code>。<br>当需要把一个较大的算术类型赋值给较小的类型时，它非常有用。  </p>
+<h2 id="malloc和new的区别"><a href="#malloc和new的区别" class="headerlink" title="malloc和new的区别"></a>malloc和new的区别</h2><ol>
+<li>申请的内存所在位置<br>new操作符从自由存储区（free store）上为对象动态分配内存空间，而malloc函数从堆上动态分配内存。自由存储区是C++基于new操作符的一个抽象概念，凡是通过new操作符进行内存申请，该内存即为自由存储区。而堆是操作系统中的术语，是操作系统所维护的一块特殊内存，用于程序的内存动态分配，C语言使用malloc从堆上分配内存，使用free释放已分配的对应内存。<br>那么自由存储区是否能够是堆（问题等价于new是否能在堆上动态分配内存），这取决于operator new 的实现细节。自由存储区不仅可以是堆，还可以是静态存储区，这都看operator new在哪里为对象分配内存。<br>特别的，new甚至可以不为对象分配内存！定位new的功能可以办到这一点：<br><code>new(place_address)type</code><br>place_address为一个指针，代表一块内存的地址。当使用上面这种仅以一个地址调用new操作符时，new操作符调用特殊的operator new，也就是下面这个版本：<br><code>void* operator new (size_t,void *)</code> //不允许重定义这个版本的operator new<br>这个operator new不分配任何的内存，它只是简单地返回指针实参，然后右new表达式负责在place_address指定的地址进行对象的初始化工作。  </li>
+<li>返回类型安全性<br>new操作符内存分配成功时，返回的是对象类型的指针，类型严格与对象匹配，无须进行类型转换，故new是符合类型安全性的操作符。而malloc内存分配成功则是返回void <em> ，需要通过强制类型转换将void</em>指针转换成我们需要的类型。<br>类型安全很大程度上可以等价于内存安全，类型安全的代码不会试图访问自己没被授权的内存区域。  </li>
+<li>内存分配失败时的返回值<br>new内存分配失败时，会抛出bac_alloc异常，它不会返回NULL；malloc分配内存失败时返回NULL。<br>在使用C语言时，我们习惯在malloc分配内存后判断分配是否成功：  </li>
+</ol>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> *a  = (<span class="keyword">int</span> *)<span class="built_in">malloc</span> ( <span class="keyword">sizeof</span> (<span class="keyword">int</span> ));</span><br><span class="line"><span class="keyword">if</span>(<span class="literal">NULL</span> == a)</span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> </span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从C语言走入C++阵营的新手可能会把这个习惯带入C++： </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> * a = <span class="keyword">new</span> <span class="keyword">int</span>();</span><br><span class="line"><span class="keyword">if</span>(<span class="literal">NULL</span> == a)</span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;   </span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实际上这样做一点意义也没有，因为new根本不会返回NULL，而且程序能够执行到if语句已经说明内存分配成功了，如果失败早就抛异常了。正确的做法应该是使用异常机制：  </p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> *a = <span class="keyword">new</span> <span class="keyword">int</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> (bad_alloc)</span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果你想顺便了解下异常基础，可以看<a href="http://www.cnblogs.com/QG-whz/p/5136883.htmlC++" target="_blank" rel="noopener">http://www.cnblogs.com/QG-whz/p/5136883.htmlC++</a> 异常机制分析。<br>4. 是否需要指定内存大小<br>使用new操作符申请内存分配时无须指定内存块的大小，编译器会根据类型信息自行计算，而malloc则需要显式地指出所需内存的尺寸。  </p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>&#123;</span>...&#125;</span><br><span class="line">A * ptr = <span class="keyword">new</span> A;</span><br><span class="line">A * ptr = (A *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(A)); <span class="comment">//需要显式指定所需内存大小sizeof(A);</span></span><br></pre></td></tr></table></figure>
+<p>当然了，我这里使用malloc来为我们自定义类型分配内存是不怎么合适的，请看下一条。<br>5. 是否调用构造函数/析构函数<br>使用new操作符来分配对象内存时会经历三个步骤：<br>第一步：调用operator new 函数（对于数组是operator new[]）分配一块足够大的，原始的，未命名的内存空间以便存储特定类型的对象。<br>第二步：编译器运行相应的构造函数以构造对象，并为其传入初值。<br>第三部：对象构造完成后，返回一个指向该对象的指针。<br>使用delete操作符来释放对象内存时会经历两个步骤：<br>第一步：调用对象的析构函数。<br>第二步：编译器调用operator delete(或operator delete[])函数释放内存空间。<br>总之来说，new/delete会调用对象的构造函数/析构函数以完成对象的构造/析构。而malloc则不会。如果你不嫌啰嗦可以看下我的例子：</p>
+<p>class A<br>{<br>public:<br>    A() :a(1), b(1.11){}<br>private:<br>    int a;<br>    double b;<br>};<br>int main()<br>{<br>    A <em> ptr = (A</em>)malloc(sizeof(A));<br>    return 0;<br>}<br>在return处设置断点，观看ptr所指内存的内容：</p>
+<p>可以看出A的默认构造函数并没有被调用，因为数据成员a,b的值并没有得到初始化，这也是上面我为什么说使用malloc/free来处理C++的自定义类型不合适，其实不止自定义类型，标准库中凡是需要构造/析构的类型通通不合适。</p>
+<p>而使用new来分配对象时：</p>
+<p>int main()<br>{<br>    A * ptr = new A;<br>}<br>查看程序生成的汇编代码可以发现，A的默认构造函数被调用了：</p>
+<p>6.对数组的处理<br>C++提供了new[]与delete[]来专门处理数组类型:</p>
+<p>A * ptr = new A[10];//分配10个A对象<br>使用new[]分配的内存必须使用delete[]进行释放：</p>
+<p>delete [] ptr;<br>new对数组的支持体现在它会分别调用构造函数函数初始化每一个数组元素，释放对象时为每个对象调用析构函数。注意delete[]要与new[]配套使用，不然会找出数组对象部分释放的现象，造成内存泄漏。</p>
+<p>至于malloc，它并知道你在这块内存上要放的数组还是啥别的东西，反正它就给你一块原始的内存，在给你个内存的地址就完事。所以如果要动态分配一个数组的内存，还需要我们手动自定数组的大小：</p>
+<p>int <em> ptr = (int </em>) malloc( sizeof(int) );//分配一个10个int元素的数组<br>7.new与malloc是否可以相互调用<br>operator new /operator delete的实现可以基于malloc，而malloc的实现不可以去调用new。下面是编写operator new /operator delete 的一种简单方式，其他版本也与之类似：</p>
+<p>void <em> operator new (sieze_t size)<br>{<br>    if(void </em> mem = malloc(size)<br>        return mem;<br>    else<br>        throw bad_alloc();<br>}<br>void operator delete(void *mem) noexcept<br>{<br>    free(mem);<br>}<br>8.是否可以被重载<br>opeartor new /operator delete可以被重载。标准库是定义了operator new函数和operator delete函数的8个重载版本：</p>
+<p>//这些版本可能抛出异常<br>void <em> operator new(size_t);<br>void </em> operator new<a href="size_t"></a>;<br>void <em> operator delete (void </em> )noexcept;<br>void <em> operator delete[](void </em>0）noexcept;<br>//这些版本承诺不抛出异常<br>void <em> operator new(size_t ,nothrow_t&amp;) noexcept;<br>void </em> operator new[](size_t, nothrow_t&amp; );<br>void <em> operator delete (void </em>,nothrow_t&amp; )noexcept;<br>void <em> operator delete[](void </em>0,nothrow_t&amp; ）noexcept;<br>我们可以自定义上面函数版本中的任意一个，前提是自定义版本必须位于全局作用域或者类作用域中。太细节的东西不在这里讲述，总之，我们知道我们有足够的自由去重载operator new /operator delete ,以决定我们的new与delete如何为对象分配内存，如何回收对象。</p>
+<p>而malloc/free并不允许重载。</p>
+<ol>
+<li>能够直观地重新分配内存<br>使用malloc分配的内存后，如果在使用过程中发现内存不足，可以使用realloc函数进行内存重新分配实现内存的扩充。realloc先判断当前的指针所指内存是否有足够的连续空间，如果有，原地扩大可分配的内存地址，并且返回原来的地址指针；如果空间不够，先按照新指定的大小分配空间，将原有数据从头到尾拷贝到新分配的内存区域，而后释放原来的内存区域。</li>
+</ol>
+<p>new没有这样直观的配套设施来扩充内存。</p>
+<ol start="10">
+<li>客户处理内存分配不足<br>在operator new抛出异常以反映一个未获得满足的需求之前，它会先调用一个用户指定的错误处理函数，这就是new-handler。new_handler是一个指针类型：</li>
+</ol>
+<p>namespace std<br>{<br>    typedef void (*new_handler)();<br>}<br>指向了一个没有参数没有返回值的函数,即为错误处理函数。为了指定错误处理函数，客户需要调用set_new_handler，这是一个声明于的一个标准库函数:</p>
+<p>namespace std<br>{<br>    new_handler set_new_handler(new_handler p ) throw();<br>}<br>set_new_handler的参数为new_handler指针，指向了operator new 无法分配足够内存时该调用的函数。其返回值也是个指针，指向set_new_handler被调用前正在执行（但马上就要发生替换）的那个new_handler函数。</p>
+<p>对于malloc，客户并不能够去编程决定内存不足以分配时要干什么事，只能看着malloc返回NULL。</p>
+<p>总结<br>将上面所述的10点差别整理成表格：</p>
+<p>特征    new/delete    malloc/free<br>分配内存的位置    自由存储区    堆<br>内存分配失败返回值    完整类型指针    void*<br>内存分配失败返回值    默认抛出异常    返回NULL<br>分配内存的大小    由编译器根据类型计算得出    必须显式指定字节数<br>处理数组    有处理数组的new版本new[]    需要用户计算数组的大小后进行内存分配<br>已分配内存的扩充    无法直观地处理    使用realloc简单完成<br>是否相互调用    可以，看具体的operator new/delete实现    不可调用new<br>分配内存时内存不足    客户能够指定处理函数或重新制定分配器    无法通过用户代码进行处理<br>函数重载    允许    不允许<br>构造函数与析构函数    调用    不调用<br>malloc给你的就好像一块原始的土地，你要种什么需要自己在土地上来播种</p>
+<p>而new帮你划好了田地的分块（数组），帮你播了种（构造函数），还提供其他的设施给你使用:</p>
+<p>当然，malloc并不是说比不上new，它们各自有适用的地方。在C++这种偏重OOP的语言，使用new/delete自然是更合适的。</p>
+<p>感谢您的耐心阅读。</p>
+<p>原文：</p>
+<p>id to struct </p>
+<p>ps<br>generation = (e-&gt;env_id + (1 &lt;&lt; ENVGENSHIFT)) &amp; ~(NENV - 1);//0x000fff 0xfff000<br>    if (generation &lt;= 0)    // Don’t create a negative env_id.<br>        generation = 1 &lt;&lt; ENVGENSHIFT;<br>    e-&gt;env_id = generation | (e - envs);<br>hash<br>  数目小<br>  空间浪费 </p>
+<p>STL的实现string等<br>找项目<br>程序员的自我修养—链接、装载与库<br>锁<a href="https://www.jianshu.com/p/5725db8f07dc" target="_blank" rel="noopener">https://www.jianshu.com/p/5725db8f07dc</a><br>linux用户抢占和内核抢占详解(概念, 实现和触发时机)–Linux进程的管理与调度(二十）<a href="https://cloud.tencent.com/developer/article/1368153" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1368153</a><br><a href="https://github.com/gatsbyd/melon">https://github.com/gatsbyd/melon</a><br>Linux内核同步机制之（四）：spin lock<a href="http://www.wowotech.net/kernel_synchronization/spinlock.html" target="_blank" rel="noopener">http://www.wowotech.net/kernel_synchronization/spinlock.html</a><br>系统调用的三种方式<a href="https://blog.csdn.net/QFFQFF/article/details/76762232" target="_blank" rel="noopener">https://blog.csdn.net/QFFQFF/article/details/76762232</a><br>简单的聊天室实现（上）：通信-SOCKET<a href="https://zhuanlan.zhihu.com/p/24475299" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/24475299</a><br>Example: Nonblocking I/O and select() <a href="https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_72/rzab6/xnonblock.htm" target="_blank" rel="noopener">https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_72/rzab6/xnonblock.htm</a><br>MIT 6.828 JOS/XV6 LAB4-partA<a href="https://www.cnblogs.com/bdhmwz/p/5105325.html" target="_blank" rel="noopener">https://www.cnblogs.com/bdhmwz/p/5105325.html</a><br>TLB<br>unordered_map<br>deque<br>迭代器失效</p>
+<p>csapp</p>
+<p>管道<br>共享内存<br>rpc<br>linux文件系统<br>内核空间是怎么同步的<br>僵尸进程<br>孤儿进程<br>http tcp实现，客户端发送请求，服务器发送应答，三次握手，<br>请求格式：请求行：请求url、请求协议版本、请求方法（get获取页面、put提交数据、head）；<br>请求头：键值对（通信具体细节：close（短连接）、keepalive（长连接）、）；<br>请求数据（body） 空行请求结束<br>服务器收到后:根据url决定；<br>响应：响应行（协议版本、状态码（1xx等待，过程中、2xx成功、3xx几重定向、4xx客户端失败、5xx服务器端失败）、状态描述）；<br>响应头部：键值对、内容长度；<br>响应数据：html、css文件 空行结束<br>短链接：每次tcp三次握手只发生一次请求和响应，然后断开<br>长连接：保持tcp连接<br>一次点击请求多次<br>响应头里可以设置超时时间   KeyAlive<br>多路复用：http2支持，多个请求用一个tcp连接；不管请求的顺序是怎么样，可以随意次序回应<br>url</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/ArtistArthur.github.io/2021/02/18/cpp-mo-ban/" rel="next" title="cpp模板">
+                <i class="fa fa-chevron-left"></i> cpp模板
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/ArtistArthur.github.io/2021/02/18/mit6-828-hui-zong/" rel="prev" title="mit6.828汇总">
+                mit6.828汇总 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Arthur Luo</p>
+              <p class="site-description motion-element" itemprop="description">北京航空航天大学 | 信息安全</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/ArtistArthur.github.io/archives">
+              
+                  <span class="site-state-item-count">43</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/ArtistArthur.github.io/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/ArtistArthur.github.io/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ArtistArthur" target="_blank" title="Github">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Github</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="1348392749@qq.com" target="_blank" title="Email">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Email</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是进程什么是线程？"><span class="nav-number">1.</span> <span class="nav-text">什么是进程什么是线程？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程间通信的方式？"><span class="nav-number">2.</span> <span class="nav-text">进程间通信的方式？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程间通信的方式？"><span class="nav-number">3.</span> <span class="nav-text">线程间通信的方式？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#死锁"><span class="nav-number">4.</span> <span class="nav-text">死锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是死锁？"><span class="nav-number">4.1.</span> <span class="nav-text">什么是死锁？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#死锁产生的原因"><span class="nav-number">4.2.</span> <span class="nav-text">死锁产生的原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#死锁产生的必要条件"><span class="nav-number">4.3.</span> <span class="nav-text">死锁产生的必要条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#死锁的解决"><span class="nav-number">4.4.</span> <span class="nav-text">死锁的解决</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#socket编程"><span class="nav-number">5.</span> <span class="nav-text">socket编程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建socket"><span class="nav-number">5.1.</span> <span class="nav-text">创建socket</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#socket的绑定"><span class="nav-number">5.2.</span> <span class="nav-text">socket的绑定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cpp的四种cast"><span class="nav-number">6.</span> <span class="nav-text">cpp的四种cast</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stacit-cast"><span class="nav-number">6.1.</span> <span class="nav-text">stacit_cast</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#malloc和new的区别"><span class="nav-number">7.</span> <span class="nav-text">malloc和new的区别</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Arthur Luo</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>  总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/ArtistArthur.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/ArtistArthur.github.io/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/ArtistArthur.github.io/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/ArtistArthur.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/ArtistArthur.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/ArtistArthur.github.io/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/ArtistArthur.github.io/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/ArtistArthur.github.io/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/ArtistArthur.github.io/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/ArtistArthur.github.io/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/ArtistArthur.github.io/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/ArtistArthur.github.io/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/ArtistArthur.github.io/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/ArtistArthur.github.io/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=i;var e=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function i(){e&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,a=0;a<r.length;a++)0<=(t=(t=r[a]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(n.innerHeight+240||document.documentElement.clientHeight+240)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}i(),n.addEventListener("scroll",function(){var t,e;t=i,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script><script src="/ArtistArthur.github.io/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/ArtistArthur.github.io/live2dw/assets/shizuku.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7}});</script></body>
+</html>
