@@ -41,6 +41,7 @@ categories:
 	// region.  Map it in to virtual memory so we can access it.
 	lapic = mmio_map_region(lapicaddr, 4096);
 ```
+//LAPIC: Local Application Processor Interrupt Controler
 可以看出,返回的是映射的首地址.  
 ```
 //

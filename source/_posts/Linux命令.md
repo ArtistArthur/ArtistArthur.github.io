@@ -10,7 +10,15 @@ summary:
 tags:
 categories:
 ---
-
+# Linux命令练习
+shell不仅仅是用户命令解释器，同时一种强大的编程语言，Linux缺省的shell是bash  
+`$$`Shell本身的PID（ProcessID）  
+`$!`Shell最后运行的后台Process的PID  
+`$?`最后运行的命令的结束代码（返回值）  
+`$#`添加到Shell的参数个数  
+`$0`Shell本身的文件名  
+`$1～$n`添加到Shell的各参数值。$1是第1参数、$2是第2参数…。  
+`du`disk usage 显示当前目录下文件和目录的大小  
 ## 用到的Linux常用命令及解释
 uname : 英文全拼 unix name  用于显示系统信息 可显示电脑以及操作系统的相关信息
 -a 或 --a 显示全部的信息
@@ -37,7 +45,9 @@ yum : yellow dogUpdater， Modified
 sudo : superuser do  
 rm -rf: rm remove -r delete files recrusively -f force  delete without warning  
 `ps -ef | grep tomcat`ps命令用于报告当前系统进程状态,-e参数表示显示所有用户所有进程,-f参数表示全格式显示  
-grep全称是Globally search a Regular Expression and Print,能使用特定模式匹配(包括正则表达式)搜索文本,并默认输出匹配行,所以用管道连接后,这个命令就表示显示所有进程,并且格式化输出,然后用“tomcat”字符串来过滤每一行,得到最终的输出结果
+grep全称是Globally search a Regular Expression and Print,能使用特定模式匹配(包括正则表达式)搜索文本,并默认输出匹配行,所以用管道连接后,这个命令就表示显示所有进程,并且格式化输出,然后用“tomcat”字符串来过滤每一行,得到最终的输出结果  
+
+
 ## vim语法
 1.在命令模式下输入v进入自由选取模式,选择需要剪切的文字，按下d可以剪切.  
 2.其他命令模式下剪切命令:   

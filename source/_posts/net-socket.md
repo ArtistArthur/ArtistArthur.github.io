@@ -1,0 +1,3 @@
+[](https://blog.csdn.net/u013120715/article/details/42711109)
+https://blog.csdn.net/csdn_kou/article/details/81453573
+TCP网络编程中connect()、listen()和accept()三者之间的关系  https://tennysonsky.blog.csdn.net/article/details/45621341?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.control&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.control

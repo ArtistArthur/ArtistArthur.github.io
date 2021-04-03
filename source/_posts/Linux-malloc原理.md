@@ -10,6 +10,15 @@ summary:
 tags:
 categories:
 ---
+https://blog.csdn.net/qq_41562665/article/details/90546750 实现一个高并发内存池-----对比Malloc
+https://blog.csdn.net/qq_34488711/article/details/77367259
+https://blog.csdn.net/u012489236/article/details/112158568?utm_medium=distribute.pc_relevant_bbs_down.none-task-blog-baidujs-1.nonecase&depth_1-utm_source=distribute.pc_relevant_bbs_down.none-task-blog-baidujs-1.nonecase  linux内存管理笔记(三十四）----匿名映射
+https://blog.csdn.net/qq_22238021/article/details/80052234 内存分配策略和分配方法
+https://blog.csdn.net/luckyxiaoqiang/article/details/8669602 动态内存分配（malloc/free）简单实现--隐式空闲链表
+https://blog.csdn.net/weixin_39933082/article/details/111271365 显式空闲链表和隐式空闲链表_Innodb Buffer Pool的三种Page和链表
+https://blog.csdn.net/qqliyunpeng/article/details/91407705  malloc原理学习：隐式空闲链表
+
+
 以前不理解`malloc()`实际上是被两样不同的东西迷惑了:用户层面的内存分配和内核层面的内存分配.在看资料的时候两个方面的内容交叉看,导致了混乱.  
 以下内容取自csapp(深入理解计算机系统)第十章第九节.最好去看这本书的内容,网上的许多讲解都是copy这本书上的内容但是又漏了或者错了一些地方.下面是我读了之后对`malloc()`的理解.  
 <!-- more -->

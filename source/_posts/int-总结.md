@@ -10,6 +10,269 @@ summary:
 tags:
 categories:
 ---
+待看：粘包 epoll怎么去检查文件描述符 epoll的回调函数 特例化
+# 百度
+## git的使用
+当要合并别人的代码调试:git pull ,git merge.  
+## 未使用的静态库会被链接吗？
+默认不会  
+## 怎么阻止类被继承
+用final关键字  
+把构造函数设为私有的，并通过友元构造本对象，因为友元不能被继承，同时使用虚继承。  
+```cpp
+#include <iostream>
+using namespace std;
+class C;
+class BASE
+{
+        private:
+                BASE(){}
+                friend class C;    //设class C为class BASE的友元
+};
+class C: public virtual BASE
+{
+};
+class D:public C
+{
+};
+
+int main()
+{
+        C c;
+        //D d;   不可以实例化对象
+}
+
+```
+为什么class C要虚拟继承class BASE 而不是直接继承呢？  
+![虚继承](https://ftp.bmp.ovh/imgs/2021/03/39ec1e8d954d2a79.png)
+
+## 进程间通讯
+信号（已解决）  
+管道：  
+共享内存:  
+消息队列：  
+socket：  
+信号量：  
+竞争条件？互斥量？条件变量？
+
+## 分布式锁？？
+## python1 -100相加？？
+## 计算型多进程 io型多线程
+## 进程挂掉了怎么排错？？？？？
+## 看哪个进程使用内存最大
+## 看最近7天未使用文件
+
+# momenta
+
+## 静态库的链接顺序有影响吗？  
+有:`gcc main.o -lz print.o -o main`命令把`main.o z print.o`连接起来，符号表的决议是从做到右搜索，过程为：先解决`main.o`的符号决议，先搜索`z`再搜索`print.o`，然后决议`z`，只搜索z右边的`print.o`，然后决议`print.o`，由于右边没有文件了，如果`print.o`中有在`z`中未决议的符号，由于不会再搜索`z`，所以得不到决议，就会产生符号为定义的问题，但是如果`print.o`在`main.o`中有依赖，不会出现问题，只在`-l`中的顺序有影响。 
+# 创新奇智
+## 浮点数比较大小
+浮点数不能直接用`==`比大小，就算是输出的时候发现数值相等也不一定相等。  
+两个方面：
+* 首先是实数转换成计算机浮点数存储的时候是不能精确存储的，会有精度损失。
+* 其次是输出的时候，有时有默认输出位数，你看到可能结果是一样的，但实际上是舍入之后的结果，实际上存储的两个浮点数在更高精度上是不一样的。
+比如`0.1+0.2==0.3`的结果是false，原因就是0.1的浮点数表示可能不是精确的0.1，加上0.2之后并不会精确为0.3，或者0.3本身存储的精确值也不是0.3，两个方面的不精确导致了不相等。  
+因此要比较两个浮点数的大小或者是否相等，应该定义一个误差值eps：
+```cpp
+const double eps=1e-12;
+int compare(double x, double y)
+{
+    double delta=x-y;
+    if(fabs(delta)<eps)
+    return 0;
+    else if(delta>0)
+    return -1;
+    else if(delta<0)
+    return 1;
+}
+```
+
+## sizeof大小问题
+这个问题一般比较麻烦的是对于数组的大小计算，如果是未退化的数组，则sizeof得出的是整个数组的大小，而如果是数组退化成指针，则返回一个指针的大小。  
+要退化的情况：
+* 数组赋值给一个指针，sizeof(ptr)结果是一个指针的大小
+* 把数组作为参数传给一个函数，就算这个函数的形参列表是以数组的形式接收形参，也会
+
+# 商汤
+## C++中空类或者空结构体大小是多少，能取地址吗？
+C++为了能够让每一个类的实例有独特性，取地址的时候都不一样，则在空类中插了一个字节，因此空类或者空结构体大小是1字节，能取地址   
+而当他们被继承后，如果子类有自己的实例成员，则成员从地址偏移0处开始存，即：不会继承父类的那个被插入的字节，实现了0 overhead  
+而如果有虚函数，因为虚指针的存在，因此没有必要再插入这一个字节   
+>Why is the size of an empty class not zero?
+>To ensure that the addresses of two different objects will be different. For the same reason, "new" always returns pointers to distinct objects. Consider:
+```cpp
+class Empty { };
+
+void f()
+{
+Empty a, b;
+if (&a == &b) cout << "impossible: report error to compiler supplier";
+
+Empty* p1 = new Empty;
+Empty* p2 = new Empty;
+if (p1 == p2) cout << "impossible: report error to compiler supplier";
+}
+```
+>There is an interesting rule that says that an empty base class need not be represented by a separate byte:
+```cpp
+struct X : Empty {
+int a;
+// ...
+};
+
+void f(X* p)
+{
+void* p1 = p;
+void* p2 = &p->a;
+if (p1 == p2) cout << "nice: good optimizer";
+}
+```
+>This optimization is safe and can be most useful. It allows a programmer to use empty classes to represent very simple concepts without overhead. Some current compilers provide this "empty base class optimization". 
+C语言空结构体大小是0  
+## unique_ptr不可以赋值给另一个unique_ptr，但是可以通过std::move()赋值
+
+# 腾讯  
+## 进程拿到锁之后崩溃了
+1. 注册信号量处理函数，当崩溃时先释放锁再崩溃。  
+2. 设置超时机制，如果超时则强制释放锁。
+3. 进程重启之后释放锁。
+## 虚表
+多态的实现：在类的起始位置加一个虚指针，指向这个子类的虚表，里面有子类的虚函数，调用它。  
+## epoll和select的区别
+select的函数原型`int select(int maxfdp1, fd_set* readset, fd_set* writeset, fd_set* exceptset, const struct timeval* timeout);`  
+`returns: positive count of ready descriptors, 0 on timeout, -1 on error` 返回0表示超时并没有文件描述符就绪，返回-1表示出错，返回正数表示可用的文件描述符数量。  
+参数：
+1. 最后一个参数是一个时间结构体，告诉操作系统最长等待多少时间，里面标明了等待的秒数和微秒数：
+```c
+struct timeval{
+    long tv_sec;//seconds
+    long tv_usec;//microseconds
+}
+```
+这个时间会产生三种可能性：  
+* 永久等待：传入NULL指针，表示只有当有文件描述符就绪时才返回
+* 等待一定时间：最多等待timeval结构体里标明的时间返回
+* 检查文件描述符后马上返回，也叫做轮询（polling）：把timeval里的时间全设为0
+
+前两种的等待一般会打断，如果进程得到一个信号，并从信号处理句柄处返回时。  
+（信号？？？）  
+有的linux发行版的实现从不会重启select，而有的会，我们应该默认不会，并准备获取一个`EINTR`error（当我们获得一个信号时）  
+2. 倒数第二个参数`fd_set*exceptset`表示异常条件的描述符，目前支持两个      
+(1)某个套接字的带外数据到达  
+(2)不讨论  
+3. 读集合和写集合参数    
+`fd_set`是一个整数数组，里面的第n位标识了描述符为n的描述符，具体实现细节应用程序不必知道，而用四个宏来操作：  
+```c
+void FD_ZERO(fd_set*fdset);//把fdset初始化，把所有位置零
+void FD_SET(int fd, fd_set*fdset);//把fd代表的位置1
+void FD_CLR(int fd, fd_set*fdset);//把fd代表的位清0
+int FD_ISSET(int fd, fd_set*fdset);//查看fdset里的fd是否置位
+```
+初始化非常重要，一定要`FD_ZERO(fd,&fdset)`  
+如果我们对中间三个参数：读描述符集、写描述符集、异常集中某个不感兴趣，把它设为NULL即可，如果这三个都是空指针，那么就获得一个比`sleep`更为精确的定时器，因为sleep以秒为精确值而select以微秒为单位。  
+4. `int maxfdp1`表示待测试的描述符个数，它的值是待测试的描述符的最大值加1，因此它的名字叫max fd plus 1，描述符0到maxfdp1-1都会被测试，之所以不是最大的描述符，是因为表示的是个数而不是最大值，个数从0开始。   
+要用户自己传入最大值是为了效率起见，有了最大值，内核就不必复制不关心的那些描述符了。  
+
+`select`会修改未就绪的描述符的值为0，也就是说，调用`select`后我们需要通过宏`FD_ISSET(fd)`来测试所关心的描述符是否就绪，并且如果重新调用`select`我们需要再次把所关心的描述符置1。  
+经常会犯的两个错误：maxfdp1的值设为最大值，而没有+1；再次调用select时没有把关心的描述符设为1，以为它还是1（有可能已经变成0了）    
+函数的返回值表示就绪的描述符数量，如果同一个描述符既读就绪也写就绪，那么会计算两次；如果返回0表示超时；返回-1表示错误，比如期间进程捕获了一个信号中断。  
+描述符就绪的条件：  
+待写？？？？？？？？？？？？？？  
+select对于大的描述符会有一些问题，一般select允许的的最大描述符是256或者1024，用户可以自定义大小，但是通常太大了会有一些问题。  
+
+## 水平触发和边缘触发
+
+
+epoll
+realloc的注意事项
+引用和指针的区别
+# 三七互娱笔试
+## ISO七层协议分别的作用
+
+## 二叉树的高度
+
+## linux命令
+
+## 事务的特性
+
+## IO多路复用
+## 通过后序遍历中序遍历得出前序遍历
+
+##
+## 计算一个32位无符号整数中1的个数
+1. 循环：
+```cpp
+    int count_bit(unsigned int num)  
+    {
+        int cnt=0;
+        for(int i=0;i<32;i++)
+        {
+            if(num&1==1)
+            cnt++;
+            num=num>>1;
+        }
+        return cnt;
+
+    }
+```
+2. swar算法
+https://zhuanlan.zhihu.com/p/165968167  
+```cpp
+int swar(unsigned int num)
+{
+    num=(num&0x55555555)+((num>>1)&0x55555555);
+    num=(num&0x33333333)+((num>>2)&0x33333333);
+    num=(num&0x0f0f0f0f)+((num>>4)&0x0f0f0f0f);
+    num=(num*0x01010101)>>24;
+    // num=(num&0x00ff00ff)+((num>>8)&0x00ff00ff);
+    // num=num&0x0000ffff+((num>>16)&0x0000ffff);
+    return num;
+}
+```
+## 开方算法
+1. 二分法
+```cpp
+double b_sqrt(double num)
+{
+    if(num==0||num==1)
+    return num;
+    double low,high,mid;
+    if(num>1)
+    {
+        low=1;
+        high=num;
+    }
+    else
+    {
+        low=num;
+        high=1;
+    }
+    while(high-low>eps)
+    {
+        if(mid*mid>num)
+        {
+            high=mid;
+        }
+        else
+        {
+            low=mid;
+        }
+            mid=(high+low)/2;
+    }
+    return mid;
+}
+```
+2. 牛顿迭代法
+
+## 
+
+
+
+
+
+https://www.cnblogs.com/ywliao/articles/8116622.html  
+https://blog.csdn.net/csdn1126274345/article/details/82557966动态链接中的名字冲突问题 
 ## 什么是进程什么是线程？
 进程是资源分配的基本单位。 
 线程是资源调度的基本单位。  
@@ -215,7 +478,7 @@ int main()
 
 
 
-6.对数组的处理
+6. 对数组的处理
 C++提供了new[]与delete[]来专门处理数组类型:
 
 A * ptr = new A[10];//分配10个A对象
@@ -227,7 +490,7 @@ new对数组的支持体现在它会分别调用构造函数函数初始化每�
 至于malloc，它并知道你在这块内存上要放的数组还是啥别的东西，反正它就给你一块原始的内存，在给你个内存的地址就完事。所以如果要动态分配一个数组的内存，还需要我们手动自定数组的大小：
 
 int * ptr = (int *) malloc( sizeof(int) );//分配一个10个int元素的数组
-7.new与malloc是否可以相互调用
+7. new与malloc是否可以相互调用
 operator new /operator delete的实现可以基于malloc，而malloc的实现不可以去调用new。下面是编写operator new /operator delete 的一种简单方式，其他版本也与之类似：
 
 void * operator new (sieze_t size)
@@ -241,7 +504,7 @@ void operator delete(void *mem) noexcept
 {
     free(mem);
 }
-8.是否可以被重载
+8. 是否可以被重载
 opeartor new /operator delete可以被重载。标准库是定义了operator new函数和operator delete函数的8个重载版本：
 
 //这些版本可能抛出异常

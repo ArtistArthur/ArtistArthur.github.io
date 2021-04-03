@@ -116,6 +116,45 @@ for(const auto& w:word_count)
 `for(const auto&w:word_count)`中w会得到一个`pair`类型的对象.  
 ### set
 `pair<set<int>::iterator, bool> set<int>::insert(int key_value);`插入函数，通过键值插入，返回一个pair，first代表插入元素的迭代器，second代表是否插入成功，插入失败是指此元素以及在set里了。  
+`inset(first,second);`将定位器（地址）`[first,second)`的元素插入到set中，返回值是void  
+`set<int>::iterator find(int key_value);`通过键值查找是否存在这个元素，存在则返回所在迭代器，不存在返回一个尾后迭代器。  
+`erase(iterator)`删除定位器`iterator`指向的值  
+`erase(first,second)`删除定位器`[first,second)`的值    
+`erase(key_value)`删除键值`key_value`的值  
+`lower_bound(key_value)`返回第一个大于等于key_value的定位器  
+`upper_bound(key_value)`返回最后一个大于等于key_value的定位器
+自定义比较函数:  
+* 元素不是结构体：  
+//自定义比较函数myComp,重载“()”操作符
+```cpp
+struct myComp
+{
+    bool operator()(const your_type &a,const your_type &b)
+    [
+        return a.data-b.data>0;
+    }
+}
+set<int,myComp>s;
+......
+set<int,myComp>::iterator it;
+```
+* 如果元素是结构体，可以直接将比较函数写在结构体内  
+```cpp
+struct Info
+{
+    string name;
+    float score;
+    //重载“<”操作符，自定义排序规则
+    bool operator < (const Info &a) const
+    {
+        //按score从大到小排列
+        return a.score<score;
+    }
+}
+set<Info> s;
+......
+set<Info>::iterator it;
+```
 
 单词统计程序的合理拓展是:忽略常见单词,如"the","and","or"等.可以使用set保存想忽略的单词,只对不在集合中的单词统计出现次数:  
 ```cpp
