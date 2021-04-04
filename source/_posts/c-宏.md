@@ -7,4 +7,5 @@ int trap10=10;
 PRINT_TRAP(10);
 ```
 结果会打印`"trap10=10\n"`  
+<!--more-->
 

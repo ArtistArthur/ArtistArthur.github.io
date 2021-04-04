@@ -45,6 +45,7 @@ int main()
 ```
 为什么class C要虚拟继承class BASE 而不是直接继承呢？  
 ![虚继承](https://ftp.bmp.ovh/imgs/2021/03/39ec1e8d954d2a79.png)
+<!--more-->
 
 ## 进程间通讯
 信号（已解决）  

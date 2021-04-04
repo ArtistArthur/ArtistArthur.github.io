@@ -4,6 +4,7 @@ OpenGL是一套标准，它定义了怎么使用显卡的API，Nvidia发行
 * 简单
 * 让我们可以更好得使用显卡，得到更好的画面
 shader是运行在GPU上的代码  
+<!--more-->
 
 # Setup OpenGL and Create a Window in C++
 跨平台  

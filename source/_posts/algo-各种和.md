@@ -14,6 +14,8 @@ int dp(int nums,int cap)
     return dp(nums - 1, cap - va[nums]) + va[nums] < dp(nums - 1, cap) ? dp(nums - 1, cap) : dp(nums - 1, cap - va[nums]) + va[nums];
 }
 ```
+<!--more-->
+
 背包循环写法：  
 ```cpp
 int ma[1005][1005];

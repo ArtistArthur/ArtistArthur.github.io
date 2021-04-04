@@ -11,10 +11,12 @@
          ;
      return n;
 }
-// 功能：获取字符串s中实际字符个数，不包括结尾的'\0'；
-// 如果实际个数 <= maxlen，则返回n，否则返回第二个参数。
-// 注意参数是const char* 而不是void*
-int strnlen(const char* s, size_t size)
+<!--more-->
+
+    // 功能：获取字符串s中实际字符个数，不包括结尾的'\0'；
+    // 如果实际个数 <= maxlen，则返回n，否则返回第二个参数。
+    // 注意参数是const char* 而不是void*
+    int strnlen(const char *s, size_t size)
 {
     int n;
     for (n = 0; size > 0 && *s != '\0';size--,s++)
